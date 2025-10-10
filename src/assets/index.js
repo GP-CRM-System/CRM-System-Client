@@ -1,0 +1,1 @@
+export { default as register } from "./images/register.svg";
