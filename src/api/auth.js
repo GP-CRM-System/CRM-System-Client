@@ -15,3 +15,8 @@ export const REFRESH = async (id) => {
     const response = await API.put(ENDPOINTS.AUTH.REFRESH(id));
     return response.data;
 };
+
+export const me = async () => {
+    const response = await API.get(ENDPOINTS.AUTH.ME);
+    return response.data;
+};

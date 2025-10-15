@@ -1,24 +1,25 @@
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import {Login, Register, Dashboard } from "./pages";
-import {ProtectedRoute, PublicRoute} from "./components";
+import { Login, Register, Dashboard, Unauthorized } from "./pages";
+import { ProtectedRoute, PublicRoute } from "./components";
 
 function App() {
     return (
         <Router>
             <Routes>
                 <Route
-                    path="/login"
+                    path="/"
                     element={
                         <PublicRoute>
-                        <Login />
+                            <Login />
                         </PublicRoute>
                     }
                 />
                 <Route
-                    path="/"
+                    path="/register"
                     element={
                         <PublicRoute>
-                        <Register />
+                            <Register />
                         </PublicRoute>
                     }
                 />
@@ -28,10 +29,13 @@ function App() {
                     path="/dashboard/*"
                     element={
                         <ProtectedRoute>
-                        <Dashboard />
+                            <Dashboard />
                         </ProtectedRoute>
+                        // <Dashboard />
                     }
                 />
+
+                <Route path="/unauthorized" element={<Unauthorized />} />
             </Routes>
         </Router>
     );
