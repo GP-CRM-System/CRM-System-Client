@@ -1,6 +1,5 @@
 import axios from "axios";
-import { store } from "@store";
-import { logout } from "@store/authSlice";
+import useAuthStore from '../store/authStore';
 
 const API = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api",
@@ -13,9 +12,6 @@ const API = axios.create({
 
 API.interceptors.request.use(
     (config) => {
-        const state = store.getState();
-        const token = state.auth.token;
-        if (token) config.headers["Authorization"] = `Bearer ${token}`;
         return config;
     },
     (error) => Promise.reject(error)
@@ -25,7 +21,8 @@ API.interceptors.response.use(
     (res) => res,
     async (error) => {
         if (error.response?.status === 401) {
-            store.dispatch(logout());
+            useAuthStore.getState().logout();
+            window.location.href = '/login';
         }
         return Promise.reject(error);
     }

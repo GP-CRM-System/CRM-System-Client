@@ -1,7 +1,7 @@
 import * as AuthAPI from "./auth";
-// import * as EmployeeAPI from "./employee";
+import * as CompanyAPI from "./company";
 
 export const API = {
     Auth: AuthAPI,
-    // Employee: EmployeeAPI
+    Company: CompanyAPI
 };

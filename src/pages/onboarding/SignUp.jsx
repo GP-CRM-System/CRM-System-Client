@@ -1,29 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { register, email, password, person, phone, google, facebook, twitter } from '../assets';
+import { register, email, password, person, phone, google, facebook, twitter } from '../../assets';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import useAuthStore from '../store/authStore';
-import { useEffect } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import useAuthStore from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
-import { REGISTER } from '../api/auth';
+import { REGISTER } from '../../api/auth';
+import { toast } from 'react-hot-toast';
 
-const Register = () => {
+export default function SignUp() {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
     const setCredentials = useAuthStore((state) => state.setCredentials);
-    const setLoading = useAuthStore((state) => state.setLoading);
-    const setError = useAuthStore((state) => state.setError);
     const navigate = useNavigate();
-    const loading = useAuthStore((state) => state.loading);
-    const error = useAuthStore((state) => state.error);
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const user = useAuthStore((state) => state.user);
 
     useEffect(() => {
-        if (isAuthenticated) {
+        if (isAuthenticated && user?.company) {
             navigate('/dashboard');
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, user, navigate]);
+
+    const registerMutation = useMutation({
+        mutationFn: REGISTER,
+        onSuccess: (data) => {
+            const user = data.user || data.data?.user || data.data;
+            setCredentials({ user });
+                toast.success('Registration successful! Please create your company.');
+            navigate('/onboarding/create-company');
+        },
+        onError: (error) => {
+                toast.error(error?.response?.data?.message || error?.message || 'Registration failed');
+        },
+    });
+
+    console.log('isAuthenticated:', isAuthenticated)
 
     const initialValues = {
         fullName: '',
@@ -47,18 +60,25 @@ const Register = () => {
         terms: Yup.bool().oneOf([true], 'You must accept the terms & conditions'),
     });
 
-    const handleSubmit = async (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting, setErrors }) => {
         const { fullName, phone, email, password } = values;
-        setLoading(true);
-        setError(null);
-        try {
-            const res = await REGISTER({ name: fullName, phone, email, password });
-            setCredentials({ user: res.user, token: res.token });
-        } catch (err) {
-            setError(err?.message || 'Register failed');
+        if (!fullName || !email || !password) {
+            toast.error('Please fill all required fields.');
+            setSubmitting(false);
+            setErrors({
+                fullName: !fullName ? 'Full Name is required' : undefined,
+                email: !email ? 'Email is required' : undefined,
+                password: !password ? 'Password is required' : undefined,
+            });
+            return;
         }
-        setLoading(false);
-        setSubmitting(false);
+        try {
+            await registerMutation.mutateAsync({ fullName, phone, email, password });
+        } catch (err) {
+            console.error('Registration error:', err);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -140,10 +160,14 @@ const Register = () => {
                                 </div>
                                 <ErrorMessage name="terms" component="div" className="text-(--color-error) text-xs mt-1" />
                                 {/* Sign Up Button */}
-                                <button type="submit" className="w-full bg-(--color-primary-500) text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300" disabled={isSubmitting || loading}>
-                                    {loading ? 'Signing up...' : 'Sign up'}
+                                <button type="submit" className="w-full bg-(--color-primary-500) text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300" disabled={isSubmitting || registerMutation.isPending}>
+                                    {registerMutation.isPending ? 'Signing up...' : 'Sign up'}
                                 </button>
-                                {error && <div className="text-(--color-error) text-xs mt-2">{error}</div>}
+                                {registerMutation.isError && (
+                                    <div className="text-(--color-error) text-xs mt-2">
+                                        {registerMutation.error?.response?.data?.message || registerMutation.error?.message || 'Registration failed'}
+                                    </div>
+                                )}
                             </Form>
                         )}
                     </Formik>
@@ -177,6 +201,4 @@ const Register = () => {
             </div>
         </div>
     );
-};
-
-export default Register;
+}

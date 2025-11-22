@@ -16,7 +16,12 @@ export const REFRESH = async (id) => {
     return response.data;
 };
 
-export const me = async () => {
-    const response = await API.get(ENDPOINTS.AUTH.ME);
-    return response.data;
+export const logout = async () => {
+    try {
+        const response = await API.post(ENDPOINTS.AUTH.LOGOUT);
+        return response.data;
+    } catch (error) {
+        console.error('Logout API call failed:', error);
+        throw error;
+    }
 };

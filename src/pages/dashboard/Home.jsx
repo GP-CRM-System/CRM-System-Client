@@ -1,5 +1,5 @@
 import React from 'react';
-import { PermissionGuard } from '../components';
+import { PermissionGuard } from '../../components';
 
 const Home = () => (
     <div className="space-y-4">

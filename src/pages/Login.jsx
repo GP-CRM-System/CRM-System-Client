@@ -3,15 +3,25 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { login as loginImage, email as emailIcon, password as passwordIcon, google, facebook, twitter } from '../assets';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import useAuthStore from '../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser } from '../store/authSlice';
+import { useMutation } from '@tanstack/react-query';
+import { login } from '../api/auth';
 
 const Login = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
-    const dispatch = useDispatch();
+    const setCredentials = useAuthStore((state) => state.setCredentials);
     const navigate = useNavigate();
-    const { loading, error, isAuthenticated } = useSelector(state => state.auth);
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+    // React Query mutation for login
+    const loginMutation = useMutation({
+        mutationFn: login,
+        onSuccess: (data) => {
+            setCredentials({ user: data.data });
+            navigate('/dashboard');
+        },
+    });
 
     useEffect(() => {
         if (isAuthenticated) navigate('/dashboard');
@@ -24,9 +34,9 @@ const Login = () => {
         password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
     });
 
-    const handleSubmit = (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting }) => {
         const { email, password } = values;
-        dispatch(loginUser({ email, password }));
+        loginMutation.mutate({ email, password });
         setSubmitting(false);
     };
 
@@ -76,10 +86,10 @@ const Login = () => {
                                     <Link to="/forgot-password" className="text-sm text-(--color-primary-500) underline">Forgot password?</Link>
                                 </div>
 
-                                <button type="submit" className="w-full bg-(--color-primary-500) text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300" disabled={isSubmitting || loading}>
-                                    {loading ? 'Logging in...' : 'Login'}
+                                <button type="submit" className="w-full bg-(--color-primary-500) text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300" disabled={isSubmitting || loginMutation.isPending}>
+                                    {loginMutation.isPending ? 'Logging in...' : 'Login'}
                                 </button>
-                                {error && <div className="text-(--color-error) text-xs mt-2">{error}</div>}
+                                {loginMutation.isError && <div className="text-(--color-error) text-xs mt-2">{loginMutation.error?.response?.data?.message || loginMutation.error?.message || 'Login failed'}</div>}
                             </Form>
                         )}
                     </Formik>
@@ -104,7 +114,7 @@ const Login = () => {
                     </div>
 
                     <p className="text-center text-sm text-gray-600">
-                        Don't have an account? <Link to="/" className="font-semibold text-(--color-primary-500) underline">Sign up</Link>
+                        Don't have an account? <Link to="/on-boarding" className="font-semibold text-(--color-primary-500) underline">Sign up</Link>
                     </p>
                 </div>
             </div>

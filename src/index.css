@@ -10,7 +10,7 @@
   --color-primary-200: #A7CAF1;
   --color-primary-300: #7BAFEA;
   --color-primary-400: #4F94E3;
-  --color-primary-500: #4B91E2;
+  --color-primary-500: #4B91E2; /* primary */
   --color-primary-600: #1C61B0;
   --color-primary-700: #154984;
   --color-primary-800: #0E3158;
@@ -39,11 +39,19 @@
   --color-gray-dark: #374151;
   --color-shadow: rgba(0, 0, 0, 0.1);
 
-  --font-roboto: "Roboto", sans-serif;
   --font-poppins: "Poppins", sans-serif;
 
 }
 
 body{
   font-family: var(--font-poppins);
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 2s linear infinite;
 }
