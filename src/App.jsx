@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from './pages/Landing';
 import NotFound from './pages/NotFound';
 import {
-    Login, Register, Dashboard, Unauthorized, ResetPassword, ForgotPassword, VerificationCode 
+    Login, Dashboard, Unauthorized, ResetPassword, ForgotPassword, VerificationCode 
 } from "./pages";
 import { ProtectedRoute, PublicRoute, ToasterComponent } from "./components";
 import { OnboardingStepper, SignUp, CreateCompany , Invite, Confirm} from './pages/onboarding';
