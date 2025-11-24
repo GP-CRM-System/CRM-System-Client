@@ -9,17 +9,34 @@ const useAuthStore = create(
             permissions: {}, // Role-based permissions object: { Company: { read: true, ... }, ... }
             isAuthenticated: false,
 
-            setCredentials: ({ user }) => {
-                console.log('setCredentials called with user:', user);
-                console.log('User role:', user?.role);
+            setCredentials: (responseData) => {
+				console.log('setCredentials called with:', responseData);
+
+
+				let userData = null;
+				let permissionsData = {};
+
+				if (responseData.user) {
+					userData = responseData.user;
+					permissionsData = responseData.user?.role || {};
+				} else if (responseData.data?.user) {
+					userData = responseData.data.user;
+					permissionsData = responseData.data.user?.role || {};
+				} else if (responseData.data) {
+					userData = responseData.data;
+					permissionsData = responseData.data?.role || {};
+				}
+				
+				console.log('Extracted user data:', userData);
+				console.log('Extracted permissions:', permissionsData);
                 
                 set(() => ({
-                    user: user || null,
-                    permissions: user?.role || {}, // Store the role object with permissions
-                    isAuthenticated: !!user,
+                    user: userData,
+                    permissions: permissionsData, // Store the role object with permissions
+                    isAuthenticated: !!userData,
                 }));
                 
-                console.log('Permissions stored:', user?.role);
+                console.log('Permissions stored:', permissionsData);
             },
 
             logout: () => {

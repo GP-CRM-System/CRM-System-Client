@@ -7,6 +7,7 @@ import useAuthStore from '../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { login } from '../api/auth';
+import { toast } from 'react-hot-toast';
 
 const Login = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -18,8 +19,14 @@ const Login = () => {
     const loginMutation = useMutation({
         mutationFn: login,
         onSuccess: (data) => {
-            setCredentials({ user: data.data });
+            setCredentials(data);
+
+            toast.success("Login successful!");
             navigate('/dashboard');
+        },
+        onError: (error) => {
+            console.error('Login error:', error);
+            toast.error(error?.response?.data?.message || error?.message || 'Login failed');
         },
     });
 
@@ -114,7 +121,7 @@ const Login = () => {
                     </div>
 
                     <p className="text-center text-sm text-gray-600">
-                        Don't have an account? <Link to="/on-boarding" className="font-semibold text-(--color-primary-500) underline">Sign up</Link>
+                        Don't have an account? <Link to="/onboarding/signup" className="font-semibold text-(--color-primary-500) underline">Sign up</Link>
                     </p>
                 </div>
             </div>

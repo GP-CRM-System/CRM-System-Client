@@ -8,6 +8,7 @@ import useAuthStore from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
 import { REGISTER } from '../../api/auth';
 import { toast } from 'react-hot-toast';
+import { formatApiErrors } from '../../utils/formatApiErrors';
 
 export default function SignUp() {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -26,12 +27,28 @@ export default function SignUp() {
     const registerMutation = useMutation({
         mutationFn: REGISTER,
         onSuccess: (data) => {
-            const user = data.user || data.data?.user || data.data;
-            setCredentials({ user });
-                toast.success('Registration successful! Please create your company.');
+            console.log('Registration success data:', data);
+            
+            setCredentials( data );
+            
+            toast.success('Registration successful! Please create your company.');
             navigate('/onboarding/create-company');
         },
         onError: (error) => {
+                const errors = formatApiErrors(error);
+                const fieldErrors = {};
+                errors.forEach(e => {
+                    if (e.field) fieldErrors[e.field] = e.message;
+                    toast.error(e.message);
+                });
+                registerMutation.setError({ 
+                    response: { 
+                    data: { 
+                        message: 'Registration failed', 
+                        errors: fieldErrors 
+                    } 
+                    } 
+                });
                 toast.error(error?.response?.data?.message || error?.message || 'Registration failed');
         },
     });

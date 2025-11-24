@@ -5,8 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { 
   businessIcon,
   companies as companyIcon, 
-  employee as employeesIcon, 
-  phone as phoneIcon } from "../../assets";
+  employee as employeesIcon
+  } from "../../assets";
 import { createCompany } from "../../api/company";
 import { type as companyTypes } from "../../constant/company";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ import { toast } from "react-hot-toast";
 const CreateCompany = () => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
-  console.log('user', user?._id);
+  console.log('user22', user);
   
   const createCompanyMutation = useMutation({
     mutationFn: createCompany,
@@ -33,7 +33,7 @@ const CreateCompany = () => {
     companyName: "",
     numberOfEmployees: "",
     businessType: "",
-    phoneNumber: "",
+    owner: "",
     email: "",
   };
 
@@ -43,9 +43,6 @@ const CreateCompany = () => {
       .typeError("Must be a number")
       .required("Number of employees is required"),
     businessType: Yup.string().required("Business type is required"),
-    phoneNumber: Yup.string()
-      .matches(/^[0-9]{4,15}$/, "Invalid phone number")
-      .required("Phone number is required"),
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
 
@@ -61,7 +58,6 @@ const CreateCompany = () => {
         name: values.companyName,
         numberOfEmployees: Number(values.numberOfEmployees),
         type: values.businessType,
-        phoneNumber: values.phoneNumber,
         email: values.email,
         owner: user?._id,
       });
@@ -181,28 +177,6 @@ const CreateCompany = () => {
                   </div>
                   <ErrorMessage
                     name="email"
-                    component="div"
-                    className="text-(--color-error) text-xs mt-2 ml-1"
-                  />
-                </div>
-
-                {/* Phone Number */}
-                <div className="flex flex-col">
-                  <div className="relative w-full">
-                    <img
-                      src={phoneIcon}
-                      alt="Phone icon"
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                    />
-                    <Field
-                      type="text"
-                      name="phoneNumber"
-                      placeholder="Phone Number"
-                      className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
-                    />
-                  </div>
-                  <ErrorMessage
-                    name="phoneNumber"
                     component="div"
                     className="text-(--color-error) text-xs mt-2 ml-1"
                   />
