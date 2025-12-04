@@ -14,12 +14,12 @@ import PermissionGuard  from './guard/PermissionGuard';
 
 const navItems = [
     { to: "/dashboard", label: "Home", icon: home, end: true },
-    { to: "/dashboard/contact", label: "Contact", icon: contact, permission: [{ resource: "Contact", action: "read" }] },
-    { to: "/dashboard/companies", label: "Companies", icon: companies, permission: [{ resource: "Company", action: "read" }] },
-    { to: "/dashboard/deals", label: "Deals", icon: deals, permission: [{ resource: "Deal", action: "read" }] },
-    { to: "/dashboard/tickets", label: "Tickets", icon: tickets, permission: [{ resource: "Ticket", action: "read" }] },
-    { to: "/dashboard/order", label: "Order", icon: order, permission: [{ resource: "Order", action: "read" }] },
-    { to: "/dashboard/employee", label: "Employee", icon: employee, permission: [{ resource: "Employee", action: "read" }] },
+    { to: "/dashboard/contact", label: "Contact", icon: contact, permission: "Contact.read" },
+    { to: "/dashboard/companies", label: "Companies", icon: companies, permission: "Company.read" },
+    { to: "/dashboard/deals", label: "Deals", icon: deals, permission: "Deal.read" },
+    { to: "/dashboard/tickets", label: "Tickets", icon: tickets, permission: "Ticket.read" },
+    { to: "/dashboard/order", label: "Order", icon: order, permission: "Order.read" },
+    { to: "/dashboard/employee", label: "Employee", icon: employee, permission: "Employee.read" },
 ];
 
 const Sidebar = ({ onLogout }) => {
@@ -56,7 +56,6 @@ const Sidebar = ({ onLogout }) => {
 
                         // If item has permission requirement, wrap in PermissionGuard
                         if (item.permission) {
-                            console.log(item.permission);
                             return (
                                 <PermissionGuard permission={item.permission} any={item.any} key={item.to}>
                                     <li>{linkContent}</li>

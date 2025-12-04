@@ -4,7 +4,12 @@ import useAuthStore from '../../store/authStore';
  * PermissionGuard - Component-level permission checker
  * Hides children if user doesn't have required permissions
  * 
- * @param {Array} permission - Array of {resource, action} objects. REQUIRED - items without permission will be hidden
+ * Usage examples:
+ * - String format: <PermissionGuard permission="Contact.write">
+ * - Array of strings: <PermissionGuard permission={["Contact.write", "Contact.delete"]} any>
+ * - Object format: <PermissionGuard permission={[{resource: 'Contact', action: 'write'}]}>
+ * 
+ * @param {string|Array<string>|Array<{resource, action}>} permission - Permission(s) to check
  * @param {boolean} any - If true, user needs ANY of the permissions. If false, user needs ALL permissions
  * @param {ReactNode} children - Content to conditionally render
  */
@@ -15,34 +20,47 @@ const PermissionGuard = ({ permission, children, any = false }) => {
     // If user is not authenticated, don't render
     if (!isAuthenticated) return null;
 
-    // If no permission specified, DON'T render (permission is required)
-    // This ensures items without permission are hidden
-    if (!permission || !Array.isArray(permission) || permission.length === 0) {
-        return null;
-    }
+    // If no permission specified, DON'T render
+    if (!permission) return null;
 
     // If permissions object doesn't exist or is invalid, don't render
     if (!permissions || typeof permissions !== 'object') {
-        console.log('PermissionGuard: No permissions object found');
+        return null;
+    }
+
+    // Normalize permission to array of {resource, action}
+    let permissionsToCheck = [];
+    
+    if (typeof permission === 'string') {
+        // Single string: "Contact.write"
+        const [resource, action] = permission.split('.');
+        permissionsToCheck = [{ resource, action }];
+    } else if (Array.isArray(permission)) {
+        if (permission.length === 0) return null;
+        
+        // Check if array contains strings or objects
+        if (typeof permission[0] === 'string') {
+            // Array of strings: ["Contact.write", "Contact.delete"]
+            permissionsToCheck = permission.map(perm => {
+                const [resource, action] = perm.split('.');
+                return { resource, action };
+            });
+        } else {
+            // Array of objects: [{resource: 'Contact', action: 'write'}]
+            permissionsToCheck = permission;
+        }
+    } else {
         return null;
     }
 
     // Check if user has required permissions
-    // any=true: user needs at least one permission
-    // any=false: user needs all permissions
     const allowed = any
-        ? permission.some(({ resource, action }) => {
-            const hasAccess = permissions[resource]?.[action] === true;
-            console.log(`PermissionGuard (ANY): Checking ${resource}.${action} = ${hasAccess}`);
-            return hasAccess;
-          })
-        : permission.every(({ resource, action }) => {
-            const hasAccess = permissions[resource]?.[action] === true;
-            console.log(`PermissionGuard (ALL): Checking ${resource}.${action} = ${hasAccess}`);
-            return hasAccess;
-          });
-
-    console.log(`PermissionGuard: Final result = ${allowed}`, { permission, permissions });
+        ? permissionsToCheck.some(({ resource, action }) => 
+            permissions[resource]?.[action] === true
+        )
+        : permissionsToCheck.every(({ resource, action }) => 
+            permissions[resource]?.[action] === true
+        );
 
     // Only render if user has required permissions
     return allowed ? children : null;

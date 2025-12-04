@@ -27,7 +27,7 @@ const Dashboard = () => {
 	};
 
 	return (
-		<div className="flex h-screen bg-[#e6ecf5]">
+		<div className="flex h-screen bg-[var(--color-background)]">
 			<Sidebar onLogout={handleLogout} />
 			<div className="flex-1 flex flex-col">
 				<main className="flex-1 px-8 py-6">

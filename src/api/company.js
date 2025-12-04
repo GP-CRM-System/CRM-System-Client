@@ -17,11 +17,11 @@ export const deleteCompany = async (id) => {
 };
 
 export const getAllCompanies = async () => {
-    const response = await API.get(ENDPOINTS.COMPANY.GETALL);
+    const response = await API.get(ENDPOINTS.COMPANY.GetAll);
     return response.data;
 };
 
 export const getCompanyById = async (id) => {
-    const response = await API.get(ENDPOINTS.COMPANY.GETone(id));
+    const response = await API.get(ENDPOINTS.COMPANY.GetOne(id));
     return response.data;
 }

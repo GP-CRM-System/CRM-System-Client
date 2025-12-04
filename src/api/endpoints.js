@@ -8,9 +8,20 @@ export const ENDPOINTS = {
     },
     COMPANY: {
         CREATE: "/companies",
-        GETALL: "/companies",
-        GETone: (id) => `/companies/${id}`,
+        GetAll: "/companies",
+        GetOne: (id) => `/companies/${id}`,
         UPDATE: (id) => `/companies/${id}`,
         DELETE: (id) => `/companies/${id}`
+    },
+    CONTACT: {
+        CREATE: "/contacts",
+        GetAll: "/contacts",
+        GetOne: (id) => `/contacts/${id}`,
+        UPDATE: (id) => `/contacts/${id}`,
+        DELETE: (id) => `/contacts/${id}`
+    },
+    EMPLOYEE:{
+        GetAll: "/employees",
+        GetOne: (id) => `/employees/${id}`
     }
 };
