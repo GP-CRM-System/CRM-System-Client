@@ -14,7 +14,7 @@ const ContactFormModal = ({
 }) => {
     return (
         <SideModal open={open} onClose={onClose} title="Create Contact">
-            <form className="space-y-4" onSubmit={onSubmit}>
+            <form id="contact-form" className="space-y-4 pb-20" onSubmit={onSubmit}>
                 {formError && (
                     <div className="bg-red-50 text-red-600 p-3 rounded text-sm">{formError}</div>
                 )}
@@ -110,17 +110,18 @@ const ContactFormModal = ({
                         onChange={e => onFormChange('date', e.target.value)}
                     />
                 </div>
-
-                <div className="pt-4">
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? 'Creating...' : 'Create Contact'}
-                    </button>
-                </div>
             </form>
+            
+            <div className="sticky bottom-0 left-0 w-full px-6 py-4 bg-white border-t border-gray-100 z-20 mt-auto">
+                <button
+                    type="submit"
+                    form="contact-form"
+                    className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Creating...' : 'Create Contact'}
+                </button>
+            </div>
         </SideModal>
     );
 };

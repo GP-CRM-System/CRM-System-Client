@@ -144,7 +144,7 @@ const Contact = () => {
             title="Contacts"
             createText="Create Contact"
             onCreate={handleCreateClick}
-            createPermission="Contact.f"
+            createPermission="Contact.write"
         >
             <div className="bg-white rounded-lg p-2 sm:p-4 min-h-[600px]">
                 <ContactTabs
