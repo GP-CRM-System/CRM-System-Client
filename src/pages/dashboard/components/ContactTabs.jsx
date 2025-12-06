@@ -11,14 +11,14 @@ const ContactTabs = ({ activeTab, onTabChange }) => {
                     type="button"
                     className={`pb-2 text-sm sm:text-base font-semibold transition-all relative whitespace-nowrap ${
                         activeTab === tab
-                            ? 'text-blue-600'
-                            : 'text-gray-500 hover:text-gray-700'
+                            ? 'text-[var(--color-primary-500)]'
+                            : 'text-[var(--color-text-body)] hover:text-[var(--color-text-title)]'
                     }`}
                     onClick={() => onTabChange(tab)}
                 >
                     {tab}
                     {activeTab === tab && (
-                        <span className="absolute bottom-0 left-0 w-full h-[2px] bg-blue-600 rounded-full"></span>
+                        <span className="absolute bottom-0 left-0 w-full h-[2px] bg-[var(--color-primary-500)] rounded-full"></span>
                     )}
                 </button>
             ))}

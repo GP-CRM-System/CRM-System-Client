@@ -24,34 +24,36 @@ const Contact = () => {
     });
     const [formError, setFormError] = useState('');
     const [selected, setSelected] = useState([]);
-    
+    const [page, setPage] = useState(1);
+    const [limit] = useState(9);
     const queryClient = useQueryClient();
 
     // Fetch contacts
-    const { data: contactsRaw = {}, isLoading } = useQuery({
-        queryKey: ['contacts'],
-        queryFn: getAllContacts,
+    const { data: contactsData = {}, isLoading } = useQuery({
+        queryKey: ['contacts', page, limit],
+        queryFn: () => getAllContacts({ page, limit }),
+        keepPreviousData: true,
     });
-    
-    const contacts = contactsRaw?.data?.contacts || [];
-    const page = contactsRaw?.data?.page || 1;
-    const limit = contactsRaw?.data?.limit || 10;
-    const total = contacts.length;
+
+    const contacts = contactsData?.data?.contacts || [];
+    const total = contactsData?.data?.total || contactsData?.data?.contacts?.length || 0;
+    const currentPage = contactsData?.data?.page || page;
+    const currentLimit = contactsData?.data?.limit || limit;
 
     // Fetch employees
-    const { data: employeesRaw, isLoading: isLoadingEmployees } = useQuery({
+    const { data: employeesData, isLoading: isLoadingEmployees } = useQuery({
         queryKey: ['employees'],
         queryFn: getAllEmployees,
     });
     
     let employees = [];
-    if (employeesRaw) {
-        if (Array.isArray(employeesRaw)) {
-            employees = employeesRaw;
-        } else if (employeesRaw.data && Array.isArray(employeesRaw.data.employees)) {
-            employees = employeesRaw.data.employees;
-        } else if (Array.isArray(employeesRaw.employees)) {
-            employees = employeesRaw.employees;
+    if (employeesData) {
+        if (Array.isArray(employeesData)) {
+            employees = employeesData;
+        } else if (employeesData.data && Array.isArray(employeesData.data.employees)) {
+            employees = employeesData.data.employees;
+        } else if (Array.isArray(employeesData.employees)) {
+            employees = employeesData.employees;
         }
     }
     
@@ -78,8 +80,14 @@ const Contact = () => {
             queryClient.invalidateQueries(['contacts']);
             setModalOpen(false);
             setForm({
-                name: '', email: '', phone: '', address: '',
-                jobTitle: '', owner: '', stage: '', date: '',
+                name: '', 
+                email: '', 
+                phone: '', 
+                address: '',
+                jobTitle: '', 
+                owner: '', 
+                stage: '', 
+                date: '',
             });
             setFormError('');
         },
@@ -146,7 +154,7 @@ const Contact = () => {
             onCreate={handleCreateClick}
             createPermission="Contact.write"
         >
-            <div className="bg-white rounded-lg p-2 sm:p-4 min-h-[600px]">
+            <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4">
                 <ContactTabs
                     activeTab={activeTab}
                     onTabChange={setActiveTab}
@@ -163,10 +171,10 @@ const Contact = () => {
                 />
 
                 <Pagination
-                    page={page}
-                    limit={limit}
+                    page={currentPage}
+                    limit={currentLimit}
                     total={total}
-                    onPageChange={(newPage) => console.log('Page changed to:', newPage)}
+                    onPageChange={setPage}
                 />
 
                 {/* <PermissionGuard permission="Contact.write"> */}

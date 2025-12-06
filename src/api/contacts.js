@@ -16,8 +16,10 @@ export const deleteContact = async (id) => {
     return response.data;
 };
 
-export const getAllContacts = async () => {
-    const response = await API.get(ENDPOINTS.CONTACT.GetAll);
+export const getAllContacts = async ({ page = 1, limit = 9 } = {}) => {
+    const response = await API.get(ENDPOINTS.CONTACT.GetAll, {
+        params: { page, limit }
+    });
     return response.data;
 };
 

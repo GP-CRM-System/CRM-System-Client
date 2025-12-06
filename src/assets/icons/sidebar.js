@@ -1,8 +1,9 @@
-export { default as home } from "./home.svg";
-export { default as contact } from "./contact.svg";
-export { default as companies } from "./company.svg";
-export { default as deals } from "./deal.svg";
-export { default as tickets } from "./ticket.svg";
-export { default as order } from "./order.svg";
-export { default as employee } from "./employee.svg";
-export { default as logout } from "./logout.svg";
+export { default as home } from "./sidebar/home.svg";
+export { default as contact } from "./sidebar/contact.svg";
+export { default as companies } from "./sidebar/company.svg";
+export { default as deals } from "./sidebar/deal.svg";
+export { default as tickets } from "./sidebar/ticket.svg";
+export { default as order } from "./sidebar/order.svg";
+export { default as employee } from "./sidebar/employee.svg";
+export { default as logout } from "./sidebar/logout.svg";
+export { default as analytics } from './sidebar/analytics.svg'

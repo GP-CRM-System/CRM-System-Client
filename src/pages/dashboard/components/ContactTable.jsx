@@ -1,4 +1,5 @@
 import React from 'react';
+import { dotsIcon } from '../../../assets';
 
 const ContactTable = ({ 
     contacts, 
@@ -13,11 +14,11 @@ const ContactTable = ({
         <div className="overflow-x-auto">
             <table className="w-full text-sm">
                 <thead>
-                    <tr className="text-gray-500 border-b border-gray-100">
+                    <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
                         <th className="py-4 w-10 text-center">
                             <input
                                 type="checkbox"
-                                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
                                 checked={allSelected}
                                 onChange={onSelectAll}
                             />
@@ -45,7 +46,7 @@ const ContactTable = ({
                             const stageDate = currentStage ? currentStage.date : null;
                             
                             return (
-                                <tr key={contact._id || idx} className="hover:bg-gray-50 group transition-colors">
+                                <tr key={contact._id || idx} className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]">
                                     <td className="py-4 text-center">
                                         <input
                                             type="checkbox"
@@ -66,11 +67,11 @@ const ContactTable = ({
                                                         e.target.nextSibling.style.display = 'flex';
                                                     }}
                                                 />
-                                                <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-bold">
+                                                <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
                                                     {contact.name?.charAt(0) || 'U'}
                                                 </div>
                                             </div>
-                                            <span className="font-semibold text-gray-900">{contact.name}</span>
+                                            <span className="font-medium text-(--color-text-title)">{contact.name}</span>
                                         </div>
                                     </td>
                                     <td className="py-4 text-center">
@@ -84,19 +85,15 @@ const ContactTable = ({
                                             </span>
                                         )}
                                     </td>
-                                    <td className="py-4 text-center hidden md:table-cell">{contact.email}</td>
-                                    <td className="py-4 text-center hidden lg:table-cell">{contact.phone || '-'}</td>
-                                    <td className="py-4 text-center hidden xl:table-cell">{contact.jobTitle || '-'}</td>
-                                    <td className="py-4 font-bold text-sm text-center hidden sm:table-cell">
+                                    <td className="py-4 text-center hidden md:table-cell font-medium text-(--color-text-title)">{contact.email}</td>
+                                    <td className="py-4 text-center hidden lg:table-cell font-medium text-(--color-text-title)">{contact.phone || '-'}</td>
+                                    <td className="py-4 text-center hidden xl:table-cell font-medium text-(--color-text-title)">{contact.jobTitle || '-'}</td>
+                                    <td className="py-4 font-medium text-sm text-center hidden sm:table-cell">
                                         {formatDate(stageDate || contact.createdAt)}
                                     </td>
                                     <td className="py-4 text-center">
                                         <button className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors">
-                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <circle cx="12" cy="8" r="2" fill="currentColor" />
-                                                <circle cx="12" cy="12" r="2" fill="currentColor" />
-                                                <circle cx="12" cy="16" r="2" fill="currentColor" />
-                                            </svg>
+                                            <img src={dotsIcon} alt="options" />
                                         </button>
                                     </td>
                                 </tr>
