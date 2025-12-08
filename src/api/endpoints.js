@@ -23,5 +23,10 @@ export const ENDPOINTS = {
     EMPLOYEE:{
         GetAll: "/employees",
         GetOne: (id) => `/employees/${id}`
+    },
+    DEALS: {
+        GetAll: "/deals",
+        GetOne: (id) => `/deals/${id}`
+        
     }
 };

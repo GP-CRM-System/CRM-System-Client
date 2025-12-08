@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Landing from './pages/Landing';
 import NotFound from './pages/NotFound';
 import {
     Login, Dashboard, Unauthorized, ResetPassword, ForgotPassword, VerificationCode 
 } from "./pages";
 import { ProtectedRoute, PublicRoute, ToasterComponent } from "./components";
 import { OnboardingStepper, SignUp, CreateCompany , Invite, Confirm} from './pages/onboarding';
+import { LandingPage } from "./pages";
 
 function App() {
     return (
@@ -14,7 +14,7 @@ function App() {
             <Router>
                 <Routes>
 
-                    <Route path="/" element={<Landing />} />
+                    <Route path="/" element={<LandingPage />} />
 
                     <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
 

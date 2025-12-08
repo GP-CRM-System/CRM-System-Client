@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import Sidebar from '../components/Sidebar.jsx';
-import { Home, Contact, Companies, Deals, Tickets, Order, Employee } from './dashboard/index.js';
-import useAuthStore from '../store/authStore';
+import Sidebar from '../../components/Sidebar.jsx';
+import { Home, Contact, Companies, Deals, Tickets, Order, Employee } from './';
+import useAuthStore from '../../store/authStore';
 import { useMutation } from '@tanstack/react-query';
-import { logout as logoutAPI } from '../api/auth';
+import { logout as logoutAPI } from '../../api/auth';
 
 const Dashboard = () => {
 	const navigate = useNavigate();

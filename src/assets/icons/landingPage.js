@@ -1,0 +1,11 @@
+export { default as smartContact } from "./landing/smart-contact.svg";
+export { default as salesDeals } from "./landing/sales&deals.svg";
+export { default as automatedTicketing } from "./landing/Automated-Ticketing.svg";
+export { default as hrEmployee } from "./landing/HR&Employee.svg";
+export { default as checkMark } from "./landing/checkMark.svg";
+export { default as callBlue } from "./landing/callBlue.svg";
+export { default as emailBlue } from "./landing/emailBlue.svg";
+export { default as stars } from "./landing/stars.svg";
+export { default as face } from "./landing/face.svg";
+export { default as x } from "./landing/x.svg";
+export { default as insta } from "./landing/insta.svg";

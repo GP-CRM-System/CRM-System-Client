@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import { getAllContacts, createContact } from '../../api/contacts';
-import { getAllEmployees } from '../../api/employees';
-import PageLayout from '../../components/PageLayout';
-import { PermissionGuard } from '../../components';
-import ContactTabs from './components/ContactTabs';
-import ContactTable from './components/ContactTable';
-import ContactFormModal from './components/ContactFormModal';
-import Pagination from './components/Pagination';
+import { getAllContacts, createContact } from '../../../api/contacts';
+import { getAllEmployees } from '../../../api/employees';
+import PageLayout from '../../../components/PageLayout';
+import { PermissionGuard } from '../../../components';
+import ContactTabs from './ContactTabs';
+import ContactTable from './ContactTable';
+import ContactFormModal from './ContactFormModal';
+import Pagination from './Pagination';
 
 const Contact = () => {
     const [modalOpen, setModalOpen] = useState(false);
