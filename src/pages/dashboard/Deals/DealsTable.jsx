@@ -1,25 +1,37 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { dotsIcon } from "../../../assets";
 
-export default function CompanyTable({
-  companies,
+export default function DealsTable({
+  deals,
   isLoading,
   selected,
   allSelected,
   onSelectAll,
   onSelectOne,
+  onEdit,
   formatDate,
   contacts,
+  employees,
   onDelete,
-  onEdit,
+  companies,
 }) {
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  const getContactName = (contactId) => {
-    if (!contactId) return "-";
-    const contact = contacts?.find((c) => c._id === contactId);
-    return contact?.fullName || contact?.name || "-";
+  const getContact = (contactId) => {
+    if (!contactId) return null;
+    return contacts?.find((c) => c._id === contactId);
   };
+
+  const getOwner = (ownerId) => {
+    if (!ownerId) return null;
+    return employees?.find((e) => e._id === ownerId);
+  };
+
+  const getCompany = (companyId) => {
+    if (!companyId) return null;
+    return companies?.find((e) => e._id === companyId);
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
@@ -33,27 +45,24 @@ export default function CompanyTable({
                 onChange={onSelectAll}
               />
             </th>
-
             <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
-              Company Name
+              Deal Name
             </th>
-
+            <th className="py-4 px-4 text-left align-middle font-semibold hidden lg:table-cell">
+              Company
+            </th>
             <th className="py-4 px-4 text-left align-middle font-semibold">
               Contact
             </th>
-
-            <th className="py-4 px-4 text-left align-middle font-semibold hidden md:table-cell">
-              E-mail
-            </th>
-
             <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
-              Type
+              Owner
             </th>
-
             <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
               Date
             </th>
-
+            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+              Stage
+            </th>
             <th className="py-4 px-4 text-center align-middle"></th>
           </tr>
         </thead>
@@ -61,39 +70,52 @@ export default function CompanyTable({
         <tbody className="divide-y divide-gray-50">
           {isLoading ? (
             <tr>
-              <td colSpan={7} className="p-8 text-center text-gray-400">
-                Loading companies...
+              <td colSpan={8} className="p-8 text-center text-gray-400">
+                Loading deals...
               </td>
             </tr>
-          ) : companies.length === 0 ? (
+          ) : !deals || deals.length === 0 ? (
             <tr>
-              <td colSpan={7} className="p-8 text-center text-gray-400">
-                No companies found.
+              <td colSpan={8} className="p-8 text-center text-gray-400">
+                No deals found.
               </td>
             </tr>
           ) : (
-            companies.map((company, idx) => {
+            deals.map((deal, idx) => {
+              const contact = getContact(deal.contact?._id);
+              const owner = getOwner(deal.owner?._id);
+              const company = getCompany(deal.company?._id);
+
               return (
                 <tr
-                  key={company._id || idx}
+                  key={deal._id || idx}
                   className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
                 >
                   <td className="py-4 px-4 text-center">
                     <input
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      checked={selected.includes(company._id)}
-                      onChange={() => onSelectOne(company._id)}
+                      checked={selected.includes(deal._id)}
+                      onChange={() => onSelectOne(deal._id)}
                     />
                   </td>
-                  <td className="py-4 px-4 text-left">
+
+                  <td className="py-4 px-4 text-left font-medium text-(--color-text-title)">
+                    {deal.name}
+                  </td>
+
+                  <td className="py-4 px-4 text-left hidden lg:table-cell">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                         <img
-                          src={`https://i.pravatar.cc/150?u=${
-                            company._id || idx
-                          }`}
-                          alt={company.name}
+                          src={
+                            company?.logo ||
+                            company?.avatar ||
+                            `https://i.pravatar.cc/150?u=${
+                              company?._id || deal._id
+                            }`
+                          }
+                          alt={company?.name || "-"}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.style.display = "none";
@@ -101,11 +123,11 @@ export default function CompanyTable({
                           }}
                         />
                         <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
-                          {company.name?.charAt(0) || "C"}
+                          {company?.name?.charAt(0) || "C"}
                         </div>
                       </div>
                       <span className="font-medium text-(--color-text-title)">
-                        {company.name}
+                        {company?.name || "-"}
                       </span>
                     </div>
                   </td>
@@ -115,11 +137,10 @@ export default function CompanyTable({
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                         <img
                           src={
-                            contacts?.find((c) => c._id === company.contact)
-                              ?.avatar ||
-                            `https://i.pravatar.cc/150?u=${company.contact}`
+                            contact?.avatar ||
+                            `https://i.pravatar.cc/150?u=${contact?._id}`
                           }
-                          alt={getContactName(company.contact)}
+                          alt={contact?.name || "-"}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.style.display = "none";
@@ -127,63 +148,69 @@ export default function CompanyTable({
                           }}
                         />
                         <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
-                          {getContactName(company.contact)?.charAt(0) || "C"}
+                          {contact?.name?.charAt(0) || "C"}
                         </div>
                       </div>
                       <span className="font-medium text-(--color-text-title)">
-                        {getContactName(company.contact)}
+                        {contact?.name || "-"}
                       </span>
                     </div>
                   </td>
 
-                  <td className="py-4 px-4 text-left hidden md:table-cell font-medium text-(--color-text-title)">
-                    {company.email || "-"}
+                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-(--color-text-title)">
+                    {owner?.fullName || "-"}
                   </td>
-                  <td className="py-4 px-4 text-center hidden lg:table-cell">
-                    {company.type && (
+
+                  <td className="py-4 px-4 font-medium text-sm text-center hidden sm:table-cell">
+                    {formatDate(deal.createdAt)}
+                  </td>
+
+                  <td className="py-4 px-4 text-center hidden sm:table-cell">
+                    {deal.stage && deal.stage.length > 0 ? (
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                          company.type === "Client"
+                          deal.stage[
+                            deal.stage.length - 1
+                          ].name.toLowerCase() === "closed won"
                             ? "bg-blue-50 text-blue-500"
-                            : company.type === "Partner"
-                            ? "bg-green-50 text-green-500"
+                            : deal.stage[
+                                deal.stage.length - 1
+                              ].name.toLowerCase() === "closed lost"
+                            ? "bg-red-50 text-red-500"
                             : "bg-orange-50 text-orange-400"
                         }`}
                       >
-                        {company.type}
+                        {deal.stage[deal.stage.length - 1].name}
+                      </span>
+                    ) : (
+                      <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500">
+                        No Stage
                       </span>
                     )}
                   </td>
-                  <td className="py-4 px-4 font-medium text-sm text-center hidden sm:table-cell">
-                    {formatDate(company.createdAt)}
-                  </td>
+
                   <td className="py-4 px-4 text-center relative">
                     <button
                       className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors"
                       onClick={() =>
-                        setOpenMenuId(
-                          openMenuId === company._id ? null : company._id
-                        )
+                        setOpenMenuId(openMenuId === deal._id ? null : deal._id)
                       }
                     >
                       <img src={dotsIcon} alt="options" />
                     </button>
 
-                    {/* Dropdown Menu */}
-                    {openMenuId === company._id && (
+                    {openMenuId === deal._id && (
                       <>
-                        {/* Backdrop to close menu */}
                         <div
                           className="fixed inset-0 z-10"
                           onClick={() => setOpenMenuId(null)}
                         />
 
-                        {/* Menu */}
                         <div className="absolute right-8 top-12 z-20 bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-[120px] group-last:-top-32">
                           <button
                             className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
                             onClick={() => {
-                              onEdit(company);
+                              onEdit(deal);
                               setOpenMenuId(null);
                             }}
                           >
@@ -205,7 +232,7 @@ export default function CompanyTable({
                           <button
                             className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
                             onClick={() => {
-                              onDelete(company._id);
+                              onDelete(deal._id);
                               setOpenMenuId(null);
                             }}
                           >
