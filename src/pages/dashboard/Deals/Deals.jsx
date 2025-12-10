@@ -175,8 +175,6 @@ export default function Deals() {
       stage: currentStage,
     };
 
-    console.log("📋 Form data:", formData);
-
     setForm(formData);
     setModalOpen(true);
   };
