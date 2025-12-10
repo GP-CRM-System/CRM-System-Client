@@ -13,7 +13,7 @@ import { useUpdateCompany } from "./useEditCompany";
 
 const Companies = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [editingCompany, setEditingCompany] = useState(null); // ← للتعديل
+  const [editingCompany, setEditingCompany] = useState(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -187,6 +187,7 @@ const Companies = () => {
           onEdit={handleEditClick}
           formatDate={formatDate}
           contacts={contacts}
+          employees={employees}
           onDelete={(companyId) => {
             {
               deleteCompanyMutation.mutate(companyId);
