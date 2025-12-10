@@ -31,24 +31,20 @@ export const useCreateOrder = (onSuccessCallback, onErrorCallback) => {
         const res = await createOrder(payload);
 
         if (res.error || res.message === "Error creating order") {
-          console.error("❌ Backend returned error:", res.error);
           throw new Error(JSON.stringify(res.error));
         }
 
         return res;
       } catch (err) {
-        console.error("❌ Error creating order:", err.response?.data || err);
+        console.error(" Error creating order:", err.response?.data || err);
         throw err;
       }
     },
     onSuccess: (data) => {
-      console.log("🔄 Invalidating queries...");
       queryClient.invalidateQueries(["orders"]);
-      console.log("✅ Queries invalidated!");
       if (onSuccessCallback) onSuccessCallback(data);
     },
     onError: (error) => {
-      console.error("❌ Mutation error:", error);
       if (onErrorCallback) onErrorCallback(error);
     },
   });

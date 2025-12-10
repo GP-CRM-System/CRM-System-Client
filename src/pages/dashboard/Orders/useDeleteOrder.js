@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import queryClient from "../../../store/queryClient";
-import { deleteOrder } from "../../../api/ORDERS";
+import { deleteOrder } from "../../../api/orders";
 
 export const useDeleteOrder = (onSuccessCallback, onErrorCallback) => {
   return useMutation({
