@@ -24,11 +24,18 @@ export const ENDPOINTS = {
     GetAll: "/employees",
     GetOne: (id) => `/employees/${id}`,
   },
-  DEALS: {
+  DEAL: {
     CREATE: "/deals",
     GetAll: "/deals",
     GetOne: (id) => `/deals/${id}`,
     UPDATE: (id) => `/deals/${id}`,
     DELETE: (id) => `/deals/${id}`,
+  },
+  ORDER: {
+    CREATE: "/orders",
+    GetAll: "/orders",
+    GetOne: (id) => `/orders/${id}`,
+    UPDATE: (id) => `/orders/${id}`,
+    DELETE: (id) => `/orders/${id}`,
   },
 };
