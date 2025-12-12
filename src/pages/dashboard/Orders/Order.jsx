@@ -172,8 +172,6 @@ export default function Order() {
   };
   // Handle Edit Click
   const handleEditClick = (order) => {
-    console.log("📝 Editing order:", order);
-
     setEditingOrder(order);
 
     const ownerId =

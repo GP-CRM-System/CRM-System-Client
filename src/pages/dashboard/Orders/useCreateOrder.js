@@ -25,8 +25,6 @@ export const useCreateOrder = (onSuccessCallback, onErrorCallback) => {
         products: form.products || [],
       };
 
-      console.log("📤 Sending payload:", payload);
-
       try {
         const res = await createOrder(payload);
 

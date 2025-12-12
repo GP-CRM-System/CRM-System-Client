@@ -48,4 +48,11 @@ export const ENDPOINTS = {
     UPDATE: (id) => `/roles/${id}`,
     DELETE: (id) => `/roles/${id}`,
   },
+  TICKET: {
+    CREATE: "/tickets",
+    GetAll: "/tickets",
+    GetOne: (id) => `/tickets/${id}`,
+    UPDATE: (id) => `/tickets/${id}`,
+    DELETE: (id) => `/tickets/${id}`,
+  },
 };

@@ -4,6 +4,7 @@ import * as ContactAPI from "./contacts";
 import * as DealAPI from "./deals";
 import * as OrderAPI from "./orders";
 import * as RoleAPI from "./roles";
+import * as TicketAPI from "./tickets";
 
 export const API = {
   Auth: AuthAPI,
@@ -12,4 +13,5 @@ export const API = {
   Deal: DealAPI,
   Order: OrderAPI,
   Role: RoleAPI,
+  Ticket: TicketAPI,
 };
