@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { dotsIcon } from "../../../assets";
 
-export default function OrderTable({
-  orders,
+export default function EmployeeTable({
+  employees,
   isLoading,
   selected,
   allSelected,
@@ -10,55 +10,19 @@ export default function OrderTable({
   onSelectOne,
   onEdit,
   formatDate,
-  contacts,
-  employees,
   onDelete,
+  roles,
 }) {
   const [openMenuId, setOpenMenuId] = useState(null);
+  const getRole = (employeeRole) => {
+    if (!employeeRole) return null;
 
-  // Helper function to get employee
-  const getEmployee = (employeeId) => {
-    if (!employeeId) return null;
-    return employees?.find((e) => e._id === employeeId);
-  };
-
-  // Helper function to get contact
-  const getContact = (contactId) => {
-    if (!contactId) return null;
-    return contacts?.find((c) => c._id === contactId);
-  };
-
-  // Helper function to calculate total price
-  const calculateTotalPrice = (products) => {
-    if (!products || products.length === 0) return 0;
-    return products.reduce((total, product) => {
-      return total + product.unitPrice * product.quantity;
-    }, 0);
-  };
-
-  // Helper function to get current stage
-  const getCurrentStage = (stages) => {
-    if (!stages || stages.length === 0) return null;
-    return stages[stages.length - 1];
-  };
-
-  const getStageStyle = (stageName) => {
-    const stageType = stageName || "";
-
-    switch (stageType) {
-      case "Open":
-        return "bg-[#e0ecfa]  text-[#2596be] ";
-      case "Processed":
-        return "bg-[#fff9e3] text-[#e07706] ";
-      case "Shipped":
-        return "bg-purple-50 text-purple-600 ";
-      case "Delivered":
-        return "bg-green-50 text-green-600 ";
-      case "Cancelled":
-        return "bg-red-50 text-red-600 ";
-      default:
-        return "bg-gray-50 text-gray-500 ";
+    if (typeof employeeRole === "object" && employeeRole._id) {
+      const foundRole = roles?.find((r) => r._id === employeeRole._id);
+      return foundRole || employeeRole;
     }
+
+    return roles?.find((r) => r._id === employeeRole);
   };
 
   return (
@@ -75,22 +39,19 @@ export default function OrderTable({
               />
             </th>
             <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
-              Order ID
+              Employee Name
             </th>
             <th className="py-4 px-4 text-left align-middle font-semibold hidden lg:table-cell">
-              Employee
+              Email
             </th>
             <th className="py-4 px-4 text-left align-middle font-semibold">
-              Contact
+              Phone
             </th>
             <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
-              Total Price
+              Job Title
             </th>
             <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
               Date
-            </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
-              Stage
             </th>
             <th className="py-4 px-4 text-center align-middle"></th>
           </tr>
@@ -99,142 +60,88 @@ export default function OrderTable({
         <tbody className="divide-y divide-gray-50">
           {isLoading ? (
             <tr>
-              <td colSpan={9} className="p-8 text-center text-gray-400">
-                Loading orders...
+              <td colSpan={7} className="p-8 text-center text-gray-400">
+                Loading employees...
               </td>
             </tr>
-          ) : !orders || orders.length === 0 ? (
+          ) : !employees || employees.length === 0 ? (
             <tr>
-              <td colSpan={9} className="p-8 text-center text-gray-400">
-                No orders found.
+              <td colSpan={7} className="p-8 text-center text-gray-400">
+                No employees found.
               </td>
             </tr>
           ) : (
-            orders.map((order, idx) => {
-              const employee = getEmployee(order.employee?._id);
-              const contact = getContact(order.contact?._id);
-              const currentStage = getCurrentStage(order.stage);
-              const totalPrice = calculateTotalPrice(order.products);
-
-              const stageName = currentStage?.stageType || currentStage?.name;
+            employees.map((employee, idx) => {
+              const role = getRole(employee.role?._id);
 
               return (
                 <tr
-                  key={order._id || idx}
+                  key={employee._id || idx}
                   className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
                 >
-                  {/* Checkbox */}
                   <td className="py-4 px-4 text-center">
                     <input
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      checked={selected.includes(order._id)}
-                      onChange={() => onSelectOne(order._id)}
+                      checked={selected.includes(employee._id)}
+                      onChange={() => onSelectOne(employee._id)}
                     />
                   </td>
 
-                  {/* Order ID */}
-                  <td className="py-4 px-4 text-left font-medium text-gray-700">
-                    {order._id}
-                  </td>
-
-                  {/* Employee */}
-                  <td className="py-4 px-4 text-left hidden lg:table-cell">
-                    {employee?.fullName ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
-                          <img
-                            src={
-                              employee?.avatar ||
-                              `https://i.pravatar.cc/150?u=${employee?._id}`
-                            }
-                            alt={employee?.fullName}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                              e.target.nextSibling.style.display = "flex";
-                            }}
-                          />
-                          <div className="w-full h-full hidden items-center justify-center bg-purple-100 text-purple-600 text-xs font-medium">
-                            {employee?.fullName?.charAt(0)}
-                          </div>
-                        </div>
-                        <span className="font-medium text-gray-700">
-                          {employee?.fullName}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="font-medium text-gray-700">-</span>
-                    )}
-                  </td>
-
-                  {/* Contact */}
                   <td className="py-4 px-4 text-left">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                         <img
                           src={
-                            contact?.avatar ||
-                            `https://i.pravatar.cc/150?u=${contact?._id}`
+                            employee.avatar ||
+                            `https://i.pravatar.cc/150?u=${employee._id}`
                           }
-                          alt={contact?.name || "-"}
+                          alt={employee.fullName || "-"}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.style.display = "none";
                             e.target.nextSibling.style.display = "flex";
                           }}
                         />
-                        <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
-                          {contact?.name?.charAt(0) || "C"}
+                        <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
+                          {employee.fullName?.charAt(0) || "E"}
                         </div>
                       </div>
-                      <span className="font-medium text-gray-700">
-                        {contact?.name || "-"}
+                      <span className="font-semibold text-[14px]text-(--color-text-title)">
+                        {employee.fullName || "-"}
                       </span>
                     </div>
                   </td>
 
-                  {/* Total Price */}
-                  <td className="py-4 px-4 text-center hidden lg:table-cell font-semibold text-gray-800">
-                    ${totalPrice.toLocaleString()}
+                  <td className="py-4 px-4 text-left hidden lg:table-cell font-semibold text-[14px] text-(--color-text-title)">
+                    {employee.email || "-"}
                   </td>
 
-                  {/* Date */}
-                  <td className="py-4 px-4 font-medium text-sm text-center hidden sm:table-cell text-gray-600">
-                    {formatDate(order.createdAt || order.stage?.[0]?.date)}
+                  <td className="py-4 px-4 text-left font-semibold text-[14px] text-(--color-text-title)">
+                    {employee.phone || "-"}
                   </td>
 
-                  {/* Stage */}
-                  <td className="py-4 px-4 text-center hidden sm:table-cell">
-                    {stageName ? (
-                      <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStageStyle(
-                          stageName
-                        )}`}
-                      >
-                        {stageName}
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500 border border-gray-200">
-                        No Stage
-                      </span>
-                    )}
+                  <td className="py-4 px-4 text-center font-semibold text-[14px] hidden lg:table-cell">
+                    {role?.name || employee.role?.name || "N/A"}
                   </td>
 
-                  {/* Actions */}
+                  <td className="py-4 px-4 ffont-semibold text-[14px] text-sm text-center hidden sm:table-cell">
+                    {formatDate(employee.createdAt)}
+                  </td>
+
                   <td className="py-4 px-4 text-center relative">
                     <button
                       className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors"
                       onClick={() =>
                         setOpenMenuId(
-                          openMenuId === order._id ? null : order._id
+                          openMenuId === employee._id ? null : employee._id
                         )
                       }
                     >
                       <img src={dotsIcon} alt="options" />
                     </button>
 
-                    {openMenuId === order._id && (
+                    {openMenuId === employee._id && (
                       <>
                         <div
                           className="fixed inset-0 z-10"
@@ -245,7 +152,7 @@ export default function OrderTable({
                           <button
                             className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
                             onClick={() => {
-                              onEdit(order);
+                              onEdit(employee);
                               setOpenMenuId(null);
                             }}
                           >
@@ -267,7 +174,7 @@ export default function OrderTable({
                           <button
                             className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
                             onClick={() => {
-                              onDelete(order._id);
+                              onDelete(employee._id);
                               setOpenMenuId(null);
                             }}
                           >

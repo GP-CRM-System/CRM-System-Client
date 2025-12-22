@@ -110,30 +110,35 @@ export default function CompanyTable({
                     </div>
                   </td>
 
-                  <td className="py-4 px-4 text-left">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
-                        <img
-                          src={
-                            contacts?.find((c) => c._id === company.contact)
-                              ?.avatar ||
-                            `https://i.pravatar.cc/150?u=${company.contact}`
-                          }
-                          alt={getContactName(company.contact)}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "flex";
-                          }}
-                        />
-                        <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
-                          {getContactName(company.contact)?.charAt(0) || "C"}
+                  <td className="py-4 px-4 text-center">
+                    {getContactName(company.contact) !== "-" ? (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                          <img
+                            src={
+                              contacts?.find((c) => c._id === company.contact)
+                                ?.avatar ||
+                              `https://i.pravatar.cc/150?u=${company.contact}`
+                            }
+                            alt={getContactName(company.contact)}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "flex";
+                            }}
+                          />
+                          <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
+                            {getContactName(company.contact)?.charAt(0) || "C"}
+                          </div>
                         </div>
+
+                        <span className="font-medium text-(--color-text-title)">
+                          {getContactName(company.contact)}
+                        </span>
                       </div>
-                      <span className="font-medium text-(--color-text-title)">
-                        {getContactName(company.contact)}
-                      </span>
-                    </div>
+                    ) : (
+                      <span className="font-medium text-gray-400">-</span>
+                    )}
                   </td>
 
                   <td className="py-4 px-4 text-left hidden md:table-cell font-medium text-(--color-text-title)">

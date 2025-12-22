@@ -20,7 +20,7 @@ export default function Order() {
     owner: "",
     stage: [
       {
-        stageType: "Open", // 🔥 غير name لـ stageType
+        stageType: "Open",
         date: new Date().toISOString().split("T")[0],
       },
     ],
@@ -172,8 +172,6 @@ export default function Order() {
   };
   // Handle Edit Click
   const handleEditClick = (order) => {
-    console.log("📝 Editing order:", order);
-
     setEditingOrder(order);
 
     const ownerId =

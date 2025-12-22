@@ -141,8 +141,6 @@ export default function Deals() {
 
   // Handle Edit Click
   const handleEditClick = (deal) => {
-    console.log("📝 Editing deal:", deal);
-
     setEditingDeal(deal);
 
     const currentStage =

@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import queryClient from "../../../store/queryClient";
-import { updateOrder } from "../../../api/ORDERS";
+import { updateOrder } from "../../../api/orders";
 
 export const useUpdateOrder = (onSuccessCallback, onErrorCallback) => {
   return useMutation({

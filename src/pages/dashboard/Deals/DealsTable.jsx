@@ -104,32 +104,34 @@ export default function DealsTable({
                     {deal.name}
                   </td>
 
-                  <td className="py-4 px-4 text-left hidden lg:table-cell">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
-                        <img
-                          src={
-                            company?.logo ||
-                            company?.avatar ||
-                            `https://i.pravatar.cc/150?u=${
-                              company?._id || deal._id
-                            }`
-                          }
-                          alt={company?.name || "-"}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "flex";
-                          }}
-                        />
-                        <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
-                          {company?.name?.charAt(0) || "C"}
+                  <td className="py-4 px-4 text-center hidden lg:table-cell">
+                    {company ? (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                          <img
+                            src={
+                              company.logo ||
+                              company.avatar ||
+                              `https://i.pravatar.cc/150?u=${company._id}`
+                            }
+                            alt={company.name || "-"}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "flex";
+                            }}
+                          />
+                          <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
+                            {company.name?.charAt(0) || "C"}
+                          </div>
                         </div>
+                        <span className="font-medium text-(--color-text-title)">
+                          {company.name}
+                        </span>
                       </div>
-                      <span className="font-medium text-(--color-text-title)">
-                        {company?.name || "-"}
-                      </span>
-                    </div>
+                    ) : (
+                      <span className="font-medium text-gray-400">-</span>
+                    )}
                   </td>
 
                   <td className="py-4 px-4 text-left">

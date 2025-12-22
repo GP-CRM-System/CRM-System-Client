@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { dotsIcon } from "../../../assets";
 
-export default function OrderTable({
-  orders,
+export default function TicketTable({
+  tickets,
   isLoading,
   selected,
   allSelected,
@@ -16,49 +16,38 @@ export default function OrderTable({
 }) {
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  // Helper function to get employee
-  const getEmployee = (employeeId) => {
-    if (!employeeId) return null;
-    return employees?.find((e) => e._id === employeeId);
+  const getOwner = (ownerId) => {
+    if (!ownerId) return null;
+    return employees?.find((e) => e._id === ownerId);
   };
 
-  // Helper function to get contact
   const getContact = (contactId) => {
     if (!contactId) return null;
     return contacts?.find((c) => c._id === contactId);
   };
 
-  // Helper function to calculate total price
-  const calculateTotalPrice = (products) => {
-    if (!products || products.length === 0) return 0;
-    return products.reduce((total, product) => {
-      return total + product.unitPrice * product.quantity;
-    }, 0);
+  const getCurrentStatus = (statuses) => {
+    if (!statuses || statuses.length === 0) return null;
+    return statuses[statuses.length - 1];
   };
 
-  // Helper function to get current stage
-  const getCurrentStage = (stages) => {
-    if (!stages || stages.length === 0) return null;
-    return stages[stages.length - 1];
+  const getPriorityColor = (priority) => {
+    const colors = {
+      Low: "bg-green-100 text-green-800",
+      Medium: "bg-yellow-100 text-yellow-800",
+      High: "bg-red-100 text-red-800",
+    };
+    return colors[priority] || "bg-gray-100 text-gray-800";
   };
 
-  const getStageStyle = (stageName) => {
-    const stageType = stageName || "";
-
-    switch (stageType) {
-      case "Open":
-        return "bg-[#e0ecfa]  text-[#2596be] ";
-      case "Processed":
-        return "bg-[#fff9e3] text-[#e07706] ";
-      case "Shipped":
-        return "bg-purple-50 text-purple-600 ";
-      case "Delivered":
-        return "bg-green-50 text-green-600 ";
-      case "Cancelled":
-        return "bg-red-50 text-red-600 ";
-      default:
-        return "bg-gray-50 text-gray-500 ";
-    }
+  const getStatusColor = (statusName) => {
+    const colors = {
+      New: "bg-blue-100 text-blue-800",
+      "Waiting on Contact": "bg-orange-100 text-orange-800",
+      "Waiting on Employee": "bg-purple-100 text-purple-800",
+      Closed: "bg-gray-100 text-gray-800",
+    };
+    return colors[statusName] || "bg-gray-100 text-gray-800";
   };
 
   return (
@@ -75,23 +64,24 @@ export default function OrderTable({
               />
             </th>
             <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
-              Order ID
-            </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold hidden lg:table-cell">
-              Employee
+              Ticket Name
             </th>
             <th className="py-4 px-4 text-left align-middle font-semibold">
               Contact
             </th>
             <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
-              Total Price
+              Owner
+            </th>
+            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+              Status
             </th>
             <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
-              Stage
+            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+              Priority
             </th>
+
             <th className="py-4 px-4 text-center align-middle"></th>
           </tr>
         </thead>
@@ -100,27 +90,24 @@ export default function OrderTable({
           {isLoading ? (
             <tr>
               <td colSpan={9} className="p-8 text-center text-gray-400">
-                Loading orders...
+                Loading tickets...
               </td>
             </tr>
-          ) : !orders || orders.length === 0 ? (
+          ) : !tickets || tickets.length === 0 ? (
             <tr>
               <td colSpan={9} className="p-8 text-center text-gray-400">
-                No orders found.
+                No tickets found.
               </td>
             </tr>
           ) : (
-            orders.map((order, idx) => {
-              const employee = getEmployee(order.employee?._id);
-              const contact = getContact(order.contact?._id);
-              const currentStage = getCurrentStage(order.stage);
-              const totalPrice = calculateTotalPrice(order.products);
-
-              const stageName = currentStage?.stageType || currentStage?.name;
+            tickets.map((ticket, idx) => {
+              const owner = getOwner(ticket.owner?._id);
+              const contact = getContact(ticket.contact?._id);
+              const currentStatus = getCurrentStatus(ticket.status);
 
               return (
                 <tr
-                  key={order._id || idx}
+                  key={ticket._id || idx}
                   className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
                 >
                   {/* Checkbox */}
@@ -128,44 +115,16 @@ export default function OrderTable({
                     <input
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      checked={selected.includes(order._id)}
-                      onChange={() => onSelectOne(order._id)}
+                      checked={selected.includes(ticket._id)}
+                      onChange={() => onSelectOne(ticket._id)}
                     />
                   </td>
 
-                  {/* Order ID */}
-                  <td className="py-4 px-4 text-left font-medium text-gray-700">
-                    {order._id}
-                  </td>
-
-                  {/* Employee */}
-                  <td className="py-4 px-4 text-left hidden lg:table-cell">
-                    {employee?.fullName ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
-                          <img
-                            src={
-                              employee?.avatar ||
-                              `https://i.pravatar.cc/150?u=${employee?._id}`
-                            }
-                            alt={employee?.fullName}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.target.style.display = "none";
-                              e.target.nextSibling.style.display = "flex";
-                            }}
-                          />
-                          <div className="w-full h-full hidden items-center justify-center bg-purple-100 text-purple-600 text-xs font-medium">
-                            {employee?.fullName?.charAt(0)}
-                          </div>
-                        </div>
-                        <span className="font-medium text-gray-700">
-                          {employee?.fullName}
-                        </span>
-                      </div>
-                    ) : (
-                      <span className="font-medium text-gray-700">-</span>
-                    )}
+                  {/* Ticket Name */}
+                  <td className="py-4 px-4 text-left">
+                    <div className="font-medium text-(--color-text-title)">
+                      {ticket.name}
+                    </div>
                   </td>
 
                   {/* Contact */}
@@ -188,53 +147,61 @@ export default function OrderTable({
                           {contact?.name?.charAt(0) || "C"}
                         </div>
                       </div>
-                      <span className="font-medium text-gray-700">
+                      <span className="font-medium text-(--color-text-title)">
                         {contact?.name || "-"}
                       </span>
                     </div>
                   </td>
 
-                  {/* Total Price */}
-                  <td className="py-4 px-4 text-center hidden lg:table-cell font-semibold text-gray-800">
-                    ${totalPrice.toLocaleString()}
+                  {/* Owner */}
+                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-(--color-text-title)">
+                    {owner?.fullName || "-"}
                   </td>
 
-                  {/* Date */}
-                  <td className="py-4 px-4 font-medium text-sm text-center hidden sm:table-cell text-gray-600">
-                    {formatDate(order.createdAt || order.stage?.[0]?.date)}
-                  </td>
-
-                  {/* Stage */}
+                  {/* Status */}
                   <td className="py-4 px-4 text-center hidden sm:table-cell">
-                    {stageName ? (
+                    {currentStatus ? (
                       <span
-                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${getStageStyle(
-                          stageName
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          currentStatus.statusType
                         )}`}
                       >
-                        {stageName}
+                        {currentStatus.statusType}
                       </span>
                     ) : (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500 border border-gray-200">
-                        No Stage
+                      <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500">
+                        No Status
                       </span>
                     )}
                   </td>
-
+                  {/* Date */}
+                  <td className="py-4 px-4 font-medium text-sm text-center hidden sm:table-cell">
+                    {formatDate(ticket.createdAt || ticket.status?.[0]?.date)}
+                  </td>
+                  {/* Priority */}
+                  <td className="py-4 px-4 text-center hidden lg:table-cell">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
+                        ticket.priority
+                      )}`}
+                    >
+                      {ticket.priority || "Medium"}
+                    </span>
+                  </td>
                   {/* Actions */}
                   <td className="py-4 px-4 text-center relative">
                     <button
                       className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors"
                       onClick={() =>
                         setOpenMenuId(
-                          openMenuId === order._id ? null : order._id
+                          openMenuId === ticket._id ? null : ticket._id
                         )
                       }
                     >
                       <img src={dotsIcon} alt="options" />
                     </button>
 
-                    {openMenuId === order._id && (
+                    {openMenuId === ticket._id && (
                       <>
                         <div
                           className="fixed inset-0 z-10"
@@ -245,7 +212,7 @@ export default function OrderTable({
                           <button
                             className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
                             onClick={() => {
-                              onEdit(order);
+                              onEdit(ticket);
                               setOpenMenuId(null);
                             }}
                           >
@@ -267,7 +234,7 @@ export default function OrderTable({
                           <button
                             className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
                             onClick={() => {
-                              onDelete(order._id);
+                              onDelete(ticket._id);
                               setOpenMenuId(null);
                             }}
                           >

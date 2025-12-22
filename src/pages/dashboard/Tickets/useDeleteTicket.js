@@ -1,15 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import queryClient from "../../../store/queryClient";
-import { deleteOrder } from "../../../api/orders";
+import { deleteTicket } from "../../../api/tickets";
 
-export const useDeleteOrder = (onSuccessCallback, onErrorCallback) => {
+export const useDeleteTicket = (onSuccessCallback, onErrorCallback) => {
   return useMutation({
-    mutationFn: async (orderId) => {
-      const res = await deleteOrder(orderId);
-      return { success: true, orderId };
+    mutationFn: async (ticketId) => {
+      const res = await deleteTicket(ticketId);
+      return { success: true, ticketId };
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries(["orders"]);
+      queryClient.invalidateQueries(["tickets"]);
       if (onSuccessCallback) onSuccessCallback(data);
     },
     onError: (error) => {

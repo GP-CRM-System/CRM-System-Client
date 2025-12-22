@@ -21,8 +21,11 @@ export const ENDPOINTS = {
     DELETE: (id) => `/contacts/${id}`,
   },
   EMPLOYEE: {
+    CREATE: "/employees",
     GetAll: "/employees",
     GetOne: (id) => `/employees/${id}`,
+    UPDATE: (id) => `/employees/${id}`,
+    DELETE: (id) => `/employees/${id}`,
   },
   DEAL: {
     CREATE: "/deals",
@@ -37,5 +40,19 @@ export const ENDPOINTS = {
     GetOne: (id) => `/orders/${id}`,
     UPDATE: (id) => `/orders/${id}`,
     DELETE: (id) => `/orders/${id}`,
+  },
+  ROLE: {
+    CREATE: "/roles",
+    GetAll: "/roles",
+    GetOne: (id) => `/roles/${id}`,
+    UPDATE: (id) => `/roles/${id}`,
+    DELETE: (id) => `/roles/${id}`,
+  },
+  TICKET: {
+    CREATE: "/tickets",
+    GetAll: "/tickets",
+    GetOne: (id) => `/tickets/${id}`,
+    UPDATE: (id) => `/tickets/${id}`,
+    DELETE: (id) => `/tickets/${id}`,
   },
 };
