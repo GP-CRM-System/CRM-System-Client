@@ -6,3 +6,6 @@ export { default as verificationCode } from "./enter-otp.svg";
 export { default as forgotPassword } from "./forgot-password.svg";
 export { default as inviteImage } from "./invite.svg";
 export { default as resetPasswordImage } from "./reset-password.svg";
+export { default as crmHome } from "./crm-home.svg";
+export { default as customerFrame } from "./customer-frame.svg";
+export { default as person1 } from "./person1.svg";

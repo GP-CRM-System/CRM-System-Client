@@ -25,3 +25,8 @@ export const logout = async () => {
         throw error;
     }
 };
+
+export const resetPassword = async (id, data) => {
+    const response = await API.post(ENDPOINTS.AUTH.RESET_PASSWORD(id), data);
+    return response.data;
+};

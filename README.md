@@ -1,16 +1,62 @@
-# React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# CRM System Client
 
-Currently, two official plugins are available:
+This is a modern, responsive CRM (Customer Relationship Management) web application client built with React and Vite. It provides a robust interface for managing contacts, companies, deals, tickets, orders, employees, analytics, and more.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Authentication & Authorization**: Secure login, registration, and permission-based UI using a flexible PermissionGuard system.
+- **Contacts Management**: Create, view, filter, and paginate contacts with modal forms and responsive tables.
+- **Companies, Deals, Tickets, Orders, Employees**: Modular pages for managing all CRM entities.
+- **Sidebar Navigation**: Responsive, collapsible sidebar with permission-aware navigation and custom scrollbar.
+- **Pagination**: Efficient server-side pagination for large datasets.
+- **Responsive Design**: Fully mobile-friendly and desktop-optimized UI using Tailwind CSS.
+- **API Integration**: Uses React Query for efficient data fetching and caching.
+- **Modern Stack**: Built with React, Vite, Tailwind CSS, React Query, and more.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+- React 18+
+- Vite
+- Tailwind CSS
+- React Query (@tanstack/react-query)
+- Axios
+- ESLint
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+1. **Install dependencies:**
+	```bash
+	npm install
+	```
+
+2. **Start the development server:**
+	```bash
+	npm run dev
+	```
+
+3. **Open your browser:**
+	Visit [http://localhost:5173](http://localhost:5173)
+
+## Project Structure
+
+- `src/pages/` — Main page components (dashboard, contacts, companies, etc.)
+- `src/components/` — Shared UI components (Sidebar, PageLayout, PermissionGuard, etc.)
+- `src/api/` — API client and endpoint definitions
+- `src/store/` — State management (auth, query client)
+- `src/assets/` — Icons and images
+- `src/utils/` — Utility functions
+
+## Customization
+
+- **Permissions**: Update `PermissionGuard` and user permissions in the store to control access to features.
+- **API Endpoints**: Configure endpoints in `src/api/endpoints.js` to match your backend.
+- **Styling**: Tailwind CSS is used for rapid, responsive design.
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+
+This project is licensed under the MIT License.

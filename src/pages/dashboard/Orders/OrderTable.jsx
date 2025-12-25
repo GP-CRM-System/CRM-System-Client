@@ -1,0 +1,328 @@
+import React, { useState, useEffect } from "react";
+import { MoreVertical } from "lucide-react";
+import Loader from "../../../components/ui/Loader";
+
+export default function OrderTable({
+  orders,
+  isLoading,
+  selected,
+  allSelected,
+  onSelectAll,
+  onSelectOne,
+  onEdit,
+  formatDate,
+  contacts,
+  employees,
+  onDelete,
+  onView,
+}) {
+  const [openMenuId, setOpenMenuId] = useState(null);
+
+  // Close menu on click outside
+  useEffect(() => {
+    const handleClickOutside = () => setOpenMenuId(null);
+    if (openMenuId) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openMenuId]);
+
+
+
+  const getEmployee = (employeeId) => {
+    if (!employeeId) return null;
+    const id = typeof employeeId === 'object' ? employeeId._id : employeeId;
+    return employees?.find((e) => e._id === id);
+  };
+
+  // Helper function to get contact
+  const getContact = (contactId) => {
+    if (!contactId) return null;
+    return contacts?.find((c) => c._id === contactId);
+  };
+
+  // Helper function to calculate total price
+  const calculateTotalPrice = (order) => {
+    const products = order?.products || [];
+    const taxes = order?.taxes || 0;
+    const productsTotal = products.reduce((total, product) => {
+      return total + (product.unitPrice || 0) * (product.quantity || 0);
+    }, 0);
+    return productsTotal + taxes;
+  };
+
+  // Helper function to extract #XXXX from description
+  const getDisplayOrderId = (description, fallbackId) => {
+    if (!description) return fallbackId;
+    const match = description.match(/#\d+/);
+    return match ? match[0] : fallbackId;
+  };
+
+  // Helper function to get current stage
+  const getCurrentStage = (stages) => {
+    if (!stages || stages.length === 0) return null;
+    return stages[stages.length - 1];
+  };
+
+  const getStageStyle = (stageName) => {
+    const stageType = stageName || "";
+
+    switch (stageType) {
+      case "Open":
+        return "bg-[#e0ecfa]  text-[#2596be] ";
+      case "Processed":
+        return "bg-[#fff9e3] text-[#e07706] ";
+      case "Shipped":
+        return "bg-purple-50 text-purple-600 ";
+      case "Delivered":
+        return "bg-green-50 text-green-600 ";
+      case "Cancelled":
+        return "bg-red-50 text-red-600 ";
+      default:
+        return "bg-gray-50 text-gray-500 ";
+    }
+  };
+
+
+  return (
+    <div className="overflow-x-auto min-h-[400px]">
+      {/* Bulk Action Bar - As requested */}
+      {selected.length > 0 && (
+        <div className="px-6 py-4">
+          <div
+            className="flex items-center justify-between px-6"
+            style={{
+              height: '64px',
+              background: 'rgba(108, 165, 231, 0.15)',
+              borderRadius: '8px'
+            }}
+          >
+            <div className="flex items-center">
+              <span className="text-gray-900 font-medium text-lg">
+                {selected.length} {selected.length === 1 ? 'item' : 'items'} selected
+              </span>
+            </div>
+
+            <div className="flex items-center">
+              <button
+                onClick={() => onDelete && onDelete(selected)}
+                className="bg-white text-red-500 px-10 py-2.5 rounded-xl text-sm font-bold border border-red-50 hover:bg-red-50 transition-colors shadow-sm"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
+            <th className="py-4 px-4 text-center align-middle font-semibold">
+              <input
+                type="checkbox"
+                className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
+                checked={allSelected}
+                onChange={onSelectAll}
+              />
+            </th>
+            <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
+              Order ID
+            </th>
+            <th className="py-4 px-4 text-left align-middle font-semibold hidden lg:table-cell">
+              Employee
+            </th>
+            <th className="py-4 px-4 text-left align-middle font-semibold">
+              Contact
+            </th>
+            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+              Total Price
+            </th>
+            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+              Date
+            </th>
+            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+              Stage
+            </th>
+            <th className="py-4 px-4 text-center align-middle"></th>
+          </tr>
+        </thead>
+
+        <tbody className="divide-y divide-gray-50">
+          {isLoading ? (
+            <tr>
+              <td colSpan={9} className="p-8">
+                <Loader fullScreen={false} text="Loading orders..." />
+              </td>
+            </tr>
+          ) : !orders || orders.length === 0 ? (
+            <tr>
+              <td colSpan={9} className="p-8 text-center text-gray-400">
+                No orders found.
+              </td>
+            </tr>
+          ) : (
+            orders.map((order, itemIndex) => {
+              const employee = getEmployee(order.employee);
+              // Prioritize nested object names from API response
+              const contactName = order.contact?.name || order.contact?.fullName || getContact(order.contact?._id || order.contact)?.fullName || "-";
+              const contactAvatar = order.contact?.avatar || getContact(order.contact?._id || order.contact)?.avatar;
+
+              const currentStage = getCurrentStage(order.stage);
+              const totalPrice = calculateTotalPrice(order);
+
+              const stageName = currentStage?.stageType || currentStage?.name;
+              const displayId = getDisplayOrderId(order.description, order._id);
+
+              return (
+                <tr
+                  key={order._id || itemIndex}
+                  className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)] font-medium cursor-pointer"
+                  onClick={() => onView && onView(order)}
+                >
+                  {/* Checkbox */}
+                  <td className="py-4 px-4 text-center">
+                    <input
+                      type="checkbox"
+                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      checked={selected.includes(order._id)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        onSelectOne(order._id);
+                      }}
+                    />
+                  </td>
+
+                  {/* Order ID */}
+                  <td className="py-4 px-4 text-left font-medium text-[var(--color-text-title)]">
+                    {displayId}
+                  </td>
+
+                  {/* Employee */}
+                  <td className="py-4 px-4 text-left hidden lg:table-cell">
+                    {employee ? (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                          <img
+                            src={
+                              employee.avatar ||
+                              `https://i.pravatar.cc/150?u=${employee._id}`
+                            }
+                            alt={employee.fullName || employee.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "flex";
+                            }}
+                          />
+                          <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
+                            {employee.fullName?.charAt(0) || "E"}
+                          </div>
+                        </div>
+                        <span className="font-medium text-[var(--color-text-title)]">
+                          {employee.fullName || employee.name}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="font-medium text-gray-400">-</span>
+                    )}
+                  </td>
+
+                  {/* Contact */}
+                  <td className="py-4 px-4 text-left">
+                    {contactName !== "-" ? (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                          <img
+                            src={
+                              contactAvatar ||
+                              `https://i.pravatar.cc/150?u=${order.contact?._id || order.contact}`
+                            }
+                            alt={contactName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "flex";
+                            }}
+                          />
+                          <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
+                            {contactName.charAt(0)}
+                          </div>
+                        </div>
+                        <span className="font-medium text-[var(--color-text-title)]">
+                          {contactName}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="font-medium text-gray-400">-</span>
+                    )}
+                  </td>
+
+                  {/* Total Price */}
+                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-[var(--color-text-title)]">
+                    ${totalPrice.toLocaleString()}
+                  </td>
+
+                  {/* Date */}
+                  <td className="py-4 px-4 text-center hidden sm:table-cell font-medium text-[var(--color-text-title)]">
+                    {formatDate(order.createdAt)}
+                  </td>
+
+                  {/* Stage */}
+                  <td className="py-4 px-4 text-center hidden sm:table-cell">
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium capitalize ${getStageStyle(
+                        stageName
+                      )}`}
+                    >
+                      {stageName || "New"}
+                    </span>
+                  </td>
+
+                  {/* Options */}
+                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)]">
+                    <button
+                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMenuId(openMenuId === order._id ? null : order._id);
+                      }}
+                    >
+                      <MoreVertical className="w-5 h-5" />
+                    </button>
+
+                    {openMenuId === order._id && (
+                      <div className={`absolute right-full mr-3 ${itemIndex >= orders.length - 2 ? 'bottom-0' : 'top-1/2 -translate-y-1/2'} bg-white shadow-xl rounded-xl border border-gray-100 py-2 w-36 z-50`}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(order);
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700 font-medium"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete([order._id]);
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-600 font-medium"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+}

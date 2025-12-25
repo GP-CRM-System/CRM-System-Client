@@ -1,27 +1,75 @@
 export const ENDPOINTS = {
-    AUTH: {
-        LOGIN: "/auth/login",
-        REGISTER: "/auth/register",
-        REFRESH: "/auth/refresh",
-        ME: "/auth/me",
-        LOGOUT: "/auth/logout",
-    },
-    COMPANY: {
-        CREATE: "/companies",
-        GetAll: "/companies",
-        GetOne: (id) => `/companies/${id}`,
-        UPDATE: (id) => `/companies/${id}`,
-        DELETE: (id) => `/companies/${id}`
-    },
-    CONTACT: {
-        CREATE: "/contacts",
-        GetAll: "/contacts",
-        GetOne: (id) => `/contacts/${id}`,
-        UPDATE: (id) => `/contacts/${id}`,
-        DELETE: (id) => `/contacts/${id}`
-    },
-    EMPLOYEE:{
-        GetAll: "/employees",
-        GetOne: (id) => `/employees/${id}`
-    }
+  AUTH: {
+    LOGIN: "/auth/login",
+    REGISTER: "/auth/register",
+    REFRESH: "/auth/refresh",
+    ME: "/auth/me",
+    LOGOUT: "/auth/logout",
+    RESET_PASSWORD: (id) => `/auth/reset-password/${id}`,
+  },
+  COMPANY: {
+    CREATE: "/companies",
+    GetAll: "/companies",
+    GetOne: (id) => `/companies/${id}`,
+    UPDATE: (id) => `/companies/${id}`,
+    DELETE: (id) => `/companies/${id}`,
+  },
+  CONTACT: {
+    CREATE: "/contacts",
+    GetAll: "/contacts",
+    GetOne: (id) => `/contacts/${id}`,
+    UPDATE: (id) => `/contacts/${id}`,
+    DELETE: (id) => `/contacts/${id}`,
+  },
+  EMPLOYEE: {
+    CREATE: "/employees",
+    GetAll: "/employees",
+    GetOne: (id) => `/employees/${id}`,
+    UPDATE: (id) => `/employees/${id}`,
+    DELETE: (id) => `/employees/${id}`,
+  },
+  DEAL: {
+    CREATE: "/deals",
+    GetAll: "/deals",
+    GetOne: (id) => `/deals/${id}`,
+    UPDATE: (id) => `/deals/${id}`,
+    DELETE: (id) => `/deals/${id}`,
+  },
+  ORDER: {
+    CREATE: "/orders",
+    GetAll: "/orders",
+    GetOne: (id) => `/orders/${id}`,
+    UPDATE: (id) => `/orders/${id}`,
+    DELETE: (id) => `/orders/${id}`,
+  },
+  ROLE: {
+    CREATE: "/roles",
+    GetAll: "/roles",
+    GetOne: (id) => `/roles/${id}`,
+    UPDATE: (id) => `/roles/${id}`,
+    DELETE: (id) => `/roles/${id}`,
+  },
+  TICKET: {
+    CREATE: "/tickets",
+    GetAll: "/tickets",
+    GetOne: (id) => `/tickets/${id}`,
+    UPDATE: (id) => `/tickets/${id}`,
+    DELETE: (id) => `/tickets/${id}`,
+  },
+  PROFILE: {
+    GET: (id) => `/profile/${id}`,
+    UPDATE: (id) => `/profile/${id}`,
+    CHANGE_PASSWORD: (id) => `/profile/${id}/password`,
+  },
+  ANALYTICS: {
+    CARDS: "/analytics/cards",
+    REVENUE: "/analytics/revenue",
+    TICKETS: "/analytics/tickets",
+    PRODUCTS: "/analytics/products",
+    LEADS: "/analytics/leads",
+    DASHBOARD: "/dashboard",
+  },
+  MISC: {
+    HEALTH: "/health",
+  },
 };
