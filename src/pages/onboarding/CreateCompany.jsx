@@ -2,11 +2,11 @@ import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
-import { 
+import {
   businessIcon,
-  companies as companyIcon, 
+  companies as companyIcon,
   employee as employeesIcon
-  } from "../../assets";
+} from "../../assets";
 import { createCompany } from "../../api/company";
 import { type as companyTypes } from "../../constant/company";
 import { useNavigate } from "react-router-dom";
@@ -17,15 +17,15 @@ const CreateCompany = () => {
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   console.log('user22', user);
-  
+
   const createCompanyMutation = useMutation({
     mutationFn: createCompany,
     onSuccess: () => {
-        toast.success('Company created! Invite your team.');
+      toast.success('Company created! Invite your team.');
       navigate("/onboarding/invite");
     },
     onError: (error) => {
-        toast.error(error?.response?.data?.message || error?.message || 'Failed to create company');
+      toast.error(error?.response?.data?.message || error?.message || 'Failed to create company');
     },
   });
 
@@ -59,7 +59,7 @@ const CreateCompany = () => {
         numberOfEmployees: Number(values.numberOfEmployees),
         type: values.businessType,
         email: values.email,
-        owner: user?._id,
+        owner: user?._id
       });
       resetForm();
     } catch (error) {
@@ -75,10 +75,10 @@ const CreateCompany = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
         <div className="w-full max-w-md">
           <div className="text-left mb-8">
-            <h1 className="text-[28px] font-semibold text-(--color-text-title)">
+            <h1 className="text-[28px] font-semibold" style={{ color: 'var(--color-text-title)' }}>
               Create Company
             </h1>
-            <p className="text-[20px] font-[400] text-(--color-text-body) mt-5">
+            <p className="text-[20px] font-[400] mt-5" style={{ color: 'var(--color-text-body)' }}>
               Enter your Details to create Company
             </p>
           </div>
@@ -108,7 +108,8 @@ const CreateCompany = () => {
                   <ErrorMessage
                     name="companyName"
                     component="div"
-                    className="text-(--color-error) text-xs mt-2 ml-1"
+                    className="text-xs mt-2 ml-1"
+                    style={{ color: 'var(--color-error)' }}
                   />
                 </div>
 
@@ -130,7 +131,8 @@ const CreateCompany = () => {
                   <ErrorMessage
                     name="numberOfEmployees"
                     component="div"
-                    className="text-(--color-error) text-xs mt-2 ml-1"
+                    className="text-xs mt-2 ml-1"
+                    style={{ color: 'var(--color-error)' }}
                   />
                 </div>
 
@@ -156,7 +158,8 @@ const CreateCompany = () => {
                   <ErrorMessage
                     name="businessType"
                     component="div"
-                    className="text-(--color-error) text-xs mt-2 ml-1"
+                    className="text-xs mt-2 ml-1"
+                    style={{ color: 'var(--color-error)' }}
                   />
                 </div>
 
@@ -178,19 +181,21 @@ const CreateCompany = () => {
                   <ErrorMessage
                     name="email"
                     component="div"
-                    className="text-(--color-error) text-xs mt-2 ml-1"
+                    className="text-xs mt-2 ml-1"
+                    style={{ color: 'var(--color-error)' }}
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-[#4A90E2] text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 mt-4"
+                  className="w-full text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 mt-4"
+                  style={{ backgroundColor: 'var(--color-primary-500)' }}
                   disabled={isSubmitting || createCompanyMutation.isPending}
                 >
                   {createCompanyMutation.isPending ? "Submitting..." : "Complete Registration"}
                 </button>
                 {createCompanyMutation.isError && (
-                  <div className="text-(--color-error) text-xs mt-2 ml-1">
+                  <div className="text-xs mt-2 ml-1" style={{ color: 'var(--color-error)' }}>
                     {createCompanyMutation.error?.response?.data?.message || createCompanyMutation.error?.message || "Failed to create company"}
                   </div>
                 )}
@@ -201,9 +206,9 @@ const CreateCompany = () => {
       </div>
 
       {/* Right Side */}
-      <div className="hidden lg:flex w-1/2 bg-(--color-primary-500) items-center justify-center p-12">
+      <div className="hidden lg:flex w-1/2 items-center justify-center p-12" style={{ backgroundColor: 'var(--color-primary-500)' }}>
         <img
-          src={createCompany}
+          src={companyIcon}
           alt="Create Company Illustration"
           className="w-full max-w-lg h-[366px]"
         />

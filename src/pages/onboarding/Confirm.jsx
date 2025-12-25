@@ -11,7 +11,10 @@ const ConfirmRegister = () => {
       <div className="flex flex-col items-center w-[320px] sm:w-[400px]">
         <img src={confirm} alt="Success" className="w-full h-auto mb-10" />
 
-        <h1 className="text-[24px] font-semibold text-(--color-text-title) text-center mb-8 w-full">
+        <h1
+          className="text-[24px] font-semibold text-center mb-8 w-full"
+          style={{ color: "var(--color-text-title)" }}
+        >
           You are successfully registered!
         </h1>
 

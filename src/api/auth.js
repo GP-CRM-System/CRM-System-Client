@@ -18,7 +18,7 @@ export const REFRESH = async (id) => {
 
 export const logout = async () => {
     try {
-        const response = await API.post(ENDPOINTS.AUTH.LOGOUT);
+        const response = await API.get(ENDPOINTS.AUTH.LOGOUT);
         return response.data;
     } catch (error) {
         console.error('Logout API call failed:', error);
@@ -26,7 +26,17 @@ export const logout = async () => {
     }
 };
 
-export const resetPassword = async (id, data) => {
-    const response = await API.post(ENDPOINTS.AUTH.RESET_PASSWORD(id), data);
+export const forgotPassword = async (email) => {
+    const response = await API.post(ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
+    return response.data;
+};
+
+export const verifyResetToken = async (token) => {
+    const response = await API.get(ENDPOINTS.AUTH.VERIFY_RESET_TOKEN(token));
+    return response.data;
+};
+
+export const resetPassword = async (data) => {
+    const response = await API.post(ENDPOINTS.AUTH.RESET_PASSWORD, data);
     return response.data;
 };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
 import { register, email, password, person, phone, google, facebook, twitter } from '../../assets';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -28,28 +28,28 @@ export default function SignUp() {
         mutationFn: REGISTER,
         onSuccess: (data) => {
             console.log('Registration success data:', data);
-            
-            setCredentials( data );
-            
+
+            setCredentials(data);
+
             toast.success('Registration successful! Please create your company.');
             navigate('/onboarding/create-company');
         },
         onError: (error) => {
-                const errors = formatApiErrors(error);
-                const fieldErrors = {};
-                errors.forEach(e => {
-                    if (e.field) fieldErrors[e.field] = e.message;
-                    toast.error(e.message);
-                });
-                registerMutation.setError({ 
-                    response: { 
-                    data: { 
-                        message: 'Registration failed', 
-                        errors: fieldErrors 
-                    } 
-                    } 
-                });
-                toast.error(error?.response?.data?.message || error?.message || 'Registration failed');
+            const errors = formatApiErrors(error);
+            const fieldErrors = {};
+            errors.forEach(e => {
+                if (e.field) fieldErrors[e.field] = e.message;
+                toast.error(e.message);
+            });
+            registerMutation.setError({
+                response: {
+                    data: {
+                        message: 'Registration failed',
+                        errors: fieldErrors
+                    }
+                }
+            });
+            toast.error(error?.response?.data?.message || error?.message || 'Registration failed');
         },
     });
 
@@ -103,9 +103,9 @@ export default function SignUp() {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
                 <div className="w-full max-w-md">
                     <div className="text-left mb-8">
-                        <h1 className="text-[28px] font-semibold text-(--color-text-title) ">Welcome to our CRM</h1>
-                        <h1 className="text-[28px] font-semibold text-(--color-text-title)">Sign Up to getting started</h1>
-                        <p className="text-xl font-[400] text-(--color-text-body) mt-5">Enter your Details to sign up</p>
+                        <h1 className="text-[28px] font-semibold" style={{ color: 'var(--color-text-title)' }}>Welcome to our CRM</h1>
+                        <h1 className="text-[28px] font-semibold" style={{ color: 'var(--color-text-title)' }}>Sign Up to getting started</h1>
+                        <p className="text-xl font-[400] mt-5" style={{ color: 'var(--color-text-body)' }}>Enter your Details to sign up</p>
                     </div>
                     <Formik
                         initialValues={initialValues}
@@ -122,7 +122,7 @@ export default function SignUp() {
                                         placeholder="Full Name"
                                         className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
-                                    <ErrorMessage name="fullName" component="div" className="text-(--color-error) text-xs mt-1" />
+                                    <ErrorMessage name="fullName" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
                                 <div className="relative">
                                     <img src={phone} alt="Phone icon" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -132,7 +132,7 @@ export default function SignUp() {
                                         placeholder="Phone Number"
                                         className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
-                                    <ErrorMessage name="phone" component="div" className="text-(--color-error) text-xs mt-1" />
+                                    <ErrorMessage name="phone" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
                                 <div className="relative">
                                     <img src={email} alt="Email icon" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -142,46 +142,44 @@ export default function SignUp() {
                                         placeholder="E-mail"
                                         className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
-                                    <ErrorMessage name="email" component="div" className="text-(--color-error) text-xs mt-1" />
+                                    <ErrorMessage name="email" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
                                 <div className="relative">
-                                    <img src={password} alt="Password icon" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <Field
                                         type={passwordVisible ? "text" : "password"}
                                         name="password"
                                         placeholder="Password"
-                                        className="w-full py-3 pl-10 pr-10 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                                        className="w-full py-3 pl-4 pr-10 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
                                     <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                         {passwordVisible ? <FaEyeSlash /> : <FaEye />}
                                     </button>
-                                    <ErrorMessage name="password" component="div" className="text-(--color-error) text-xs mt-1" />
+                                    <ErrorMessage name="password" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
                                 <div className="relative">
-                                    <img src={password} alt="Password icon" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <Field
                                         type={confirmPasswordVisible ? "text" : "password"}
                                         name="confirmPassword"
                                         placeholder="Confirm Password"
-                                        className="w-full py-3 pl-10 pr-10 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
+                                        className="w-full py-3 pl-4 pr-10 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
                                     <button type="button" onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                         {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
                                     </button>
-                                    <ErrorMessage name="confirmPassword" component="div" className="text-(--color-error) text-xs mt-1" />
+                                    <ErrorMessage name="confirmPassword" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
                                 {/* Terms & Conditions Checkbox */}
                                 <div className="flex items-center">
                                     <Field type="checkbox" name="terms" id="terms" className="h-4 w-4 border-gray-300 rounded bg-white focus:ring-blue-500" style={{ accentColor: 'var(--color-primary-500)' }} />
                                     <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">I agree with terms & Conditions</label>
                                 </div>
-                                <ErrorMessage name="terms" component="div" className="text-(--color-error) text-xs mt-1" />
+                                <ErrorMessage name="terms" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 {/* Sign Up Button */}
-                                <button type="submit" className="w-full bg-(--color-primary-500) text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300" disabled={isSubmitting || registerMutation.isPending}>
+                                <button type="submit" className="w-full text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300" style={{ backgroundColor: 'var(--color-primary-500)' }} disabled={isSubmitting || registerMutation.isPending}>
                                     {registerMutation.isPending ? 'Signing up...' : 'Sign up'}
                                 </button>
                                 {registerMutation.isError && (
-                                    <div className="text-(--color-error) text-xs mt-2">
+                                    <div className="text-xs mt-2" style={{ color: 'var(--color-error)' }}>
                                         {registerMutation.error?.response?.data?.message || registerMutation.error?.message || 'Registration failed'}
                                     </div>
                                 )}
@@ -209,11 +207,11 @@ export default function SignUp() {
                     </div>
                     {/* Sign In Link */}
                     <p className="text-center text-sm text-gray-600">
-                        Already Have An Account? <a href="/login" className="font-semibold text-blue-600 hover:underline">Sign in</a>
+                        Already Have An Account? <a href="/login" className="font-semibold hover:underline" style={{ color: 'var(--color-primary-500)' }}>Sign in</a>
                     </p>
                 </div>
             </div>
-            <div className="hidden lg:flex w-1/2 bg-(--color-primary-500) items-center justify-center p-12">
+            <div className="hidden lg:flex w-1/2 items-center justify-center p-12" style={{ backgroundColor: 'var(--color-primary-500)' }}>
                 <img src={register} alt="CRM Illustration" className="w-full max-w-lg h-[366px]" />
             </div>
         </div>
