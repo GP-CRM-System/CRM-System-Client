@@ -11,7 +11,7 @@ import {
     logout,
     analytics
 } from "../assets";
-import PermissionGuard  from './guard/PermissionGuard';
+import PermissionGuard from './guard/PermissionGuard';
 
 const navItems = [
     { to: "/dashboard", label: "Home", icon: home, end: true },
@@ -21,7 +21,7 @@ const navItems = [
     { to: "/dashboard/tickets", label: "Tickets", icon: tickets, permission: "Ticket.read" },
     { to: "/dashboard/order", label: "Order", icon: order, permission: "Order.read" },
     { to: "/dashboard/employee", label: "Employee", icon: employee, permission: "Employee.read" },
-    {to: "/dashboard/analytics", label: "Analytics", icon: analytics }
+    { to: "/dashboard/analytics", label: "Analytics", icon: analytics },
 ];
 
 const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
@@ -29,151 +29,146 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
         <>
             {/* Overlay for mobile */}
             {isOpen && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/50 z-20 lg:hidden"
                     onClick={() => setIsOpen(false)}
                 />
             )}
-            
+
             {/* Sidebar */}
             <aside className={`
                 fixed lg:static inset-y-0 left-0 z-30
-                flex h-screen flex-col bg-white border-r border-gray-200
+                flex h-screen flex-col bg-white relative
                 transition-all duration-300 ease-in-out
-                ${isOpen ? 'translate-x-0 w-64' : '-translate-x-full lg:translate-x-0'}
+                ${isOpen ? 'w-[240px]' : 'w-20'}
+                ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 custom-scrollbar
             `}>
-                <nav className="flex-1 p-4 overflow-y-auto custom-scrollbar">
-                    {/* Toggle button - desktop only */}
-                    <div className="hidden lg:flex items-center justify-end mb-2">
-                        <button
-                            onClick={() => setIsOpen(!isOpen)}
-                            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors"
-                            type="button"
-                        >
-                            <svg 
-                                className="w-4 h-4 transition-transform duration-300" 
-                                style={{ transform: isOpen ? 'rotate(0deg)' : 'rotate(180deg)' }}
-                                fill="none" 
-                                stroke="currentColor" 
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                            </svg>
-                        </button>
-                    </div>
+                {/* Arrow Toggle Button - Sidebar Edge */}
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={`
+                        absolute -right-3 top-20 z-40
+                        w-6 h-6 bg-white border border-gray-100 rounded-full shadow-md
+                        flex items-center justify-center
+                        text-gray-400 hover:text-blue-500 hover:border-blue-100
+                        transition-all duration-300 hidden lg:flex
+                    `}
+                    style={{ transform: isOpen ? 'rotate(0deg)' : 'rotate(180deg)' }}
+                >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
 
-                    <ul className="space-y-2">
-                        {navItems.map((item) => {
-                            const linkContent = (
+                <div className="flex-1 flex flex-col min-h-0">
+                    <nav className="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar flex flex-col">
+                        <ul className="space-y-2">
+                            {navItems.map((item) => {
+                                const linkContent = (
+                                    <NavLink
+                                        to={item.to}
+                                        end={item.end}
+                                        onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
+                                        className={({ isActive }) =>
+                                            `flex items-center transition-all group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
+                                            } ${isActive
+                                                ? 'bg-[#4A90E2] text-white rounded-lg shadow-sm'
+                                                : 'text-gray-500 hover:bg-gray-50 rounded-lg'
+                                            }`
+                                        }
+                                    >
+                                        {({ isActive }) => (
+                                            <div className="flex items-center gap-3">
+                                                <img
+                                                    src={item.icon}
+                                                    alt={`${item.label} icon`}
+                                                    className={`h-6 w-6 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
+                                                        }`}
+                                                />
+                                                {isOpen && (
+                                                    <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
+                                                        {item.label}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </NavLink>
+                                );
+
+                                if (item.permission) {
+                                    return (
+                                        <PermissionGuard permission={item.permission} any={item.any} key={item.to}>
+                                            <li>{linkContent}</li>
+                                        </PermissionGuard>
+                                    );
+                                }
+
+                                return <li key={item.to}>{linkContent}</li>;
+                            })}
+                        </ul>
+
+                        {/* Spacer to push Settings & Logout to the bottom while staying in the same container */}
+                        <div className="flex-1 min-h-[10px]" />
+
+                        <ul className="space-y-2 pt-4">
+                            <li>
                                 <NavLink
-                                    to={item.to}
-                                    end={item.end}
+                                    to='/dashboard/settings'
                                     onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
                                     className={({ isActive }) =>
-                                        `flex items-center rounded-lg px-4 py-3 font-medium transition-colors group ${
-                                            isActive
-                                                ? 'bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] text-white'
-                                                : 'text-gray-600 hover:bg-gray-100'
+                                        `flex items-center transition-all group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
+                                        } ${isActive
+                                            ? 'bg-[#4A90E2] text-white rounded-lg'
+                                            : 'text-gray-500 hover:bg-gray-50 rounded-lg'
                                         }`
                                     }
                                 >
                                     {({ isActive }) => (
-                                        <>
+                                        <div className="flex items-center gap-3">
+                                            {/* Using a placeholder or finding a gear icon would be better, for now keeping code clean */}
                                             <img
-                                                src={item.icon}
-                                                alt={`${item.label} icon`}
-                                                className={`h-6 w-6 transition-all flex-shrink-0 ${
-                                                    isActive ? 'filter-white' : ''
-                                                }`}
-                                                style={isActive ? { filter: 'brightness(0) invert(1)' } : {}}
+                                                src={contact}
+                                                alt="Settings icon"
+                                                className={`h-6 w-6 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
+                                                    }`}
                                             />
-                                            <span className={`ml-4 transition-opacity duration-300 whitespace-nowrap ${
-                                                isOpen ? 'opacity-100' : 'opacity-0 lg:hidden'
-                                            }`}>
-                                                {item.label}
-                                            </span>
-                                        </>
+                                            {isOpen && (
+                                                <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
+                                                    Settings
+                                                </span>
+                                            )}
+                                        </div>
                                     )}
                                 </NavLink>
-                            );
-
-                            if (item.permission) {
-                                return (
-                                    <PermissionGuard permission={item.permission} any={item.any} key={item.to}>
-                                        <li>{linkContent}</li>
-                                    </PermissionGuard>
-                                );
-                            }
-
-                            return <li key={item.to}>{linkContent}</li>;
-                        })}
-
-                        {/* Spacer */}
-                        <li className="pt-30"></li>
-
-                        {/* Settings */}
-                        <li>
-                            <NavLink
-                                to='/dashboard/settings'
-                                onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
-                                className={({ isActive }) =>
-                                    `flex items-center rounded-lg px-4 py-3 font-medium transition-colors group ${
-                                        isActive
-                                            ? 'bg-[var(--color-primary-500)] hover:bg-[var(--color-primary-600)] text-white'
-                                            : 'text-gray-600 hover:bg-gray-100'
-                                    }`
-                                }
-                            >
-                                {({ isActive }) => (
-                                    <>
-                                        <img
-                                            src={contact}
-                                            alt="Settings icon"
-                                            className={`h-6 w-6 transition-all flex-shrink-0 ${
-                                                isActive ? 'filter-white' : ''
-                                            }`}
-                                            style={isActive ? { filter: 'brightness(0) invert(1)' } : {}}
-                                        />
-                                        <span className={`ml-4 transition-opacity duration-300 whitespace-nowrap ${
-                                            isOpen ? 'opacity-100' : 'opacity-0 lg:hidden'
-                                        }`}>
-                                            Settings
-                                        </span>
-                                    </>
-                                )}
-                            </NavLink>
-                        </li>
-
-                        {/* Logout */}
-                        <li>
-                            <button
-                                onClick={onLogout}
-                                className="w-full flex items-center rounded-lg px-4 py-3 font-medium text-red-600 transition-colors hover:bg-red-50 group"
-                            >
-                                <img src={logout} alt="Logout icon" className="h-6 w-6 flex-shrink-0" />
-                                <span className={`ml-4 transition-opacity duration-300 whitespace-nowrap ${
-                                    isOpen ? 'opacity-100' : 'opacity-0 lg:hidden'
-                                }`}>
-                                    Logout
-                                </span>
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
+                            </li>
+                            <li>
+                                <button
+                                    onClick={onLogout}
+                                    className={`w-full flex items-center text-gray-500 transition-all hover:bg-red-50 hover:text-red-600 rounded-lg group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
+                                        }`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <img src={logout} alt="Logout icon" className="h-6 w-6 flex-shrink-0 opacity-50 group-hover:opacity-100 group-hover:filter-red" />
+                                        {isOpen && (
+                                            <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
+                                                Logout
+                                            </span>
+                                        )}
+                                    </div>
+                                </button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </aside>
             <style>{`
                 .custom-scrollbar::-webkit-scrollbar {
-                    width: 8px;
-                    background: #f3f4f6;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: var(--color-primary-500, #2563eb);
-                    border-radius: 6px;
+                    display: none;
                 }
                 .custom-scrollbar {
-                    scrollbar-width: thin;
-                    scrollbar-color: var(--color-primary-500, #2563eb) #f3f4f6;
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
                 }
             `}</style>
         </>

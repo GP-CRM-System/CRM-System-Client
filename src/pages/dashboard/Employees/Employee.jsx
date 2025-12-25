@@ -233,7 +233,7 @@ export default function Emplotee() {
       onCreate={handleCreateClick}
       createPermission="Employee.write"
     >
-      <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <EmployeeTable
           employees={employees}
           isLoading={isLoading}

@@ -17,9 +17,8 @@ export default function useOrders() {
     staleTime: 0,
   });
 
-  const orders = ordersData?.data?.orders;
-  const total =
-    ordersData?.data?.total || ordersData?.data?.orders?.length || 0;
+  const orders = ordersData?.data?.data || [];
+  const total = ordersData?.data?.total || 0;
   const currentPage = ordersData?.data?.page || page;
   const currentLimit = ordersData?.data?.limit || limit;
 

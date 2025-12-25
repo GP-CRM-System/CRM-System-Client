@@ -226,7 +226,7 @@ export default function Deals() {
       onCreate={handleCreateClick}
       createPermission="Deal.write"
     >
-      <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <DealsTable
           deals={deals}
           isLoading={isLoading}

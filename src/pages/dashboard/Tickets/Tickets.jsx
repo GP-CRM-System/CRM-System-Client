@@ -10,11 +10,13 @@ import PageLayout from "../../../components/PageLayout";
 import Pagination from "../Contacts/Pagination";
 import TicketTable from "./TicketTable";
 import TicketFormModal from "./TicketFormModal";
+import TicketDetailModal from "./TicketDetailModal";
 
 export default function Tickets() {
   //main hooks
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTicket, setEditingTicket] = useState(null);
+  const [viewTicket, setViewTicket] = useState(null);
   const [form, setForm] = useState({
     name: "",
     status: [
@@ -190,6 +192,11 @@ export default function Tickets() {
       });
     }
   };
+
+  const handleViewTicket = (ticket) => {
+    setViewTicket(ticket);
+  };
+
   const handleEditClick = (ticket) => {
     setEditingTicket(ticket);
 
@@ -273,7 +280,7 @@ export default function Tickets() {
       onCreate={handleCreateClick}
       createPermission="Ticket.write"
     >
-      <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <TicketTable
           tickets={tickets}
           isLoading={isLoading}
@@ -286,6 +293,7 @@ export default function Tickets() {
           contacts={contacts}
           employees={employees}
           onDelete={(ticketId) => deleteTicketMutation.mutate(ticketId)}
+          onView={handleViewTicket}
         />
         <TicketFormModal
           open={modalOpen}
@@ -309,6 +317,13 @@ export default function Tickets() {
           limit={currentLimit}
           total={total}
           onPageChange={setPage}
+        />
+        <TicketDetailModal
+          isOpen={!!viewTicket}
+          onClose={() => setViewTicket(null)}
+          ticket={viewTicket}
+          employee={employees?.find(e => e._id === viewTicket?.owner || e._id === viewTicket?.owner?._id)}
+          contact={contacts?.find(c => c._id === viewTicket?.contact || c._id === viewTicket?.contact?._id)}
         />
       </div>
     </PageLayout>

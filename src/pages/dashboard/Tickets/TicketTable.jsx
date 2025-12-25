@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { dotsIcon } from "../../../assets";
+import React, { useState, useEffect } from "react";
+import { MoreVertical } from "lucide-react";
+import Loader from "../../../components/ui/Loader";
 
 export default function TicketTable({
   tickets,
@@ -13,8 +14,18 @@ export default function TicketTable({
   contacts,
   employees,
   onDelete,
+  onView,
 }) {
   const [openMenuId, setOpenMenuId] = useState(null);
+
+  // Close menu on click outside
+  useEffect(() => {
+    const handleClickOutside = () => setOpenMenuId(null);
+    if (openMenuId) {
+      document.addEventListener("click", handleClickOutside);
+    }
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [openMenuId]);
 
   const getOwner = (ownerId) => {
     if (!ownerId) return null;
@@ -23,7 +34,8 @@ export default function TicketTable({
 
   const getContact = (contactId) => {
     if (!contactId) return null;
-    return contacts?.find((c) => c._id === contactId);
+    const id = typeof contactId === 'object' ? contactId._id : contactId;
+    return contacts?.find((c) => c._id === id);
   };
 
   const getCurrentStatus = (statuses) => {
@@ -51,7 +63,35 @@ export default function TicketTable({
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto min-h-[400px]">
+      {/* Bulk Action Bar - As requested */}
+      {selected.length > 0 && (
+        <div className="px-6 py-4">
+          <div
+            className="flex items-center justify-between px-6"
+            style={{
+              height: '64px',
+              background: 'rgba(108, 165, 231, 0.15)',
+              borderRadius: '8px'
+            }}
+          >
+            <div className="flex items-center">
+              <span className="text-gray-900 font-medium text-lg">
+                {selected.length} {selected.length === 1 ? 'item' : 'items'} selected
+              </span>
+            </div>
+
+            <div className="flex items-center">
+              <button
+                onClick={() => onDelete && onDelete(selected)}
+                className="bg-white text-red-500 px-10 py-2.5 rounded-xl text-sm font-bold border border-red-50 hover:bg-red-50 transition-colors shadow-sm"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <table className="w-full text-sm">
         <thead>
           <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
@@ -89,8 +129,8 @@ export default function TicketTable({
         <tbody className="divide-y divide-gray-50">
           {isLoading ? (
             <tr>
-              <td colSpan={9} className="p-8 text-center text-gray-400">
-                Loading tickets...
+              <td colSpan={9} className="p-8">
+                <Loader fullScreen={false} text="Loading tickets..." />
               </td>
             </tr>
           ) : !tickets || tickets.length === 0 ? (
@@ -100,84 +140,89 @@ export default function TicketTable({
               </td>
             </tr>
           ) : (
-            tickets.map((ticket, idx) => {
-              const owner = getOwner(ticket.owner?._id);
-              const contact = getContact(ticket.contact?._id);
+            tickets.map((ticket, itemIndex) => {
+              const owner = getOwner(ticket.owner?._id || ticket.owner);
+              const contact = getContact(ticket.contact?._id || ticket.contact);
+              const contactName = ticket.contact?.name || contact?.name || "-";
+              const contactAvatar = ticket.contact?.avatar || contact?.avatar;
+
               const currentStatus = getCurrentStatus(ticket.status);
 
               return (
                 <tr
-                  key={ticket._id || idx}
-                  className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
+                  key={ticket._id || itemIndex}
+                  className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)] cursor-pointer"
+                  onClick={() => onView && onView(ticket)}
                 >
                   {/* Checkbox */}
                   <td className="py-4 px-4 text-center">
                     <input
                       type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
                       checked={selected.includes(ticket._id)}
-                      onChange={() => onSelectOne(ticket._id)}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        onSelectOne(ticket._id);
+                      }}
                     />
                   </td>
 
                   {/* Ticket Name */}
-                  <td className="py-4 px-4 text-left">
-                    <div className="font-medium text-(--color-text-title)">
-                      {ticket.name}
-                    </div>
+                  <td className="py-4 px-4 text-left font-medium text-[var(--color-text-title)]">
+                    {ticket.name}
                   </td>
 
                   {/* Contact */}
                   <td className="py-4 px-4 text-left">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
-                        <img
-                          src={
-                            contact?.avatar ||
-                            `https://i.pravatar.cc/150?u=${contact?._id}`
-                          }
-                          alt={contact?.name || "-"}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "flex";
-                          }}
-                        />
-                        <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
-                          {contact?.name?.charAt(0) || "C"}
+                    {contactName !== "-" ? (
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                          <img
+                            src={
+                              contactAvatar ||
+                              `https://i.pravatar.cc/150?u=${ticket.contact?._id || ticket.contact}`
+                            }
+                            alt={contactName}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "flex";
+                            }}
+                          />
+                          <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
+                            {contactName.charAt(0)}
+                          </div>
                         </div>
+                        <span className="font-medium text-[var(--color-text-title)]">
+                          {contactName}
+                        </span>
                       </div>
-                      <span className="font-medium text-(--color-text-title)">
-                        {contact?.name || "-"}
-                      </span>
-                    </div>
+                    ) : (
+                      <span className="font-medium text-gray-400">-</span>
+                    )}
                   </td>
 
                   {/* Owner */}
-                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-(--color-text-title)">
-                    {owner?.fullName || "-"}
+                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-[var(--color-text-title)]">
+                    {owner?.fullName || owner?.name || "-"}
                   </td>
 
                   {/* Status */}
                   <td className="py-4 px-4 text-center hidden sm:table-cell">
-                    {currentStatus ? (
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                          currentStatus.statusType
-                        )}`}
-                      >
-                        {currentStatus.statusType}
-                      </span>
-                    ) : (
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-50 text-gray-500">
-                        No Status
-                      </span>
-                    )}
+                    <span
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        currentStatus?.statusType || currentStatus?.name
+                      )}`}
+                    >
+                      {currentStatus?.statusType || currentStatus?.name || "New"}
+                    </span>
                   </td>
+
                   {/* Date */}
-                  <td className="py-4 px-4 font-medium text-sm text-center hidden sm:table-cell">
-                    {formatDate(ticket.createdAt || ticket.status?.[0]?.date)}
+                  <td className="py-4 px-4 text-center hidden sm:table-cell font-medium text-[var(--color-text-title)]">
+                    {formatDate(ticket.createdAt)}
                   </td>
+
                   {/* Priority */}
                   <td className="py-4 px-4 text-center hidden lg:table-cell">
                     <span
@@ -185,76 +230,45 @@ export default function TicketTable({
                         ticket.priority
                       )}`}
                     >
-                      {ticket.priority || "Medium"}
+                      {ticket.priority || "Low"}
                     </span>
                   </td>
-                  {/* Actions */}
-                  <td className="py-4 px-4 text-center relative">
+
+                  {/* Options */}
+                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)]">
                     <button
-                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors"
-                      onClick={() =>
-                        setOpenMenuId(
-                          openMenuId === ticket._id ? null : ticket._id
-                        )
-                      }
+                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setOpenMenuId(openMenuId === ticket._id ? null : ticket._id);
+                      }}
                     >
-                      <img src={dotsIcon} alt="options" />
+                      <MoreVertical className="w-5 h-5" />
                     </button>
 
                     {openMenuId === ticket._id && (
-                      <>
-                        <div
-                          className="fixed inset-0 z-10"
-                          onClick={() => setOpenMenuId(null)}
-                        />
-
-                        <div className="absolute right-8 top-12 z-20 bg-white rounded-lg shadow-lg border border-gray-200 py-1 min-w-[120px] group-last:-top-32">
-                          <button
-                            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
-                            onClick={() => {
-                              onEdit(ticket);
-                              setOpenMenuId(null);
-                            }}
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                              />
-                            </svg>
-                            Edit
-                          </button>
-                          <button
-                            className="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
-                            onClick={() => {
-                              onDelete(ticket._id);
-                              setOpenMenuId(null);
-                            }}
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                            Delete
-                          </button>
-                        </div>
-                      </>
+                      <div className={`absolute right-full mr-3 ${itemIndex >= tickets.length - 2 ? 'bottom-0' : 'top-1/2 -translate-y-1/2'} bg-white shadow-xl rounded-xl border border-gray-100 py-2 w-36 z-50`}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onEdit(ticket);
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700 font-medium"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onDelete([ticket._id]);
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-600 font-medium"
+                        >
+                          Delete
+                        </button>
+                      </div>
                     )}
                   </td>
                 </tr>

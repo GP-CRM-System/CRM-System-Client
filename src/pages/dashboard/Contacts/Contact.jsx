@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
-import { getAllContacts, createContact } from "../../../api/contacts";
+import { getAllContacts, createContact, updateContact, deleteContact } from "../../../api/contacts";
 import { getAllEmployees } from "../../../api/employees";
 import PageLayout from "../../../components/PageLayout";
 import { PermissionGuard } from "../../../components";
@@ -12,6 +12,7 @@ import Pagination from "./Pagination";
 const Contact = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("All");
+  const [editingContact, setEditingContact] = useState(null);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -35,9 +36,8 @@ const Contact = () => {
     keepPreviousData: true,
   });
 
-  const contacts = contactsData?.data?.contacts || [];
-  const total =
-    contactsData?.data?.total || contactsData?.data?.contacts?.length || 0;
+  const contacts = contactsData?.data?.data || [];
+  const total = contactsData?.data?.total || 0;
   const currentPage = contactsData?.data?.page || page;
   const currentLimit = contactsData?.data?.limit || limit;
 
@@ -64,22 +64,15 @@ const Contact = () => {
   // Mutation for creating contact
   const createContactMutation = useMutation({
     mutationFn: (data) => {
-      const { ...rest } = data;
       const payload = {
-        ...rest,
-        owner: data.owner,
+        ...data,
         stage: data.stage
           ? [
-              {
-                name: data.stage,
-                date:
-                  data.date && typeof data.date === "string"
-                    ? new Date(data.date)
-                    : data.date instanceof Date
-                    ? data.date
-                    : new Date(),
-              },
-            ]
+            {
+              name: data.stage,
+              date: data.date ? new Date(data.date) : new Date(),
+            },
+          ]
           : [],
       };
       return createContact(payload);
@@ -88,14 +81,7 @@ const Contact = () => {
       queryClient.invalidateQueries(["contacts"]);
       setModalOpen(false);
       setForm({
-        name: "",
-        email: "",
-        phone: "",
-        address: "",
-        jobTitle: "",
-        owner: "",
-        stage: "",
-        date: "",
+        name: "", email: "", phone: "", address: "", jobTitle: "", owner: "", stage: "", date: "",
       });
       setFormError("");
     },
@@ -104,32 +90,63 @@ const Contact = () => {
     },
   });
 
+  // Mutation for updating contact
+  const updateContactMutation = useMutation({
+    mutationFn: ({ contactId, data }) => {
+      const payload = {
+        ...data,
+        stage: data.stage
+          ? [
+            ...(editingContact?.stage || []),
+            {
+              name: data.stage,
+              date: data.date ? new Date(data.date) : new Date(),
+            },
+          ]
+          : editingContact?.stage,
+      };
+      return updateContact(contactId, payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(["contacts"]);
+      setModalOpen(false);
+      setEditingContact(null);
+      setForm({
+        name: "", email: "", phone: "", address: "", jobTitle: "", owner: "", stage: "", date: "",
+      });
+      setFormError("");
+    },
+    onError: (error) => {
+      setFormError(error?.response?.data?.error || "Failed to update contact");
+    },
+  });
+
+  // Mutation for deleting contact
+  const deleteContactMutation = useMutation({
+    mutationFn: (id) => deleteContact(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["contacts"]);
+    },
+    onError: (error) => {
+      setFormError(error?.response?.data?.error || "Failed to delete contact");
+    },
+  });
+
   // Filter contacts by tab
   const filteredContacts = contacts.filter((contact) => {
     if (activeTab === "All") return true;
-    const stageName =
-      Array.isArray(contact.stage) && contact.stage.length > 0
-        ? contact.stage[contact.stage.length - 1].name
-        : "";
-    if (activeTab === "Customers") return stageName === "Customer";
-    if (activeTab === "Leads")
-      return stageName === "Leads" || stageName === "Lead";
+    const lastStage = Array.isArray(contact.stage) && contact.stage.length > 0
+      ? contact.stage[contact.stage.length - 1].name
+      : "";
+    if (activeTab === "Customers") return lastStage === "Customer";
+    if (activeTab === "Leads") return lastStage === "Leads" || lastStage === "Lead";
     return true;
   });
 
   // Selection handlers
-  const allSelected =
-    filteredContacts.length > 0 && selected.length === filteredContacts.length;
-
-  const handleSelectAll = () => {
-    setSelected(allSelected ? [] : filteredContacts.map((c) => c._id));
-  };
-
-  const handleSelectOne = (id) => {
-    setSelected((sel) =>
-      sel.includes(id) ? sel.filter((sid) => sid !== id) : [...sel, id]
-    );
-  };
+  const allSelected = filteredContacts.length > 0 && selected.length === filteredContacts.length;
+  const handleSelectAll = () => setSelected(allSelected ? [] : filteredContacts.map((c) => c._id));
+  const handleSelectOne = (id) => setSelected((sel) => sel.includes(id) ? sel.filter((sid) => sid !== id) : [...sel, id]);
 
   // Form handlers
   const handleFormChange = (field, value) => {
@@ -142,21 +159,45 @@ const Contact = () => {
       setFormError("Name and Email are required");
       return;
     }
-    createContactMutation.mutate(form);
+    if (editingContact) {
+      updateContactMutation.mutate({ contactId: editingContact._id, data: form });
+    } else {
+      createContactMutation.mutate(form);
+    }
   };
 
-  const handleCreateClick = () => {
+  const handleEditClick = (contact) => {
+    setEditingContact(contact);
+    const lastStage = Array.isArray(contact.stage) && contact.stage.length > 0
+      ? contact.stage[contact.stage.length - 1]
+      : null;
+
+    setForm({
+      name: contact.name || "",
+      email: contact.email || "",
+      phone: contact.phone || "",
+      address: contact.address || "",
+      jobTitle: contact.jobTitle || "",
+      owner: contact.owner || "",
+      stage: lastStage?.name || "",
+      date: lastStage?.date ? new Date(lastStage.date).toISOString().split('T')[0] : "",
+    });
     setModalOpen(true);
   };
 
-  // Helper for formatting date
+  const handleCreateClick = () => {
+    setEditingContact(null);
+    setForm({
+      name: "", email: "", phone: "", address: "", jobTitle: "", owner: "", stage: "", date: "",
+    });
+    setModalOpen(true);
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "-";
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+      year: "numeric", month: "short", day: "numeric",
     });
   };
 
@@ -167,9 +208,8 @@ const Contact = () => {
       onCreate={handleCreateClick}
       createPermission="Contact.write"
     >
-      <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <ContactTabs activeTab={activeTab} onTabChange={setActiveTab} />
-
         <ContactTable
           contacts={filteredContacts}
           isLoading={isLoading}
@@ -177,29 +217,30 @@ const Contact = () => {
           allSelected={allSelected}
           onSelectAll={handleSelectAll}
           onSelectOne={handleSelectOne}
+          onEdit={handleEditClick}
+          onDelete={(ids) => ids.forEach(id => deleteContactMutation.mutate(id))}
           formatDate={formatDate}
         />
-
         <Pagination
           page={currentPage}
           limit={currentLimit}
           total={total}
           onPageChange={setPage}
         />
-
-        {/* <PermissionGuard permission="Contact.write"> */}
         <ContactFormModal
           open={modalOpen}
-          onClose={() => setModalOpen(false)}
+          onClose={() => {
+            setModalOpen(false);
+            setEditingContact(null);
+          }}
           form={form}
           formError={formError}
           onFormChange={handleFormChange}
           onSubmit={handleFormSubmit}
           employees={employees}
           isLoadingEmployees={isLoadingEmployees}
-          isSubmitting={createContactMutation.isLoading}
+          isSubmitting={createContactMutation.isLoading || updateContactMutation.isLoading}
         />
-        {/* </PermissionGuard> */}
       </div>
     </PageLayout>
   );

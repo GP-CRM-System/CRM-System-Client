@@ -16,9 +16,8 @@ export const useTickets = () => {
     keepPreviousData: true,
   });
 
-  const tickets = ticketsData?.data?.tickets || [];
-  const total =
-    ticketsData?.data?.total || ticketsData?.data?.tickets?.length || 0;
+  const tickets = ticketsData?.data?.data || [];
+  const total = ticketsData?.data?.total || 0;
 
   const currentPage = ticketsData?.data?.page || page;
   const currentLimit = ticketsData?.data?.limit || limit;

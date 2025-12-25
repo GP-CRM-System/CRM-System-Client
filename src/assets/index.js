@@ -4,3 +4,4 @@ export * from "./icons/social";
 export * from "./icons/logo";
 export * from "./images";
 export * from "./icons/landingPage"
+export * from "./icons/dasboard"

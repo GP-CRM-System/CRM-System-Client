@@ -10,11 +10,13 @@ import { useDeleteOrder } from "./useDeleteOrder";
 import OrderTable from "./OrderTable";
 import Pagination from "../Contacts/Pagination";
 import OrderFormModal from "./OrderFormModal";
+import OrderDetailModal from "./OrderDetailModal";
 
 export default function Order() {
   //main hooks
   const [modalOpen, setModalOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState(null);
+  const [viewOrder, setViewOrder] = useState(null);
   const [form, setForm] = useState({
     description: "",
     owner: "",
@@ -170,6 +172,10 @@ export default function Order() {
       });
     }
   };
+  // Handle View Click
+  const handleViewOrder = (order) => {
+    setViewOrder(order);
+  };
   // Handle Edit Click
   const handleEditClick = (order) => {
     setEditingOrder(order);
@@ -257,7 +263,7 @@ export default function Order() {
       onCreate={handleCreateClick}
       createPermission="Order.write"
     >
-      <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <OrderTable
           orders={orders}
           isLoading={isLoading}
@@ -270,6 +276,7 @@ export default function Order() {
           contacts={contacts}
           employees={employees}
           onDelete={(orderId) => deleteOrderMutation.mutate(orderId)}
+          onView={handleViewOrder}
         />
         <Pagination
           page={currentPage}
@@ -294,6 +301,14 @@ export default function Order() {
               : createOrderMutation.isLoading
           }
           isEditing={!!editingOrder}
+        />
+
+        <OrderDetailModal
+          isOpen={!!viewOrder}
+          onClose={() => setViewOrder(null)}
+          order={viewOrder}
+          employee={employees?.find(e => e._id === viewOrder?.employee || e._id === viewOrder?.employee?._id)}
+          contact={contacts?.find(c => c._id === viewOrder?.contact || c._id === viewOrder?.contact?._id)}
         />
       </div>
     </PageLayout>

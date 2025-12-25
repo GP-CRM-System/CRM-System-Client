@@ -15,9 +15,8 @@ export default function useEmployees() {
     keepPreviousData: true,
   });
 
-  const employees = employeesData?.data?.employees;
-  const total =
-    employeesData?.data?.total || employeesData?.data?.employees?.length || 0;
+  const employees = employeesData?.data?.data || [];
+  const total = employeesData?.data?.total || 0;
   const currentPage = employeesData?.data?.page || page;
   const currentLimit = employeesData?.data?.limit || limit;
 

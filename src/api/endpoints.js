@@ -5,6 +5,7 @@ export const ENDPOINTS = {
     REFRESH: "/auth/refresh",
     ME: "/auth/me",
     LOGOUT: "/auth/logout",
+    RESET_PASSWORD: (id) => `/auth/reset-password/${id}`,
   },
   COMPANY: {
     CREATE: "/companies",
@@ -54,5 +55,21 @@ export const ENDPOINTS = {
     GetOne: (id) => `/tickets/${id}`,
     UPDATE: (id) => `/tickets/${id}`,
     DELETE: (id) => `/tickets/${id}`,
+  },
+  PROFILE: {
+    GET: (id) => `/profile/${id}`,
+    UPDATE: (id) => `/profile/${id}`,
+    CHANGE_PASSWORD: (id) => `/profile/${id}/password`,
+  },
+  ANALYTICS: {
+    CARDS: "/analytics/cards",
+    REVENUE: "/analytics/revenue",
+    TICKETS: "/analytics/tickets",
+    PRODUCTS: "/analytics/products",
+    LEADS: "/analytics/leads",
+    DASHBOARD: "/dashboard",
+  },
+  MISC: {
+    HEALTH: "/health",
   },
 };

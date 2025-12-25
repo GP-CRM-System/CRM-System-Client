@@ -1,26 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { getAllEmployees } from "../../../api/employees";
 
 export const useEmployees = () => {
-  const { data: employeesData, isLoading: isLoadingEmployees } = useQuery({
-    queryKey: ["employees"],
-    queryFn: getAllEmployees,
+  const [page, setPage] = useState(1);
+  const [limit] = useState(9);
+
+  const {
+    data: employeesData = {},
+    isLoading: isLoadingEmployees,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["employees", page, limit],
+    queryFn: () => getAllEmployees({ page, limit }),
+    staleTime: 0,
   });
 
-  let employees = [];
+  const employees = employeesData?.data?.data || [];
+  const total = employeesData?.data?.total || 0;
+  const currentPage = employeesData?.data?.page || page;
+  const currentLimit = employeesData?.data?.limit || limit;
 
-  if (employeesData) {
-    if (Array.isArray(employeesData)) {
-      employees = employeesData;
-    } else if (
-      employeesData.data &&
-      Array.isArray(employeesData.data.employees)
-    ) {
-      employees = employeesData.data.employees;
-    } else if (Array.isArray(employeesData.employees)) {
-      employees = employeesData.employees;
-    }
-  }
-
-  return { employees, isLoadingEmployees };
+  return {
+    isLoadingEmployees,
+    error,
+    employees,
+    total,
+    currentPage,
+    currentLimit,
+    setPage,
+    refetch,
+  };
 };

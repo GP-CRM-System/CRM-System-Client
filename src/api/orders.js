@@ -16,7 +16,7 @@ export const deleteOrder = async (id) => {
   return response.data;
 };
 
-export const getAllOrders = async ({ page = 1, limit = 10 } = {}) => {
+export const getAllOrders = async ({ page = 1, limit = 9 } = {}) => {
   const response = await API.get(ENDPOINTS.ORDER.GetAll, {
     params: { page, limit },
   });

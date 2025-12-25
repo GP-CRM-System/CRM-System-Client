@@ -16,9 +16,8 @@ export default function useCompanies() {
     keepPreviousData: true,
   });
 
-  const companies = companiesData?.data?.companies || [];
-  const total =
-    companiesData?.data?.total || companiesData?.data?.companies?.length || 0;
+  const companies = companiesData?.data?.data || [];
+  const total = companiesData?.data?.total || 0;
 
   const currentPage = companiesData?.data?.page || page;
   const currentLimit = companiesData?.data?.limit || limit;

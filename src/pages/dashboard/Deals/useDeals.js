@@ -15,8 +15,8 @@ export default function useDeals() {
     keepPreviousData: true,
   });
 
-  const deals = dealsData?.data?.deals;
-  const total = dealsData?.data?.total || dealsData?.data?.deals?.length || 0;
+  const deals = dealsData?.data?.data || [];
+  const total = dealsData?.data?.total || 0;
   const currentPage = dealsData?.data?.page || page;
   const currentLimit = dealsData?.data?.limit || limit;
 

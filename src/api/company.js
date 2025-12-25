@@ -16,8 +16,10 @@ export const deleteCompany = async (id) => {
   return response.data;
 };
 
-export const getAllCompanies = async () => {
-  const response = await API.get(ENDPOINTS.COMPANY.GetAll);
+export const getAllCompanies = async ({ page = 1, limit = 9 } = {}) => {
+  const response = await API.get(ENDPOINTS.COMPANY.GetAll, {
+    params: { page, limit },
+  });
   return response.data;
 };
 

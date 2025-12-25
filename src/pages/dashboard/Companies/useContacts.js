@@ -1,23 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { getAllContacts } from "../../../api/contacts";
 
 export const useContacts = () => {
-  const { data: contactsData, isLoading: isLoadingContacts } = useQuery({
-    queryKey: ["contacts"],
-    queryFn: getAllContacts,
+  const [page, setPage] = useState(1);
+  const [limit] = useState(9);
+
+  const {
+    data: contactsData = {},
+    isLoading: isLoadingContacts,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["contacts", page, limit],
+    queryFn: () => getAllContacts({ page, limit }),
+    staleTime: 0,
   });
 
-  let contacts = [];
+  const contacts = contactsData?.data?.data || [];
+  const total = contactsData?.data?.total || 0;
+  const currentPage = contactsData?.data?.page || page;
+  const currentLimit = contactsData?.data?.limit || limit;
 
-  if (contactsData) {
-    if (Array.isArray(contactsData)) {
-      contacts = contactsData;
-    } else if (contactsData.data && Array.isArray(contactsData.data.contacts)) {
-      contacts = contactsData.data.contacts;
-    } else if (Array.isArray(contactsData.contacts)) {
-      contacts = contactsData.contacts;
-    }
-  }
-
-  return { contacts, isLoadingContacts };
+  return {
+    isLoadingContacts,
+    error,
+    contacts,
+    total,
+    currentPage,
+    currentLimit,
+    setPage,
+    refetch,
+  };
 };

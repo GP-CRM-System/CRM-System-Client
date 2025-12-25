@@ -3,7 +3,7 @@ import PermissionGuard from './guard/PermissionGuard';
 
 function PageLayout({ title, createText, onCreate, createPermission, children }) {
     return (
-        <div className="p-2 flex flex-col">
+        <div className="flex flex-col">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{title}</h1>
                 <div className="flex flex-wrap gap-2 items-center sm:justify-end">

@@ -8,61 +8,61 @@ const Navbar = () => {
   const permissions = useAuthStore((state) => state.permissions);
   const roleName = permissions?.name || user?.role?.name;
   return (
-    <nav className="bg-white border-b border-gray-200 px-4 py-3 md:px-6 lg:px-8">
-      <div className="flex items-center justify-between gap-4">
-        {/* Search Bar */}
-        <div className="flex-1 max-w-xl">
-          <div className="relative">
-            <svg
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 md:w-5 md:h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search anything"
-              className="w-[393px] max-sm:w-[300px] pl-9 md:pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+    <nav className="bg-white px-6 py-4 flex items-center justify-between gap-4">
+      {/* Left section: Search */}
+      <div className="flex items-center gap-4 flex-1 max-w-xl">
+        <div className="relative group flex-1">
+          <svg
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 transition-colors group-focus-within:text-[[var(--color-primary-500)]]"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
-          </div>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search anything"
+            className="w-full max-w-[420px] pl-12 pr-4 py-[10px] bg-gray-50 border border-transparent rounded-xl text-[15px] text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-[#4A90E2] transition-all shadow-sm"
+          />
         </div>
+      </div>
 
-        {/* Right Side: Notification & User */}
-        <div className="flex items-center  gap-2 md:gap-4">
-          {/* Notification Bell */}
-          <button className="relative w-[46px] h-[48px] p-2 text-gray-500 hover:text-gray-700  hover:bg-gray-100 rounded-full transition-colors">
-            <div className="flex justify-center">
-              <img
-                src={notifications}
-                className="w-[24px] h-[24px]"
-                alt="notifications"
-              />
-            </div>
-          </button>
-
-          {/* User Profile */}
-          <div className="flex items-center gap-2 md:gap-3 pl-2 md:pl-0">
+      {/* Right Side: Notification & User */}
+      <div className="flex items-center gap-6">
+        {/* Notification Bell */}
+        <button className="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all">
+          <div className="flex justify-center relative">
             <img
-              src={`https://i.pravatar.cc/150?u=${user?._id}`}
-              alt={user?.fullName || "User"}
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover
-            border-2 border-gray-200"
+              src={notifications}
+              className="w-6 h-6"
+              alt="notifications"
             />
-            <div className="hidden md:block">
-              <p className="text-[16px] font-medium  text-gray-900">
-                Hello, <span>{userName || "User"}</span>
-              </p>
-              <p className="font-medium mt-1 text-[#8A8A8A] text-[12px]">
-                {roleName}
-              </p>
-            </div>
+            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+          </div>
+        </button>
+
+        {/* User Profile */}
+        <div className="flex items-center gap-3 pl-4 border-l border-gray-100">
+          <div className="text-right hidden sm:block">
+            <p className="text-[15px] font-semibold text-gray-900 leading-tight">
+              Hello, {userName || "Ahmed"}
+            </p>
+            <p className="text-[12px] font-medium text-gray-400 mt-0.5">
+              {roleName || "Manager"}
+            </p>
+          </div>
+          <div className="relative">
+            <img
+              src={`https://i.pravatar.cc/150?u=${user?._id || 'default'}`}
+              alt={user?.fullName || "User"}
+              className="w-10 h-10 rounded-xl object-cover ring-2 ring-gray-100 shadow-sm"
+            />
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import CompanyFormModal from "./CompanyFormModal";
 import { useCreateCompany } from "./useCreateCompany";
 import { useContacts } from "./useContacts";
 import { useEmployees } from "./useEmployees";
-import { useDeleteCompany } from "./useDeleteCompant";
+import { useDeleteCompany } from "./useDeleteCompany";
 import toast from "react-hot-toast";
 import { useUpdateCompany } from "./useEditCompany";
 
@@ -31,8 +31,18 @@ const Companies = () => {
   //customs hooks
   const { isLoading, companies, total, currentPage, currentLimit, setPage } =
     useCompanies();
+  const getErrorMessage = (error) => {
+    const errorData = error?.response?.data;
+    if (typeof errorData?.error === "string") return errorData.error;
+    if (Array.isArray(errorData?.error) && errorData.error.length > 0) {
+      return errorData.error[0].message || "Validation error";
+    }
+    return errorData?.message || error?.message || "An unexpected error occurred";
+  };
+
   const createCompanyMutation = useCreateCompany(
     () => {
+      toast.success("Company created successfully!");
       setModalOpen(false);
       setForm({
         name: "",
@@ -48,7 +58,9 @@ const Companies = () => {
       setFormError("");
     },
     (error) => {
-      toast.error(error?.response?.data?.error || "Failed to delete company");
+      const message = getErrorMessage(error);
+      toast.error(message);
+      setFormError(message);
     }
   );
   const updateCompanyMutation = useUpdateCompany(
@@ -70,8 +82,9 @@ const Companies = () => {
       setFormError("");
     },
     (error) => {
-      toast.error(error?.response?.data?.error || "Failed to update company");
-      setFormError(error?.response?.data?.error || "Failed to update company");
+      const message = getErrorMessage(error);
+      toast.error(message);
+      setFormError(message);
     }
   );
   const { contacts, isLoadingContacts } = useContacts();
@@ -81,7 +94,7 @@ const Companies = () => {
       toast.success("Company deleted successfully!");
     },
     (error) => {
-      toast.error(error?.response?.data?.error || "Failed to delete company");
+      toast.error(getErrorMessage(error));
     }
   );
 
@@ -176,7 +189,7 @@ const Companies = () => {
       onCreate={handleCreateClick}
       createPermission="Company.write"
     >
-      <div className="bg-white rounded-lg shadow-xl p-2 sm:p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <CompanyTable
           companies={companies}
           isLoading={isLoading}
