@@ -29,7 +29,8 @@ export default function TicketTable({
 
   const getOwner = (ownerId) => {
     if (!ownerId) return null;
-    return employees?.find((e) => e._id === ownerId);
+    const id = typeof ownerId === 'object' ? ownerId._id : ownerId;
+    return employees?.find((e) => e._id === id);
   };
 
   const getContact = (contactId) => {
@@ -92,10 +93,10 @@ export default function TicketTable({
           </div>
         </div>
       )}
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
-            <th className="py-4 px-4 text-center align-middle font-semibold">
+      <table className="w-full text-sm border-collapse">
+        <thead className="bg-gray-50/50">
+          <tr className="border-y border-gray-100">
+            <th className="py-4 px-4 text-center w-12">
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
@@ -103,26 +104,26 @@ export default function TicketTable({
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Ticket Name
             </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Contact
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Owner
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Status
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Priority
             </th>
 
-            <th className="py-4 px-4 text-center align-middle"></th>
+            <th className="py-4 px-4 text-center w-12"></th>
           </tr>
         </thead>
 
@@ -141,8 +142,8 @@ export default function TicketTable({
             </tr>
           ) : (
             tickets.map((ticket, itemIndex) => {
-              const owner = getOwner(ticket.owner?._id || ticket.owner);
-              const contact = getContact(ticket.contact?._id || ticket.contact);
+              const owner = getOwner(ticket.owner?._id || ticket.owner) || (typeof ticket.owner === 'object' ? ticket.owner : null);
+              const contact = getContact(ticket.contact?._id || ticket.contact) || (typeof ticket.contact === 'object' ? ticket.contact : null);
               const contactName = ticket.contact?.name || contact?.name || "-";
               const contactAvatar = ticket.contact?.avatar || contact?.avatar;
 
@@ -155,7 +156,7 @@ export default function TicketTable({
                   onClick={() => onView && onView(ticket)}
                 >
                   {/* Checkbox */}
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-4 px-4 text-center align-middle">
                     <input
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
@@ -168,12 +169,12 @@ export default function TicketTable({
                   </td>
 
                   {/* Ticket Name */}
-                  <td className="py-4 px-4 text-left font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle">
                     {ticket.name}
                   </td>
 
                   {/* Contact */}
-                  <td className="py-4 px-4 text-left">
+                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
                     {contactName !== "-" ? (
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
@@ -203,14 +204,14 @@ export default function TicketTable({
                   </td>
 
                   {/* Owner */}
-                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {owner?.fullName || owner?.name || "-"}
                   </td>
 
                   {/* Status */}
-                  <td className="py-4 px-4 text-center hidden sm:table-cell">
+                  <td className="py-4 px-4 text-center hidden sm:table-cell align-middle">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${getStatusColor(
                         currentStatus?.statusType || currentStatus?.name
                       )}`}
                     >
@@ -219,12 +220,12 @@ export default function TicketTable({
                   </td>
 
                   {/* Date */}
-                  <td className="py-4 px-4 text-center hidden sm:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {formatDate(ticket.createdAt)}
                   </td>
 
                   {/* Priority */}
-                  <td className="py-4 px-4 text-center hidden lg:table-cell">
+                  <td className="py-4 px-4 text-center hidden lg:table-cell align-middle">
                     <span
                       className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getPriorityColor(
                         ticket.priority
@@ -235,7 +236,7 @@ export default function TicketTable({
                   </td>
 
                   {/* Options */}
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
                     <button
                       className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                       onClick={(e) => {

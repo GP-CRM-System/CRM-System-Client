@@ -40,3 +40,8 @@ export const resetPassword = async (data) => {
     const response = await API.post(ENDPOINTS.AUTH.RESET_PASSWORD, data);
     return response.data;
 };
+
+export const changePassword = async (data) => {
+    const response = await API.post(ENDPOINTS.AUTH.CHANGE_PASSWORD, data);
+    return response.data;
+};

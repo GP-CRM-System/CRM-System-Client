@@ -116,10 +116,10 @@ export default function OrderTable({
       )}
 
 
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
-            <th className="py-4 px-4 text-center align-middle font-semibold">
+      <table className="w-full text-sm border-collapse">
+        <thead className="bg-gray-50/50">
+          <tr className="border-y border-gray-100">
+            <th className="py-4 px-4 text-center w-12">
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
@@ -127,25 +127,25 @@ export default function OrderTable({
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Order ID
             </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Employee
             </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Contact
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Total Price
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Stage
             </th>
-            <th className="py-4 px-4 text-center align-middle"></th>
+            <th className="py-4 px-4 text-center w-12"></th>
           </tr>
         </thead>
 
@@ -182,7 +182,7 @@ export default function OrderTable({
                   onClick={() => onView && onView(order)}
                 >
                   {/* Checkbox */}
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-4 px-4 text-center align-middle">
                     <input
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -195,12 +195,12 @@ export default function OrderTable({
                   </td>
 
                   {/* Order ID */}
-                  <td className="py-4 px-4 text-left font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle">
                     {displayId}
                   </td>
 
                   {/* Employee */}
-                  <td className="py-4 px-4 text-left hidden lg:table-cell">
+                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell align-middle">
                     {employee ? (
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
@@ -230,7 +230,7 @@ export default function OrderTable({
                   </td>
 
                   {/* Contact */}
-                  <td className="py-4 px-4 text-left">
+                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
                     {contactName !== "-" ? (
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
@@ -260,19 +260,19 @@ export default function OrderTable({
                   </td>
 
                   {/* Total Price */}
-                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     ${totalPrice.toLocaleString()}
                   </td>
 
                   {/* Date */}
-                  <td className="py-4 px-4 text-center hidden sm:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {formatDate(order.createdAt)}
                   </td>
 
                   {/* Stage */}
-                  <td className="py-4 px-4 text-center hidden sm:table-cell">
+                  <td className="py-4 px-4 text-center hidden sm:table-cell align-middle">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-medium capitalize ${getStageStyle(
+                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold capitalize whitespace-nowrap ${getStageStyle(
                         stageName
                       )}`}
                     >
@@ -281,7 +281,7 @@ export default function OrderTable({
                   </td>
 
                   {/* Options */}
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
                     <button
                       className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                       onClick={(e) => {

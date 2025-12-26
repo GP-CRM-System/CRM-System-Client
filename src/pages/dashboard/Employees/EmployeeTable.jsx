@@ -65,10 +65,10 @@ export default function EmployeeTable({
           </div>
         </div>
       )}
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
-            <th className="py-4 px-4 text-center align-middle font-semibold">
+      <table className="w-full text-sm border-collapse">
+        <thead className="bg-gray-50/50">
+          <tr className="border-y border-gray-100">
+            <th className="py-4 px-4 text-center w-12">
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
@@ -76,22 +76,22 @@ export default function EmployeeTable({
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Employee Name
             </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Email
             </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Phone
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Job Title
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center align-middle"></th>
+            <th className="py-4 px-4 text-center w-12"></th>
           </tr>
         </thead>
 
@@ -117,7 +117,7 @@ export default function EmployeeTable({
                   key={employee._id || itemIndex}
                   className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
                 >
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-4 px-4 text-center align-middle">
                     <input
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
@@ -126,7 +126,7 @@ export default function EmployeeTable({
                     />
                   </td>
 
-                  <td className="py-4 px-4 text-left font-medium">
+                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium align-middle">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                         <img
@@ -151,25 +151,25 @@ export default function EmployeeTable({
                     </div>
                   </td>
 
-                  <td className="py-4 px-4 text-left hidden lg:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {employee.email || "-"}
                   </td>
 
-                  <td className="py-4 px-4 text-left font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle">
                     {employee.phone || "-"}
                   </td>
 
-                  <td className="py-4 px-4 text-center font-medium text-[var(--color-text-title)] hidden lg:table-cell">
-                    <span className="font-medium px-3 py-1 bg-blue-50 text-blue-500 rounded-full text-xs">
+                  <td className="py-4 px-4 text-center whitespace-nowrap font-medium text-[var(--color-text-title)] hidden lg:table-cell align-middle">
+                    <span className="font-semibold px-3 py-1 bg-blue-50 text-blue-500 rounded-full text-[10px] uppercase tracking-wider whitespace-nowrap">
                       {role?.name || employee.role?.name || "N/A"}
                     </span>
                   </td>
 
-                  <td className="py-4 px-4 text-sm text-center hidden sm:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {formatDate(employee.createdAt)}
                   </td>
 
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
                     <button
                       className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                       onClick={(e) => {

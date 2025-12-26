@@ -8,6 +8,7 @@ export const ENDPOINTS = {
     FORGOT_PASSWORD: "/auth/forgot-password",
     RESET_PASSWORD: "/auth/reset-password",
     VERIFY_RESET_TOKEN: (token) => `/auth/verify-reset-token/${token}`,
+    CHANGE_PASSWORD: "/auth/change-password",
   },
   COMPANY: {
     CREATE: "/companies",
