@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NotFound from './pages/NotFound';
 import {
-    Login, Dashboard, Unauthorized, ResetPassword, ForgotPassword, VerificationCode 
+    Login, Dashboard, Unauthorized, ResetPassword, VerifyReset, ForgotPassword, VerificationCode
 } from "./pages";
 import { ProtectedRoute, PublicRoute, ToasterComponent } from "./components";
-import { OnboardingStepper, SignUp, CreateCompany , Invite, Confirm} from './pages/onboarding';
+import { OnboardingStepper, SignUp, CreateCompany, Invite, Confirm } from './pages/onboarding';
 import { LandingPage } from "./pages";
 
 function App() {
@@ -29,19 +29,20 @@ function App() {
 
                     {/* Forgot/Reset/Verify */}
                     <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/verify-reset" element={<VerifyReset />} />
                     <Route path="/reset-password" element={<ResetPassword />} />
                     <Route path="/verify-code" element={<VerificationCode />} />
 
                     {/* Main app */}
-                    <Route path="/dashboard/*" 
-                        element= { 
-                            <ProtectedRoute> 
-                                <Dashboard /> 
+                    <Route path="/dashboard/*"
+                        element={
+                            <ProtectedRoute>
+                                <Dashboard />
                             </ProtectedRoute>
                         } />
-                    
+
                     <Route path="/unauthorized" element={<Unauthorized />} />
-                    
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </Router>

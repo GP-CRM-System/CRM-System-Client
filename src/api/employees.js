@@ -27,3 +27,8 @@ export const getEmployeeById = async (id) => {
   const response = await API.get(ENDPOINTS.EMPLOYEE.GetOne(id));
   return response.data;
 };
+
+export const inviteEmployee = async (email) => {
+  const response = await API.post(ENDPOINTS.EMPLOYEE.INVITE, { email });
+  return response.data;
+};

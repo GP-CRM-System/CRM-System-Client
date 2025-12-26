@@ -28,7 +28,7 @@ const Security = () => {
     };
 
     const changePasswordMutation = useMutation({
-        mutationFn: (data) => API.Auth.resetPassword(user?._id, data),
+        mutationFn: (data) => API.Auth.changePassword(data),
         onSuccess: () => {
             toast.success("Password changed successfully");
             setPasswords({ oldPassword: '', newPassword: '', confirmPassword: '' });
@@ -59,7 +59,7 @@ const Security = () => {
         changePasswordMutation.mutate({
             oldPassword: passwords.oldPassword,
             newPassword: passwords.newPassword,
-            confirmNewPassword: passwords.confirmPassword
+            confirmPassword: passwords.confirmPassword
         });
     };
 

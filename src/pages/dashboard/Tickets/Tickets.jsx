@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { useTickets } from "./useTickets";
-import { useContacts } from "../Companies/useContacts";
-import { useEmployees } from "../Companies/useEmployees";
 import { useDeleteTicket } from "./useDeleteTicket";
 import toast from "react-hot-toast";
 import { useUpdateTicket } from "./useEditTicket";
@@ -11,6 +9,7 @@ import Pagination from "../Contacts/Pagination";
 import TicketTable from "./TicketTable";
 import TicketFormModal from "./TicketFormModal";
 import TicketDetailModal from "./TicketDetailModal";
+import { useLookupData } from "../../../hooks/useLookupData";
 
 export default function Tickets() {
   //main hooks
@@ -36,8 +35,7 @@ export default function Tickets() {
   ///// custome hooks
   const { isLoading, tickets, total, currentPage, currentLimit, setPage } =
     useTickets();
-  const { contacts, isLoadingContacts } = useContacts();
-  const { employees } = useEmployees();
+  const { contacts, employees, isLoading: isLoadingLookups } = useLookupData();
   //create
   const createTicketMutation = useCreateTicket(
     () => {
@@ -304,7 +302,7 @@ export default function Tickets() {
           onSubmit={handleFormSubmit}
           contacts={contacts}
           employees={employees}
-          isLoadingContacts={isLoadingContacts}
+          isLoadingContacts={isLoadingLookups}
           isSubmitting={
             editingTicket
               ? updateTicketMutation.isLoading

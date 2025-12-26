@@ -72,10 +72,10 @@ export default function DealsTable({
           </div>
         </div>
       )}
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
-            <th className="py-4 px-4 text-center align-middle font-semibold">
+      <table className="w-full text-sm border-collapse">
+        <thead className="bg-gray-50/50">
+          <tr className="border-y border-gray-100">
+            <th className="py-4 px-4 text-center w-12">
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
@@ -83,25 +83,25 @@ export default function DealsTable({
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Deal Name
             </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Company
             </th>
-            <th className="py-4 px-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Contact
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Owner
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Stage
             </th>
-            <th className="py-4 px-4 text-center align-middle"></th>
+            <th className="py-4 px-4 text-center w-12"></th>
           </tr>
         </thead>
 
@@ -120,9 +120,10 @@ export default function DealsTable({
             </tr>
           ) : (
             deals.map((deal, itemIndex) => {
-              const contact = getContact(deal.contact?._id);
-              const owner = getOwner(deal.owner?._id);
-              const company = getCompany(deal.company?._id);
+              // Try to get from local lists, fallback to nested object if it exists
+              const contact = getContact(deal.contact?._id) || (typeof deal.contact === 'object' ? deal.contact : null);
+              const owner = getOwner(deal.owner?._id) || (typeof deal.owner === 'object' ? deal.owner : null);
+              const company = getCompany(deal.company?._id) || (typeof deal.company === 'object' ? deal.company : null);
 
               return (
                 <tr
@@ -138,11 +139,11 @@ export default function DealsTable({
                     />
                   </td>
 
-                  <td className="py-4 px-4 text-left font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle">
                     {deal.name}
                   </td>
 
-                  <td className="py-4 px-4 text-center hidden lg:table-cell">
+                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell align-middle">
                     {company ? (
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
@@ -172,7 +173,7 @@ export default function DealsTable({
                     )}
                   </td>
 
-                  <td className="py-4 px-4 text-left">
+                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
                     {contact ? (
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
@@ -198,21 +199,23 @@ export default function DealsTable({
                     )}
                   </td>
 
-                  <td className="py-4 px-4 text-center hidden lg:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {owner?.fullName || owner?.name || "-"}
                   </td>
 
-                  <td className="py-4 px-4 text-center hidden sm:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {formatDate(deal.createdAt)}
                   </td>
 
-                  <td className="py-4 px-4 text-center hidden sm:table-cell">
-                    <span className="font-medium px-3 py-1 bg-blue-50 text-blue-500 rounded-full text-xs uppercase tracking-wider">
-                      {typeof deal.stage === 'object' ? (deal.stage?.name || deal.stage?.stageType || "New") : (deal.stage || "New")}
+                  <td className="py-4 px-4 text-center hidden sm:table-cell align-middle">
+                    <span className="font-semibold px-3 py-1 bg-blue-50 text-blue-500 rounded-full text-xs uppercase tracking-wider whitespace-nowrap">
+                      {Array.isArray(deal.stage) && deal.stage.length > 0
+                        ? (deal.stage[deal.stage.length - 1].name || "New")
+                        : (typeof deal.stage === 'object' ? (deal.stage?.name || deal.stage?.stageType || "New") : (deal.stage || "New"))}
                     </span>
                   </td>
 
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();

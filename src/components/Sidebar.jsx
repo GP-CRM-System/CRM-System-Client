@@ -62,7 +62,7 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                 </button>
 
                 <div className="flex-1 flex flex-col min-h-0">
-                    <nav className="flex-1 px-4 py-6 overflow-y-auto custom-scrollbar flex flex-col">
+                    <nav className={`flex-1 px-4 py-6 flex flex-col custom-scrollbar ${isOpen ? 'overflow-y-auto' : 'overflow-visible'}`}>
                         <ul className="space-y-2">
                             {navItems.map((item) => {
                                 const linkContent = (
@@ -96,15 +96,27 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                     </NavLink>
                                 );
 
+                                const contentWithLabel = (
+                                    <li key={item.to} className="relative group/sidebar-item">
+                                        {linkContent}
+                                        {!isOpen && (
+                                            <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-[11px] font-bold rounded-md opacity-0 group-hover/sidebar-item:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-[100] shadow-lg tracking-wide uppercase">
+                                                {item.label}
+                                                <div className="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-gray-900" />
+                                            </div>
+                                        )}
+                                    </li>
+                                );
+
                                 if (item.permission) {
                                     return (
                                         <PermissionGuard permission={item.permission} any={item.any} key={item.to}>
-                                            <li>{linkContent}</li>
+                                            {contentWithLabel}
                                         </PermissionGuard>
                                     );
                                 }
 
-                                return <li key={item.to}>{linkContent}</li>;
+                                return contentWithLabel;
                             })}
                         </ul>
 
@@ -112,7 +124,7 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                         <div className="flex-1 min-h-[10px]" />
 
                         <ul className="space-y-2 pt-4">
-                            <li>
+                            <li className="relative group/sidebar-item">
                                 <NavLink
                                     to='/dashboard/settings'
                                     onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
@@ -126,7 +138,6 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                 >
                                     {({ isActive }) => (
                                         <div className="flex items-center gap-3">
-                                            {/* Using a placeholder or finding a gear icon would be better, for now keeping code clean */}
                                             <img
                                                 src={contact}
                                                 alt="Settings icon"
@@ -141,8 +152,14 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                         </div>
                                     )}
                                 </NavLink>
+                                {!isOpen && (
+                                    <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-[11px] font-bold rounded-md opacity-0 group-hover/sidebar-item:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-lg tracking-wide uppercase">
+                                        Settings
+                                        <div className="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-gray-900" />
+                                    </div>
+                                )}
                             </li>
-                            <li>
+                            <li className="relative group/sidebar-item">
                                 <button
                                     onClick={onLogout}
                                     className={`w-full flex items-center text-gray-500 transition-all hover:bg-red-50 hover:text-red-600 rounded-lg group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
@@ -157,6 +174,12 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                         )}
                                     </div>
                                 </button>
+                                {!isOpen && (
+                                    <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-[11px] font-bold rounded-md opacity-0 group-hover/sidebar-item:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-50 shadow-lg tracking-wide uppercase">
+                                        Logout
+                                        <div className="absolute top-1/2 -left-1 -translate-y-1/2 border-4 border-transparent border-r-gray-900" />
+                                    </div>
+                                )}
                             </li>
                         </ul>
                     </nav>

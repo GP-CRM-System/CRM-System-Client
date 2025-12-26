@@ -1,27 +1,47 @@
 import React from "react";
-import { email as emailIcon } from "../assets";
-
-import {forgotPassword} from "../assets";
-
+import { email as emailIcon, forgotPassword as forgotPasswordImg } from "../assets";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { Navigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { forgotPassword as forgotPasswordApi } from "../api/auth";
+import { toast } from "react-hot-toast";
 
 const ForgotPassword = () => {
   const initialValues = { email: "" };
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: forgotPasswordApi,
+    onSuccess: (data) => {
+      toast.success(data.data || "Reset link sent to your email!");
+    },
+    onError: (error) => {
+      toast.error(error?.response?.data?.error || error?.message || "Failed to send reset link");
+    },
+  });
 
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email").required("Email is required"),
   });
 
-  const handleSubmit = (values, { setSubmitting, resetForm }) => {};
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      await forgotPasswordMutation.mutateAsync(values.email);
+    } catch (err) {
+      console.error("Forgot password error:", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-white">
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
         <div className="w-full max-w-md">
           <div className="text-left mb-10">
-            <h1 className="text-[28px]  font-semibold text-(--color-text-title) mb-4">
+            <h1
+              className="text-[28px] font-semibold mb-4"
+              style={{ color: "var(--color-text-title)" }}
+            >
               Forgot password?
             </h1>
             <p className="text-[20px] font-[400] text-[#8A8A8A] mb-[44px]">
@@ -42,7 +62,7 @@ const ForgotPassword = () => {
                       <img
                         src={emailIcon}
                         alt="Email icon"
-                        className="w-5 h-5 text-gray-400"
+                        className="w-5 h-5 opacity-60"
                       />
                     </div>
 
@@ -57,26 +77,34 @@ const ForgotPassword = () => {
                   <ErrorMessage
                     name="email"
                     component="div"
-                    className="text-(--color-error) text-xs mt-1"
+                    className="text-xs mt-1"
+                    style={{ color: "var(--color-error)" }}
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-[#4A90E2] text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 mt-8"
-                  disabled={isSubmitting}
+                  className="w-full text-white font-bold py-3 px-4 rounded-lg hover:opacity-90 transition duration-300 mt-8"
+                  style={{ backgroundColor: "var(--color-primary-500)" }}
+                  disabled={isSubmitting || forgotPasswordMutation.isPending}
                 >
-                  {isSubmitting ? "Sending..." : "Send Code"}
+                  {forgotPasswordMutation.isPending ? "Sending..." : "Send Code"}
                 </button>
               </Form>
             )}
           </Formik>
+
+          <div className="mt-8 text-center">
+            <a href="/login" className="text-sm font-semibold hover:underline" style={{ color: "var(--color-primary-500)" }}>
+              Back to Login
+            </a>
+          </div>
         </div>
       </div>
 
-      <div className="hidden lg:flex w-1/2 bg-(--color-primary-500) items-center justify-center p-12">
+      <div className="hidden lg:flex w-1/2 items-center justify-center p-12" style={{ backgroundColor: "var(--color-primary-500)" }}>
         <img
-          src={forgotPassword}
+          src={forgotPasswordImg}
           alt="Forgot Password Illustration"
           className="w-full max-w-lg h-[366px]"
         />

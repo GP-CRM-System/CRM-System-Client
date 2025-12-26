@@ -4,13 +4,11 @@ import { useCreateDeal } from "./useCreateDeals";
 import toast from "react-hot-toast";
 import { useUpdateDeal } from "./useEditDeals";
 import { useDeleteDeal } from "./useDeleteDeals";
-import { useContacts } from "../Companies/useContacts";
-import { useEmployees } from "../Companies/useEmployees";
 import PageLayout from "../../../components/PageLayout";
 import DealsTable from "./DealsTable";
 import DealsFormModal from "./DealsFormModal";
 import Pagination from "../Contacts/Pagination";
-import useCompanies from "../Companies/useCompanies";
+import { useLookupData } from "../../../hooks/useLookupData";
 
 export default function Deals() {
   //main hooks
@@ -32,9 +30,7 @@ export default function Deals() {
   //// customs hooks
   const { isLoading, deals, total, currentPage, currentLimit, setPage } =
     useDeals();
-  const { contacts, isLoadingContacts } = useContacts();
-  const { employees } = useEmployees();
-  const { companies } = useCompanies();
+  const { contacts, companies, employees, isLoading: isLoadingLookups } = useLookupData();
 
   // Create
   const createDealMutation = useCreateDeal(
@@ -259,7 +255,7 @@ export default function Deals() {
           contacts={contacts}
           employees={employees}
           companies={companies}
-          isLoadingContacts={isLoadingContacts}
+          isLoadingContacts={isLoadingLookups}
           isSubmitting={
             editingDeal
               ? updateDealMutation.isLoading

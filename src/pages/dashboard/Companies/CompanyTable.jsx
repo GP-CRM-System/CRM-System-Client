@@ -60,10 +60,10 @@ export default function CompanyTable({
           </div>
         </div>
       )}
-      <table className="w-full text-sm">
-        <thead>
-          <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
-            <th className="py-4 px-4 text-center align-middle font-semibold">
+      <table className="w-full text-sm border-collapse">
+        <thead className="bg-gray-50/50">
+          <tr className="border-y border-gray-100">
+            <th className="py-4 px-4 text-center w-12">
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
@@ -72,27 +72,27 @@ export default function CompanyTable({
               />
             </th>
 
-            <th className="py-4 pl-2 pr-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Company Name
             </th>
 
-            <th className="py-4 px-4 text-left align-middle font-semibold">
+            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
               Contact
             </th>
 
-            <th className="py-4 px-4 text-left align-middle font-semibold hidden md:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden md:table-cell">
               E-mail
             </th>
 
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden lg:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Type
             </th>
 
-            <th className="py-4 px-4 text-center align-middle font-semibold hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
 
-            <th className="py-4 px-4 text-center align-middle"></th>
+            <th className="py-4 px-4 text-center w-12"></th>
           </tr>
         </thead>
 
@@ -116,7 +116,7 @@ export default function CompanyTable({
                   key={company._id || itemIndex}
                   className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
                 >
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-4 px-4 text-center w-12 align-middle">
                     <input
                       type="checkbox"
                       className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
@@ -124,7 +124,7 @@ export default function CompanyTable({
                       onChange={() => onSelectOne(company._id)}
                     />
                   </td>
-                  <td className="py-4 px-4 text-left">
+                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                         <img
@@ -147,7 +147,7 @@ export default function CompanyTable({
                     </div>
                   </td>
 
-                  <td className="py-4 px-4 text-left">
+                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
                     {getContactName(company.contact) !== "-" ? (
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
@@ -178,21 +178,19 @@ export default function CompanyTable({
                     )}
                   </td>
 
-                  <td className="py-4 px-4 text-left hidden md:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden md:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {company.email || "-"}
                   </td>
 
-                  <td className="py-4 px-4 text-center hidden lg:table-cell">
-                    {/* <span className="font-medium px-3 py-1 bg-gray-50 text-gray-600 rounded-full text-xs"> */}
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {company.type || "N/A"}
-                    {/* </span> */}
                   </td>
 
-                  <td className="py-4 px-4 text-center hidden sm:table-cell font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
                     {formatDate(company.createdAt)}
                   </td>
 
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)]">
+                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
