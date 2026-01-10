@@ -2,16 +2,18 @@ import { left_blur } from "../../assets/icons/landingPage";
 
 export default function LandingPageAbout() {
     return (
-        <div
-            id="about"
-            className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 relative max-w-[1440px] mx-auto overflow-hidden"
-        >
-            {/* Left Blur */}
-            <img 
+        <>
+                            <img 
                 src={left_blur} 
                 alt="" 
-                className="absolute left-0 top-[10%] w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 -z-10 pointer-events-none"
+                className="absolute left-0 w-40 sm:w-48 md:w-56 lg:w-72 xl:w-96 z-10 pointer-events-none"
             />
+        <div
+            id="about"
+            className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 pb-8 relative max-w-[1440px] mx-auto overflow-visible"
+        >
+            {/* Left Blur */}
+
             <div>
                 <h1 className="font-medium text-2xl sm:text-3xl lg:text-[36px]">
                     About <span className="text-[#4A90E2]">Nexify</span>
@@ -31,13 +33,13 @@ export default function LandingPageAbout() {
                 </p>
             </div>
 
-            <div className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 p-4 sm:p-6 shadow-sm rounded-xl mb-1">
+            <div className="mt-8 sm:mt-12 lg:mt-16 xl:mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 p-4 sm:p-6 shadow-lg rounded-xl mb-1 bg-white whitespace-nowrap">
                 <div className="p-4 sm:p-5 text-center">
                     <h1 className="font-medium text-2xl sm:text-3xl lg:text-[36px]">
                         25 M+
                     </h1>
                     <p className="font-medium text-[#8A8A8A] text-base sm:text-lg lg:text-xl xl:text-[24px] mt-1">
-                        Active User
+                        Active Users
                     </p>
                 </div>
                 <div className="p-4 sm:p-5 text-center">
@@ -66,5 +68,7 @@ export default function LandingPageAbout() {
                 </div>
             </div>
         </div>
+        </>
+        
     );
 }

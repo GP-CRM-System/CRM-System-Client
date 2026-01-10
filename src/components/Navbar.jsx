@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence } from "framer-motion";
 import { notification } from "../assets/icons/navbar";
 import useAuthStore from "../store/authStore";
+import NotificationModal from "./NotificationModal";
 
 const Navbar = () => {
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const user = useAuthStore((state) => state.user);
     const userName = user?.fullName;
     const permissions = useAuthStore((state) => state.permissions);
@@ -52,16 +55,30 @@ const Navbar = () => {
 
             <div className="flex items-center gap-6">
                 {/* Notification Bell */}
-                <button className="relative p-2 text-gray-400 border rounded-full border-gray-200 hover:text-gray-600 hover:bg-gray-50 transition-all">
+                <button 
+                    onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                    className="relative p-2 text-gray-400 border rounded-full border-gray-200 hover:text-gray-600 hover:bg-gray-50 transition-all"
+                >
                     <div className="flex justify-center relative">
                         <img
-                        src={notification}
-                        className="w-6 h-6"
-                        alt="notification"
+                            src={notification}
+                            className="w-6 h-6"
+                            alt="notification"
                         />
-                        {/* <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span> */}
+                        {/* Notification Badge - small red dot */}
+                        <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
                     </div>
                 </button>
+
+                {/* Notification Modal */}
+                <AnimatePresence>
+                    {isNotificationOpen && (
+                        <NotificationModal
+                            isOpen={isNotificationOpen}
+                            onClose={() => setIsNotificationOpen(false)}
+                        />
+                    )}
+                </AnimatePresence>
 
                 {/* User Profile */}
                 <div className="flex items-center gap-3 pl-4 border-l border-gray-100">

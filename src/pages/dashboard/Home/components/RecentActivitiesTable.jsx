@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { dotsIcon } from '../../../../assets';
+import { MoreVertical, Eye, Pencil, Trash2 } from 'lucide-react';
+import { edit, trash } from '../../../../assets';
 import Loader from '../../../../components/ui/Loader';
 
 const RecentActivitiesTable = ({ activities = [], isLoading }) => {
@@ -55,25 +56,20 @@ const RecentActivitiesTable = ({ activities = [], isLoading }) => {
                 <button className="text-[var(--color-primary-600)] text-sm font-semibold hover:underline">View all</button>
             </div>
 
-            {/* Bulk Action Bar - Perfectly aligned as per user's last edit */}
+            {/* Bulk Action Bar - Matching ContactTable style */}
             {selectedItems.length > 0 && (
-                <div className="px-6 py-4">
-                    <div
-                        className="flex items-center justify-between px-4"
-                        style={{
-                            height: '64px',
-                            background: 'rgba(108, 165, 231, 0.15)',
-                            borderRadius: '8px'
-                        }}
-                    >
-                        <div className="flex items-center">
-                            <span className="text-gray-900 font-medium text-lg">
+                <div className="p-6 pb-0">
+                    <div className="mb-4">
+                        <div
+                            className="flex items-center justify-between px-6 py-3 rounded-lg"
+                            style={{
+                                backgroundColor: '#E8F2FD'
+                            }}
+                        >
+                            <span className="text-sm font-medium" style={{ color: '#4A5568' }}>
                                 {selectedItems.length} {selectedItems.length === 1 ? 'item' : 'items'} selected
                             </span>
-                        </div>
-
-                        <div className="flex items-center">
-                            <button className="bg-white text-red-500 px-10 py-2.5 rounded-xl text-sm font-bold border border-red-50 hover:bg-red-50 transition-colors shadow-sm">
+                            <button className="px-4 py-2 bg-white text-red-600 rounded-lg hover:bg-red-700 hover:text-white transition-colors font-medium">
                                 Delete
                             </button>
                         </div>
@@ -82,25 +78,25 @@ const RecentActivitiesTable = ({ activities = [], isLoading }) => {
             )}
 
             {/* Table Area */}
-            <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                    <thead>
-                        <tr className="text-[var(--color-text-body)] border-b border-[var(--color-border)]">
-                            <th className="py-4 w-10 text-center pl-6">
+            <div className="overflow-x-auto min-h-[400px]">
+                <table className="w-full text-sm text-[var(--color-text-body)] border-collapse">
+                    <thead className="bg-gray-50/50">
+                        <tr className="border-y border-gray-100">
+                            <th className="py-4 px-4 text-center w-12">
                                 <input
                                     type="checkbox"
-                                    className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)] cursor-pointer"
+                                    className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium cursor-pointer"
                                     checked={selectedItems.length === displayActivities.length && displayActivities.length > 0}
                                     onChange={toggleSelectAll}
                                 />
                             </th>
-                            <th className="py-4 font-semibold text-left pl-4">Process</th>
-                            <th className="py-4 font-semibold text-center">Customer Name</th>
-                            <th className="py-4 font-semibold text-center hidden md:table-cell">E-mail</th>
-                            <th className="py-4 font-semibold text-center hidden lg:table-cell">Company</th>
-                            <th className="py-4 font-semibold text-center hidden sm:table-cell">Date</th>
-                            <th className="py-4 font-semibold text-center">Status</th>
-                            <th className="py-4 w-10 text-center pr-6"></th>
+                            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">Process</th>
+                            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">Customer Name</th>
+                            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden md:table-cell">E-mail</th>
+                            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">Company</th>
+                            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden sm:table-cell">Date</th>
+                            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">Status</th>
+                            <th className="py-4 px-4 text-center w-12"></th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
@@ -112,25 +108,32 @@ const RecentActivitiesTable = ({ activities = [], isLoading }) => {
                             </tr>
                         ) : displayActivities.length === 0 ? (
                             <tr>
-                                <td colSpan={8} className="p-8 text-center text-gray-400">
+                                <td colSpan={8} className="py-12 text-center text-gray-500 font-medium">
                                     No recent activities found.
                                 </td>
                             </tr>
                         ) : (
                             displayActivities.map((activity, index) => (
-                                <tr key={index} className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]">
-                                    <td className="py-4 text-center pl-6 font-medium">
+                                <tr 
+                                    key={index} 
+                                    className={`hover:bg-blue-50/30 transition-colors ${
+                                        selectedItems.includes(index) ? "bg-blue-50/50" : ""
+                                    }`}
+                                >
+                                    <td className="py-4 px-4 text-center w-12 align-middle">
                                         <input
                                             type="checkbox"
-                                            className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)] cursor-pointer"
+                                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
                                             checked={selectedItems.includes(index)}
                                             onChange={() => toggleSelect(index)}
                                         />
                                     </td>
-                                    <td className="py-4 text-left pl-4 whitespace-nowrap text-sm font-medium text-[var(--color-text-title)]">
-                                        {activity.process}
+                                    <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
+                                        <span className="font-medium text-[var(--color-text-title)]">
+                                            {activity.process}
+                                        </span>
                                     </td>
-                                    <td className="py-4 whitespace-nowrap">
+                                    <td className="py-4 px-4 text-center whitespace-nowrap align-middle">
                                         <div className="flex items-center justify-center gap-3">
                                             <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
                                                 <img
@@ -149,49 +152,70 @@ const RecentActivitiesTable = ({ activities = [], isLoading }) => {
                                             <span className="font-medium text-[var(--color-text-title)]">{activity.customerName}</span>
                                         </div>
                                     </td>
-                                    <td className="py-4 text-center whitespace-nowrap text-sm font-medium text-[var(--color-text-title)] hidden md:table-cell">
+                                    <td className="py-4 px-4 text-center whitespace-nowrap hidden md:table-cell font-medium text-[var(--color-text-title)] align-middle">
                                         {activity.email}
                                     </td>
-                                    <td className="py-4 text-center whitespace-nowrap text-sm font-medium text-[var(--color-text-title)] hidden lg:table-cell">
+                                    <td className="py-4 px-4 text-center whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
                                         {activity.company}
                                     </td>
-                                    <td className="py-4 text-center whitespace-nowrap text-sm font-medium text-[var(--color-text-title)] hidden sm:table-cell">
+                                    <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
                                         {activity.date}
                                     </td>
-                                    <td className="py-4 text-center whitespace-nowrap">
-                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${statusStyles[activity.status] || "bg-gray-100 text-gray-500"}`}>
+                                    <td className="py-4 px-4 text-center whitespace-nowrap align-middle">
+                                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${statusStyles[activity.status] || "bg-gray-100 text-gray-500"}`}>
                                             {activity.status}
                                         </span>
                                     </td>
-                                    <td className="py-4 text-center pr-6 text-[var(--color-text-title)] relative">
+                                    <td className="py-4 px-4 text-center relative align-middle">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setOpenMenuId(openMenuId === index ? null : index);
                                             }}
-                                            className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors"
+                                            className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                                         >
-                                            <img src={dotsIcon} alt="options" />
+                                            <MoreVertical className="w-5 h-5" />
                                         </button>
 
                                         {openMenuId === index && (
-                                            <div className={`absolute right-full mr-3 ${index >= displayActivities.length - 2 ? 'bottom-0' : 'top-1/2 -translate-y-1/2'} bg-white shadow-xl rounded-xl border border-gray-100 py-2 w-36 z-50`}>
+                                            <div className={`absolute right-full mr-3 ${index >= displayActivities.length - 2 ? 'bottom-0' : 'top-1/2 -translate-y-1/2'} bg-white shadow-xl rounded-xl border border-gray-100 py-2 w-40 z-50`}>
                                                 <button
-                                                    onClick={() => {
-                                                        // Activity specific action or generic edit
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        console.log('View profile:', activity);
+                                                        // TODO: Navigate to profile or show details
                                                         setOpenMenuId(null);
                                                     }}
-                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700 font-medium"
+                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-blue-50 text-gray-700 font-medium flex items-center gap-2 transition-colors"
                                                 >
-                                                    View Details
+                                                    <Eye className="w-4 h-4" />
+                                                    View Profile
                                                 </button>
                                                 <button
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        console.log('Edit activity:', activity);
+                                                        // TODO: Open edit modal or navigate to edit page
                                                         setOpenMenuId(null);
                                                     }}
-                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-600 font-medium"
+                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-blue-50 text-gray-700 font-medium flex items-center gap-2 transition-colors"
                                                 >
-                                                    Ignore
+                                                    <img src={edit} alt="Edit" />
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (window.confirm(`Are you sure you want to delete this activity for ${activity.customerName}?`)) {
+                                                            console.log('Delete activity:', activity);
+                                                            // TODO: Call delete API and update state
+                                                        }
+                                                        setOpenMenuId(null);
+                                                    }}
+                                                    className="w-full px-4 py-2 text-left text-sm hover:bg-red-50 text-red-600 font-medium flex items-center gap-2 transition-colors"
+                                                >
+                                                    <img src={trash} alt="Delete" />
+                                                    Delete
                                                 </button>
                                             </div>
                                         )}

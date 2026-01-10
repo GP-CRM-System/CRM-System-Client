@@ -5,7 +5,7 @@ export default function LandingPagePricing() {
     return (
         <div
             id="pricing"
-            className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 relative max-w-[1440px] mx-auto overflow-hidden"
+            className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 pb-8 relative max-w-[1440px] mx-auto overflow-visible"
         >
             {/* Left Blur */}
             <img 
@@ -18,7 +18,7 @@ export default function LandingPagePricing() {
                 Your Choose The Perfect <span className="text-[#4A90E2]">Plan</span> For
                 Your Business{" "}
             </h1>
-            <div className="flex flex-col lg:flex-row gap-5 sm:gap-6 justify-center mt-8 sm:mt-12 md:mt-16 lg:mt-20 items-center lg:items-stretch">
+            <div className="flex flex-col lg:flex-row gap-5 sm:gap-6 justify-center mt-8 sm:mt-12 md:mt-16 lg:mt-20 items-center lg:items-stretch mb-6">
                 <div className="h-auto w-full max-w-[399px] border border-[#8A8A8A] rounded-[12px] hover:scale-105 duration-200 flex flex-col">
                     <div className="text-center mt-7">
                         <h1 className="font-medium text-[28px] sm:text-[32px]">Free</h1>
@@ -68,7 +68,7 @@ export default function LandingPagePricing() {
                     </div>
                 </div>
 
-                <div className="h-auto w-full max-w-[399px] relative border-2 border-[#4A90E2] rounded-[12px] hover:scale-105 duration-200 flex flex-col shadow-lg">
+                <div className="h-auto w-full max-w-[399px] relative border-2 border-[#4A90E2] rounded-[12px] hover:scale-105 duration-200 flex flex-col">
                     <div className="absolute -top-4 sm:-top-6 left-1/2 -translate-x-1/2 bg-[#4A90E2] text-white px-4 py-2 rounded-[7px] text-base sm:text-[18px] font-medium shadow-md whitespace-nowrap">
                         Most Popular
                     </div>
