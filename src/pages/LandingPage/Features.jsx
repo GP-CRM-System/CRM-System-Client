@@ -32,7 +32,7 @@ export default function LandingPageFeatures() {
     return (
         <div
             id="features"
-            className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 relative max-w-[1440px] mx-auto overflow-hidden"
+            className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 pb-8 relative max-w-[1440px] mx-auto overflow-visible"
         >
             {/* Right Blur */}
             <img 
@@ -54,7 +54,7 @@ export default function LandingPageFeatures() {
                         className="flex flex-col items-center p-5    hover:shadow-md transition-shadow"
                     >
                         <img src={card.img} alt={card.h1} className="mb-5 w-16 h-16" />
-                        <h1 className="font-medium text-xl sm:text-2xl text-center mb-2">
+                        <h1 className="font-medium text-xl sm:text-2xl text-center mb-2 whitespace-nowrap">
                             {card.h1}
                         </h1>
 

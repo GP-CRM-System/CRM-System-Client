@@ -4,17 +4,12 @@ import { HashLink } from "react-router-hash-link";
 
 export default function HowItWorks() {
     return (
-        <div id="how-it-works" className="relative px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] py-12 md:py-16 lg:py-20 overflow-hidden">
+        <div id="how-it-works" className="relative px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] py-12 md:py-16 lg:py-20 pb-12 overflow-visible">
             {/* Blur Images */}
-            <img 
-                src={left_blur} 
-                alt="" 
-                className="absolute left-0 top-0 w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 -z-10 opacity-70 pointer-events-none"
-            />
             <img 
                 src={right_blur} 
                 alt="" 
-                className="absolute right-0 bottom-0 w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 -z-10 opacity-70 pointer-events-none"
+                className="absolute right-0 top-2 w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 z-10 pointer-events-none"
             />
 
             <div className="max-w-[1440px] mx-auto">
@@ -91,6 +86,12 @@ export default function HowItWorks() {
                         </div>
                     </div>
                 </div>
+
+                <img 
+                src={left_blur} 
+                alt="" 
+                className="absolute left-0 -bottom-2 w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 z-10 pointer-events-none"
+            />
             </div>
         </div>
     );

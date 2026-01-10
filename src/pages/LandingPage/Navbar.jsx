@@ -17,7 +17,7 @@ export default function Navbar() {
       <img 
           src={right_blur} 
           alt="" 
-          className="absolute right-0 sm:w-40 md:w-48 lg:w-64 xl:w-80 z-10 pointer-events-none"
+          className="absolute right-0 -top-39 sm:w-40 md:w-48 lg:w-64 xl:w-80 z-10 pointer-events-none"
       />
       <img 
           src={left_blur} 
@@ -162,17 +162,9 @@ export default function Navbar() {
             <Link to="/login" className="block">
               <button
                 onClick={closeMenu}
-                className="text-[#4A90E2] text-base font-medium w-full py-2.5 rounded-lg hover:bg-blue-50 transition-colors"
-              >
-                Login
-              </button>
-            </Link>
-            <Link to="/login" className="block">
-              <button
-                onClick={closeMenu}
                 className="text-white text-base font-medium bg-[#4A90E2] w-full py-2.5 rounded-lg hover:bg-[#3a7bc8] transition-colors"
               >
-                Sign Up
+                Login
               </button>
             </Link>
           </div>
