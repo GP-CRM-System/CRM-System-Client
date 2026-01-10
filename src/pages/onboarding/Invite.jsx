@@ -116,6 +116,17 @@ const InviteEmployees = () => {
                 >
                   {isSubmitting ? "Sending..." : "Invite"}
                 </button>
+                
+                <button
+                  type="button"
+                  onClick={() => {
+                    toast.info('You can invite team members later from Settings.');
+                    navigate('/onboarding/confirm');
+                  }}
+                  className="w-full border-2 border-gray-300 text-gray-700 font-bold py-3 px-4 rounded-lg hover:bg-gray-50 transition duration-300"
+                >
+                  Skip for Now
+                </button>
               </Form>
             )}
           </Formik>

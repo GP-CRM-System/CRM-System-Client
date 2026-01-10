@@ -300,28 +300,18 @@ export default function CompanyFormModal({
             onChange={(e) => onFormChange("numberOfEmployee", e.target.value)}
           />
         </div>
-        <div className="flex gap-3 mt-6 mb-5">
-          {/* Apply Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-1/2 bg-[#4A90E2] hover:bg-[#3A78BD] text-white py-2 rounded-md transition disabled:opacity-50"
-          >
-            {isSubmitting ? "Creating..." : "Apply"}
-          </button>
-
-          {/* Clear Button */}
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-1/2 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-          >
-            Clear
-          </button>
-        </div>
       </form>
-
-      {/* Submit Button */}
+      
+      <div className="sticky bottom-0 left-0 w-full px-6 py-4 bg-white border-t border-gray-100 z-20 mt-auto">
+        <button
+          type="submit"
+          form="company-form"
+          className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Creating...' : 'Create Company'}
+        </button>
+      </div>
     </SideModal>
   );
 }

@@ -22,7 +22,13 @@ const Home = () => {
     });
 
     if (isLoading) {
-        return <Loader text="Loading Dashboard..." />;
+        return (
+            <div className="p-6">
+                <div className="flex items-center justify-center h-96">
+                    <Loader fullScreen={false} text="Loading Dashboard..." />
+                </div>
+            </div>
+        );
     }
 
     const data = dashboardData?.data || {};

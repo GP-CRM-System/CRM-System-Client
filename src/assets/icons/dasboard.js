@@ -3,3 +3,7 @@ export { default as arrowDown } from './dashboard/arrow-down.svg';
 export { default as user } from './dashboard/user.svg';
 export { default as edit } from './dashboard/edit.svg';
 export { default as trash } from './dashboard/trash.svg';
+export { default as plus } from './dashboard/plus.svg';
+export { default as filter } from './dashboard/filter.svg';
+// export { default as close } from './dashboard/close.svg';
+export { default as search } from './dashboard/search.svg';

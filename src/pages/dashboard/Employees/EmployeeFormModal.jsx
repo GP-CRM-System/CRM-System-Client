@@ -155,32 +155,18 @@ export default function EmployeeFormModal({
           </div>
         </div>
 
-        <div className="flex gap-3 mt-6 mb-5">
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-1/2 bg-[#4A90E2] hover:bg-[#3A78BD] text-white py-2 rounded-md transition disabled:opacity-50"
-          >
-            {isSubmitting
-              ? isEditing
-                ? "Updating..."
-                : "Creating..."
-              : isEditing
-              ? "Update"
-              : "Apply"}
-          </button>
-
-          {/* Clear/Cancel Button */}
-          <button
-            type="button"
-            onClick={onClose}
-            className="w-1/2 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
-          >
-            Cancel
-          </button>
-        </div>
       </form>
+      
+      <div className="sticky bottom-0 left-0 w-full px-6 py-4 bg-white border-t border-gray-100 z-20 mt-auto">
+        <button
+          type="submit"
+          form="employee-form"
+          className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Employee' : 'Create Employee')}
+        </button>
+      </div>
     </SideModal>
   );
 }

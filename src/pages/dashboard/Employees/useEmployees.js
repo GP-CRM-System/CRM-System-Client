@@ -13,6 +13,7 @@ export default function useEmployees() {
     queryKey: ["employees", page, limit],
     queryFn: () => getAllEmployees({ page, limit }),
     keepPreviousData: true,
+    retry: false,
   });
 
   const employees = employeesData?.data?.data || [];

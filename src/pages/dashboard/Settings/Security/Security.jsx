@@ -3,10 +3,8 @@ import { useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { CiRead, CiUnread } from "react-icons/ci";
 import { API } from '../../../../api';
-import useAuthStore from '../../../../store/authStore';
 
 const Security = () => {
-    const { user } = useAuthStore();
     const [passwords, setPasswords] = useState({
         oldPassword: '',
         newPassword: '',

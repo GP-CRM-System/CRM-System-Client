@@ -9,3 +9,16 @@ export { default as stars } from "./landing/stars.svg";
 export { default as face } from "./landing/face.svg";
 export { default as x } from "./landing/x.svg";
 export { default as insta } from "./landing/insta.svg";
+export { default as how } from "./landing/how.svg";
+
+export { default as left_blur } from "./landing/left_blur.svg";
+export { default as right_blur } from "./landing/right_blur.svg";
+
+export { default as arrow_left } from "./landing/arrow_left.svg";
+export { default as arrow_right } from "./landing/arrow_right.svg";
+
+export { default as play } from "./landing/play.svg";
+export { default as play_blue } from "./landing/play_blue.svg";
+
+export { default as maki_arrow_ri } from "./landing/maki_arrow_white.svg";
+export { default as maki_arrow_le } from "./landing/maki_arrow_blue.svg";

@@ -5,5 +5,6 @@ export { default as VerifyReset } from "./VerifyReset.jsx";
 export { default as VerificationCode } from "./VerificationCode.jsx";
 export { default as Unauthorized } from "./Unauthorized.jsx";
 export { default as NotFound } from "./NotFound.jsx";
-export { default as LandingPage } from "./LandingPage/LandingPage.jsx"
+export { default as LandingPage } from "./LandingPage/LandingPage.jsx";
+export { default as GoogleCallback } from "./GoogleCallback.jsx";
 export { default as Dashboard } from "./dashboard/Dashboard.jsx";

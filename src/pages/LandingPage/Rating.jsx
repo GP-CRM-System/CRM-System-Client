@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { person1 } from "../../assets";
-import { stars } from "../../assets/icons/landingPage";
+import { stars, arrow_left, arrow_right, right_blur } from "../../assets/icons/landingPage";
 
 export default function LandingPageRating() {
     const testimonials = [
@@ -83,27 +83,22 @@ export default function LandingPageRating() {
 
     return (
         <div
-            className="
-    flex mx-[100px] flex-col items-center px-4 mt-12
-    relative
-
-    before:content-[''] before:absolute before:top-[25%] before:right-0
-    before:h-full before:w-[70px] before:bg-[#0194FE]
-    before:blur-[120px] before:opacity-30 before:hidden
-
-    lg:before:block
-  "
+            className="flex flex-col items-center px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 relative max-w-[1440px] mx-auto overflow-hidden"
         >
-            <h1 className="max-w-[628px] m-auto  text-center  max-md:text-[24px] max-sm:text-[20px] font-medium text-[36px] max-md:mt-15 mt-31">
+            {/* Right Blur */}
+            <img 
+                src={right_blur} 
+                alt="" 
+                className="absolute right-0 top-[20%] w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 -z-10 opacity-60 pointer-events-none"
+            />
+            <h1 className="max-w-[628px] mx-auto text-center text-xl sm:text-2xl md:text-3xl lg:text-[36px] font-medium leading-tight">
                 Success Stories From <span className="text-[#4A90E2]">Happy</span>{" "}
                 Customers
             </h1>
 
-            <div className="flex items-center gap-4">
-                {/* Left button */}
-
+            <div className="hidden lg:flex items-center gap-4 mt-12 lg:mt-16 xl:mt-20 w-full overflow-hidden">
                 {/* Cards container: 3 fixed cards */}
-                <div className="flex gap-6 mt-30">
+                <div className="flex gap-6 w-full justify-center">
                     {[-1, 0, 1].map((offset) => {
                         const item = testimonials[getIndex(offset)];
                         const isCenter = offset === 0;
@@ -117,7 +112,8 @@ export default function LandingPageRating() {
     rounded-2xl 
     p-5 
     flex 
-    w-[400px] 
+    w-full
+    max-w-[400px]
     min-h-[296px] 
     flex-col 
     ${isCenter ? "transition-transform duration-800 ease-out" : ""}
@@ -127,9 +123,9 @@ export default function LandingPageRating() {
                                 <img
                                     src={stars}
                                     alt="rating"
-                                    className="w-[180px] -ml-8  mb-3"
+                                    className="w-[180px] -ml-8 mb-3"
                                 />
-                                <p className="text-left text-[20px] max-w-[355px] text-[#6C6C6C] -mt-5 mb-12">
+                                <p className="text-left text-lg sm:text-[20px] text-[#6C6C6C] -mt-5 mb-12">
                                     {item.text}
                                 </p>
                                 <div className="flex items-center gap-3">
@@ -148,18 +144,46 @@ export default function LandingPageRating() {
                     })}
                 </div>
             </div>
-            <div className="flex w-full justify-between mt-25">
+            
+            {/* Mobile version - single card */}
+            <div className="lg:hidden w-full mt-8">
+                <div className="bg-white rounded-2xl p-5 flex flex-col min-h-[296px] mx-auto max-w-[400px]">
+                    <img
+                        src={stars}
+                        alt="rating"
+                        className="w-[180px] -ml-8 mb-3"
+                    />
+                    <p className="text-left text-lg text-[#6C6C6C] -mt-5 mb-12">
+                        {testimonials[activeIndex].text}
+                    </p>
+                    <div className="flex items-center gap-3">
+                        <img
+                            src={testimonials[activeIndex].img}
+                            alt={testimonials[activeIndex].name}
+                            className="w-10 h-10 rounded-full object-cover"
+                        />
+                        <div className="flex flex-col text-left">
+                            <h1 className="font-semibold text-[14px]">{testimonials[activeIndex].name}</h1>
+                            <p className="text-[#6C6C6C] text-[12px]">{testimonials[activeIndex].country}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div className="flex w-full justify-between mt-8 sm:mt-12 lg:mt-16 max-w-[400px] lg:max-w-full">
                 <button
                     onClick={prev}
-                    className="rounded-full bg-[#f8fafc] border border-[#4A90E2] text-[#4A90E2] h-[40px] w-[40px] cursor-pointer z-20"
+                    className="rounded-full bg-white border-2 border-[#4A90E2] h-[50px] w-[50px] cursor-pointer z-20 hover:bg-[#4A90E2] hover:scale-110 transition-all flex items-center justify-center shadow-md group"
+                    aria-label="Previous"
                 >
-                    ←
+                    <img src={arrow_left} alt="Previous" className="w-6 h-6 filter group-hover:brightness-0 group-hover:invert" />
                 </button>
                 <button
                     onClick={next}
-                    className="rounded-full bg-[#4A90E2] text-white h-[40px] w-[40px] cursor-pointer z-10"
+                    className="rounded-full bg-[#4A90E2] border-2 border-[#4A90E2] h-[50px] w-[50px] cursor-pointer z-10 hover:bg-[#3a7bc8] hover:scale-110 transition-all flex items-center justify-center shadow-md"
+                    aria-label="Next"
                 >
-                    →
+                    <img src={arrow_right} alt="Next" className="w-6 h-6 filter brightness-0 invert" />
                 </button>
             </div>
         </div>

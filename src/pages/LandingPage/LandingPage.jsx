@@ -15,7 +15,7 @@ export default function LandingPage() {
             <LandingPageHero />
             <LandingPageAbout />
             <LandingPageFeatures />
-            {/* <HowItWorks /> */}
+            <HowItWorks />
             <LandingPagePricing />
             <LandingPageRating />
             <LandingPgaeReady />

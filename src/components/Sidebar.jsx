@@ -21,7 +21,7 @@ const navItems = [
     { to: "/dashboard/tickets", label: "Tickets", icon: tickets, permission: "Ticket.read" },
     { to: "/dashboard/order", label: "Order", icon: order, permission: "Order.read" },
     { to: "/dashboard/employee", label: "Employee", icon: employee, permission: "Employee.read" },
-    { to: "/dashboard/analytics", label: "Analytics", icon: analytics },
+    { to: "/dashboard/analytics", label: "Analytics", icon: analytics, permission: "Analytics.read" },
 ];
 
 const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
@@ -38,7 +38,7 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
             {/* Sidebar */}
             <aside className={`
                 fixed lg:static inset-y-0 left-0 z-30
-                flex h-screen flex-col bg-white relative
+                flex h-screen flex-col bg-white
                 transition-all duration-300 ease-in-out
                 ${isOpen ? 'w-[240px]' : 'w-20'}
                 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
@@ -52,7 +52,7 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                         w-6 h-6 bg-white border border-gray-100 rounded-full shadow-md
                         flex items-center justify-center
                         text-gray-400 hover:text-blue-500 hover:border-blue-100
-                        transition-all duration-300 hidden lg:flex
+                        transition-all duration-300 lg:flex
                     `}
                     style={{ transform: isOpen ? 'rotate(0deg)' : 'rotate(180deg)' }}
                 >
@@ -66,39 +66,35 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                         <ul className="space-y-2">
                             {navItems.map((item) => {
                                 const linkContent = (
-                                    <NavLink
-                                        to={item.to}
-                                        end={item.end}
-                                        onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
-                                        className={({ isActive }) =>
-                                            `flex items-center transition-all group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
-                                            } ${isActive
-                                                ? 'bg-[#4A90E2] text-white rounded-lg shadow-sm'
-                                                : 'text-gray-500 hover:bg-gray-50 rounded-lg'
-                                            }`
-                                        }
-                                    >
-                                        {({ isActive }) => (
-                                            <div className="flex items-center gap-3">
-                                                <img
-                                                    src={item.icon}
-                                                    alt={`${item.label} icon`}
-                                                    className={`h-6 w-6 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
-                                                        }`}
-                                                />
-                                                {isOpen && (
-                                                    <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
-                                                        {item.label}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        )}
-                                    </NavLink>
-                                );
-
-                                const contentWithLabel = (
                                     <li key={item.to} className="relative group/sidebar-item">
-                                        {linkContent}
+                                        <NavLink
+                                            to={item.to}
+                                            end={item.end}
+                                            onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
+                                            className={({ isActive }) =>
+                                                `flex items-center transition-all group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
+                                                } ${isActive
+                                                    ? 'bg-[#4A90E2] text-white rounded-lg shadow-sm'
+                                                    : 'text-gray-500 hover:bg-gray-50 rounded-lg'
+                                                }`
+                                            }
+                                        >
+                                            {({ isActive }) => (
+                                                <div className="flex items-center gap-3">
+                                                    <img
+                                                        src={item.icon}
+                                                        alt={`${item.label} icon`}
+                                                        className={`h-6 w-6 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
+                                                            }`}
+                                                    />
+                                                    {isOpen && (
+                                                        <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
+                                                            {item.label}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </NavLink>
                                         {!isOpen && (
                                             <div className="absolute left-full ml-2 px-3 py-2 bg-gray-900 text-white text-[11px] font-bold rounded-md opacity-0 group-hover/sidebar-item:opacity-100 pointer-events-none transition-all duration-200 whitespace-nowrap z-[100] shadow-lg tracking-wide uppercase">
                                                 {item.label}
@@ -108,15 +104,16 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                     </li>
                                 );
 
+                                // Wrap with PermissionGuard if permission is required
                                 if (item.permission) {
                                     return (
-                                        <PermissionGuard permission={item.permission} any={item.any} key={item.to}>
-                                            {contentWithLabel}
+                                        <PermissionGuard key={item.to} permission={item.permission}>
+                                            {linkContent}
                                         </PermissionGuard>
                                     );
                                 }
 
-                                return contentWithLabel;
+                                return linkContent;
                             })}
                         </ul>
 

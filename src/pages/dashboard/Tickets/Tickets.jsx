@@ -10,12 +10,15 @@ import TicketTable from "./TicketTable";
 import TicketFormModal from "./TicketFormModal";
 import TicketDetailModal from "./TicketDetailModal";
 import { useLookupData } from "../../../hooks/useLookupData";
+import { FilterModal } from "../../../components";
 
 export default function Tickets() {
   //main hooks
   const [modalOpen, setModalOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [editingTicket, setEditingTicket] = useState(null);
   const [viewTicket, setViewTicket] = useState(null);
+  const [filters, setFilters] = useState({ status: "", priority: "" });
   const [form, setForm] = useState({
     name: "",
     status: [
@@ -93,6 +96,7 @@ export default function Tickets() {
 
   const deleteTicketMutation = useDeleteTicket(
     () => {
+      setSelected([]); // Clear selection after successful deletion
       toast.success("Ticket deleted successfully!");
     },
     (error) => {
@@ -245,21 +249,37 @@ export default function Tickets() {
     });
     setModalOpen(true);
   };
+
+  // Form handlers
+  const handleFormChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Apply filters to tickets
+  const filteredTickets = tickets.filter((ticket) => {
+    const currentStatus = ticket.status && ticket.status.length > 0 
+      ? ticket.status[ticket.status.length - 1].statusType 
+      : "New";
+    
+    if (filters.status && currentStatus !== filters.status) return false;
+    if (filters.priority && ticket.priority !== filters.priority) return false;
+    if (filters.contact && ticket.contact?._id !== filters.contact && ticket.contact !== filters.contact) return false;
+    if (filters.owner && ticket.owner?._id !== filters.owner && ticket.owner !== filters.owner) return false;
+    if (filters.source && ticket.source !== filters.source) return false;
+    return true;
+  });
+
   //handel all selectors type
-  const allSelected = tickets?.length > 0 && selected.length === tickets.length;
+  const allSelected = filteredTickets?.length > 0 && selected.length === filteredTickets.length;
 
   const handleSelectAll = () => {
-    setSelected(allSelected ? [] : tickets?.map((c) => c._id) || []);
+    setSelected(allSelected ? [] : filteredTickets?.map((c) => c._id) || []);
   };
 
   const handleSelectOne = (id) => {
     setSelected((sel) =>
       sel.includes(id) ? sel.filter((sid) => sid !== id) : [...sel, id]
     );
-  };
-  // Form handlers
-  const handleFormChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const formatDate = (dateString) => {
@@ -271,16 +291,32 @@ export default function Tickets() {
       day: "numeric",
     });
   };
+
+  const handleApplyFilters = () => {
+    setFilterModalOpen(false);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ 
+      status: "", 
+      priority: "",
+      contact: "",
+      owner: "",
+      source: ""
+    });
+  };
+
   return (
     <PageLayout
       title="Tickets"
       createText="Create Ticket"
       onCreate={handleCreateClick}
       createPermission="Ticket.write"
+      onFilter={() => setFilterModalOpen(true)}
     >
       <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <TicketTable
-          tickets={tickets}
+          tickets={filteredTickets}
           isLoading={isLoading}
           selected={selected}
           allSelected={allSelected}
@@ -316,6 +352,85 @@ export default function Tickets() {
           total={total}
           onPageChange={setPage}
         />
+        <FilterModal
+          open={filterModalOpen}
+          onClose={() => setFilterModalOpen(false)}
+          onApply={handleApplyFilters}
+          onClear={handleClearFilters}
+          title="Filter Tickets"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Contact</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.contact}
+              onChange={(e) => setFilters(prev => ({ ...prev, contact: e.target.value }))}
+            >
+              <option value="">All Contacts</option>
+              {contacts?.map((contact) => (
+                <option key={contact._id} value={contact._id}>
+                  {contact.fullName || contact.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Owner</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.owner}
+              onChange={(e) => setFilters(prev => ({ ...prev, owner: e.target.value }))}
+            >
+              <option value="">All Owners</option>
+              {employees?.map((emp) => (
+                <option key={emp._id} value={emp._id}>
+                  {emp.fullName || emp.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.status}
+              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
+            >
+              <option value="">All Statuses</option>
+              <option value="New">New</option>
+              <option value="Waiting on Contact">Waiting on Contact</option>
+              <option value="Waiting on Employee">Waiting on Employee</option>
+              <option value="Closed">Closed</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.priority}
+              onChange={(e) => setFilters(prev => ({ ...prev, priority: e.target.value }))}
+            >
+              <option value="">All Priorities</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Source</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.source}
+              onChange={(e) => setFilters(prev => ({ ...prev, source: e.target.value }))}
+            >
+              <option value="">All Sources</option>
+              <option value="Chat">Chat</option>
+              <option value="Email">Email</option>
+              <option value="Phone">Phone</option>
+              <option value="Form">Form</option>
+            </select>
+          </div>
+        </FilterModal>
         <TicketDetailModal
           isOpen={!!viewTicket}
           onClose={() => setViewTicket(null)}

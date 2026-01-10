@@ -1,32 +1,34 @@
 import React from 'react';
-import useProfileStore from '../../../../store/profileStore';
+import { NavLink } from 'react-router-dom';
 import { CiUser, CiLock, CiBadgeDollar, CiSettings } from "react-icons/ci";
-import { HiOutlineUser } from "react-icons/hi";
-
+import PermissionGuard from '../../../../components/guard/PermissionGuard';
 
 const SettingsSidebar = () => {
-    const { activeTab, setActiveTab } = useProfileStore();
-
     const menuItems = [
         {
-            id: 'profile',
+            id: 'my-profile',
             label: 'My Profile',
-            icon: <CiUser className="w-5 h-5" />
+            icon: <CiUser className="w-5 h-5" />,
+            path: '/dashboard/settings/my-profile'
         },
         {
-            id: 'security',
+            id: 'change-password',
             label: 'Security Options',
-            icon: <CiLock className="w-5 h-5" />
+            icon: <CiLock className="w-5 h-5" />,
+            path: '/dashboard/settings/change-password'
         },
         {
-            id: 'role',
+            id: 'roles',
             label: 'Role',
-            icon: <CiBadgeDollar className="w-5 h-5" />
+            icon: <CiBadgeDollar className="w-5 h-5" />,
+            path: '/dashboard/settings/roles',
+            permission: 'Role.read'
         },
         {
             id: 'preferences',
             label: 'Preferences',
-            icon: <CiSettings className="w-5 h-5" />
+            icon: <CiSettings className="w-5 h-5" />,
+            path: '/dashboard/settings/preferences'
         }
     ];
 
@@ -36,22 +38,40 @@ const SettingsSidebar = () => {
             <p className="text-sm text-gray-500 mb-8">You can Find all settings here</p>
 
             <div className="space-y-2">
-                {menuItems.map((item) => (
-                    <button
-                        key={item.id}
-                        onClick={() => setActiveTab(item.id)}
-                        className={`w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium rounded-lg transition-all duration-200
-                            ${activeTab === item.id
-                                ? 'bg-blue-50 text-blue-600 shadow-sm'
-                                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
-                            }`}
-                    >
-                        <span className={`transition-colors duration-200 ${activeTab === item.id ? 'text-blue-600' : 'text-gray-400'}`}>
-                            {item.icon}
-                        </span>
-                        {item.label}
-                    </button>
-                ))}
+                {menuItems.map((item) => {
+                    const linkContent = (
+                        <NavLink
+                            key={item.id}
+                            to={item.path}
+                            className={({ isActive }) =>
+                                `w-full flex items-center gap-3 px-4 py-3.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                                    isActive
+                                        ? 'bg-blue-50 text-blue-600 shadow-sm'
+                                        : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+                                }`
+                            }
+                        >
+                            {({ isActive }) => (
+                                <>
+                                    <span className={`transition-colors duration-200 ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>
+                                        {item.icon}
+                                    </span>
+                                    {item.label}
+                                </>
+                            )}
+                        </NavLink>
+                    );
+
+                    if (item.permission) {
+                        return (
+                            <PermissionGuard key={item.id} permission={item.permission}>
+                                {linkContent}
+                            </PermissionGuard>
+                        );
+                    }
+
+                    return linkContent;
+                })}
             </div>
         </div>
     );

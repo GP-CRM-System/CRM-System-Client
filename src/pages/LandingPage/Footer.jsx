@@ -5,13 +5,13 @@ import { HashLink } from "react-router-hash-link";
 
 export default function LandingPageFooter() {
     return (
-        <div id="footer" className="mx-4 sm:mx-8 md:mx-16 lg:mx-[100px] mt-24">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 lg:gap-12">
+        <div id="footer" className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-16 sm:mt-20 md:mt-24 max-w-[1440px] mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10 xl:gap-12">
                 <div className="sm:col-span-2 lg:col-span-1">
                     <Link to="/">
-                        <img src={logoSvg} alt="logo" className="w-32" />
+                        <img src={logoSvg} alt="logo" className="w-28 sm:w-32" />
                     </Link>
-                    <p className="max-w-full sm:max-w-[190px] text-[16px] text-[#8A8A8A] mt-5 leading-[1.6]">
+                    <p className="max-w-full sm:max-w-[220px] text-sm sm:text-[16px] text-[#8A8A8A] mt-4 sm:mt-5 leading-[1.6]">
                         A Smart CRM System that unifies sales, accounting and HR Dashboards
                     </p>
                 </div>

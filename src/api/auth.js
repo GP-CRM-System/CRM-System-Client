@@ -45,3 +45,8 @@ export const changePassword = async (data) => {
     const response = await API.post(ENDPOINTS.AUTH.CHANGE_PASSWORD, data);
     return response.data;
 };
+
+export const initiateGoogleAuth = () => {
+    const baseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4650/api/v1";
+    window.location.href = `${baseURL}${ENDPOINTS.AUTH.GOOGLE}`;
+};

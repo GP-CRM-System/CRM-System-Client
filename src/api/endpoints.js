@@ -9,6 +9,8 @@ export const ENDPOINTS = {
     RESET_PASSWORD: "/auth/reset-password",
     VERIFY_RESET_TOKEN: (token) => `/auth/verify-reset-token/${token}`,
     CHANGE_PASSWORD: "/auth/change-password",
+    GOOGLE: "/auth/google",
+    GOOGLE_CALLBACK: "/auth/google/callback",
   },
   COMPANY: {
     CREATE: "/companies",

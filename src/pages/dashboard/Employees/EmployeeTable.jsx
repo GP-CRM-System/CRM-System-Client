@@ -39,29 +39,22 @@ export default function EmployeeTable({
     <div className="overflow-x-auto min-h-[400px]">
       {/* Bulk Action Bar - As requested */}
       {selected.length > 0 && (
-        <div className="px-6 py-4">
+        <div className="mb-4">
           <div
-            className="flex items-center justify-between px-6"
+            className="flex items-center justify-between px-6 py-3 rounded-lg"
             style={{
-              height: '64px',
-              background: 'rgba(108, 165, 231, 0.15)',
-              borderRadius: '8px'
+              backgroundColor: '#E8F2FD'
             }}
           >
-            <div className="flex items-center">
-              <span className="text-gray-900 font-medium text-lg">
-                {selected.length} {selected.length === 1 ? 'item' : 'items'} selected
-              </span>
-            </div>
-
-            <div className="flex items-center">
-              <button
-                onClick={() => onDelete && onDelete(selected)}
-                className="bg-white text-red-500 px-10 py-2.5 rounded-xl text-sm font-bold border border-red-50 hover:bg-red-50 transition-colors shadow-sm"
-              >
-                Delete
-              </button>
-            </div>
+            <span className="text-sm font-medium" style={{ color: '#4A5568' }}>
+              {selected.length} item selected
+            </span>
+            <button
+              onClick={() => onDelete && onDelete(selected)}
+              className="px-4 py-2 bg-white text-red-600 rounded-lg hover:bg-red-700 hover:text-white transition-colors font-medium"
+            >
+              Delete
+            </button>
           </div>
         </div>
       )}
@@ -76,19 +69,19 @@ export default function EmployeeTable({
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
+            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
               Employee Name
             </th>
-            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
               Email
             </th>
-            <th className="py-4 px-4 text-left font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap">
+            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
               Phone
             </th>
-            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
               Job Title
             </th>
-            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
+            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
             <th className="py-4 px-4 text-center w-12"></th>

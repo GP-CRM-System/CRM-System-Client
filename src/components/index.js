@@ -4,3 +4,4 @@ export { default as PublicRoute } from './guard/PublicRoute';
 export { default as Sidebar } from './Sidebar';
 export { default as Loader } from './ui/Loader';
 export { default as ToasterComponent } from './ui/Toaster';
+export { default as FilterModal } from './FilterModal';

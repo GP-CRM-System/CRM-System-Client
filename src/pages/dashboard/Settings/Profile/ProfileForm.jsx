@@ -10,7 +10,7 @@ import Loader from '../../../../components/ui/Loader';
 
 const ProfileForm = () => {
     const { isEditing, setIsEditing } = useProfileStore();
-    const { user: authUser } = useAuthStore();
+    const { user: authUser, setCredentials } = useAuthStore();
     const queryClient = useQueryClient();
 
     const userId = authUser?._id || authUser?.id;
@@ -62,14 +62,28 @@ const ProfileForm = () => {
     // Update Profile Mutation
     const updateProfileMutation = useMutation({
         mutationFn: (data) => API.Profile.updateProfile({ id: userId, data }),
-        onSuccess: () => {
+        onSuccess: (response) => {
             queryClient.invalidateQueries(['profile']);
+            
+            // Update auth store with new user data
+            if (response?.data?.profile) {
+                setCredentials({
+                    user: {
+                        ...authUser,
+                        ...response.data.profile
+                    }
+                });
+            }
+            
             setIsEditing(false);
             toast.success("Profile updated successfully");
         },
         onError: (error) => {
             console.error(error);
-            toast.error("Failed to update profile");
+            const errorMessage = error?.response?.data?.error 
+                || error?.response?.data?.message 
+                || 'Failed to update profile';
+            toast.error(errorMessage);
         }
     });
 
@@ -78,7 +92,15 @@ const ProfileForm = () => {
         updateProfileMutation.mutate(formData);
     };
 
-    if (isLoading) return <Loader text="Loading Profile..." />;
+    if (isLoading) {
+        return (
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex-1">
+                <div className="flex items-center justify-center h-96">
+                    <Loader fullScreen={false} size="lg" text="Loading Profile..." />
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex-1">

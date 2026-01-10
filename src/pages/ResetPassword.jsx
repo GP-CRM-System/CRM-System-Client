@@ -58,6 +58,7 @@ const ResetPassword = () => {
       await resetPasswordMutation.mutateAsync({
         token,
         password: values.newPassword,
+        confirmPassword: values.confirmPassword
       });
     } catch (err) {
       console.error("Reset password error:", err);

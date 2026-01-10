@@ -11,12 +11,15 @@ import OrderTable from "./OrderTable";
 import Pagination from "../Contacts/Pagination";
 import OrderFormModal from "./OrderFormModal";
 import OrderDetailModal from "./OrderDetailModal";
+import { FilterModal } from "../../../components";
 
 export default function Order() {
   //main hooks
   const [modalOpen, setModalOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [editingOrder, setEditingOrder] = useState(null);
   const [viewOrder, setViewOrder] = useState(null);
+  const [filters, setFilters] = useState({ stage: "" });
   const [form, setForm] = useState({
     description: "",
     owner: "",
@@ -87,6 +90,7 @@ export default function Order() {
   );
   const deleteOrderMutation = useDeleteOrder(
     () => {
+      setSelected([]); // Clear selection after successful deletion
       toast.success("Order deleted successfully!");
     },
     (error) => {
@@ -230,21 +234,39 @@ export default function Order() {
     });
     setModalOpen(true);
   };
+  // Form handlers
+  const handleFormChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Apply filters to orders
+  const filteredOrders = orders.filter((order) => {
+    const currentStage = order.stage && order.stage.length > 0
+      ? order.stage[order.stage.length - 1].name
+      : "Open";
+    
+    if (filters.stage && currentStage !== filters.stage) return false;
+    if (filters.contact && order.contact?._id !== filters.contact && order.contact !== filters.contact) return false;
+    if (filters.employee && order.employee?._id !== filters.employee && order.employee !== filters.employee) return false;
+    
+    const orderTotal = order.products?.reduce((sum, p) => sum + (p.unitPrice * p.quantity), 0) || 0;
+    if (filters.minTotal && orderTotal < parseFloat(filters.minTotal)) return false;
+    if (filters.maxTotal && orderTotal > parseFloat(filters.maxTotal)) return false;
+    
+    return true;
+  });
+
   //handel all selectors type
-  const allSelected = orders?.length > 0 && selected.length === orders.length;
+  const allSelected = filteredOrders?.length > 0 && selected.length === filteredOrders.length;
 
   const handleSelectAll = () => {
-    setSelected(allSelected ? [] : orders?.map((c) => c._id) || []);
+    setSelected(allSelected ? [] : filteredOrders?.map((c) => c._id) || []);
   };
 
   const handleSelectOne = (id) => {
     setSelected((sel) =>
       sel.includes(id) ? sel.filter((sid) => sid !== id) : [...sel, id]
     );
-  };
-  // Form handlers
-  const handleFormChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const formatDate = (dateString) => {
@@ -256,16 +278,32 @@ export default function Order() {
       day: "numeric",
     });
   };
+
+  const handleApplyFilters = () => {
+    setFilterModalOpen(false);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ 
+      stage: "",
+      contact: "",
+      employee: "",
+      minTotal: "",
+      maxTotal: ""
+    });
+  };
+
   return (
     <PageLayout
       title="Orders"
       createText="Create Order"
       onCreate={handleCreateClick}
       createPermission="Order.write"
+      onFilter={() => setFilterModalOpen(true)}
     >
       <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <OrderTable
-          orders={orders}
+          orders={filteredOrders}
           isLoading={isLoading}
           selected={selected}
           allSelected={allSelected}
@@ -302,6 +340,84 @@ export default function Order() {
           }
           isEditing={!!editingOrder}
         />
+
+        <FilterModal
+          open={filterModalOpen}
+          onClose={() => setFilterModalOpen(false)}
+          onApply={handleApplyFilters}
+          onClear={handleClearFilters}
+          title="Filter Orders"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Contact</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.contact}
+              onChange={(e) => setFilters(prev => ({ ...prev, contact: e.target.value }))}
+            >
+              <option value="">All Contacts</option>
+              {contacts?.map((contact) => (
+                <option key={contact._id} value={contact._id}>
+                  {contact.fullName || contact.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Employee</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.employee}
+              onChange={(e) => setFilters(prev => ({ ...prev, employee: e.target.value }))}
+            >
+              <option value="">All Employees</option>
+              {employees?.map((emp) => (
+                <option key={emp._id} value={emp._id}>
+                  {emp.fullName || emp.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.stage}
+              onChange={(e) => setFilters(prev => ({ ...prev, stage: e.target.value }))}
+            >
+              <option value="">All Stages</option>
+              <option value="Open">Open</option>
+              <option value="Processed">Processed</option>
+              <option value="Shipped">Shipped</option>
+              <option value="Delivered">Delivered</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Min Total</label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="Minimum total"
+              value={filters.minTotal}
+              onChange={(e) => setFilters(prev => ({ ...prev, minTotal: e.target.value }))}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Max Total</label>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="Maximum total"
+              value={filters.maxTotal}
+              onChange={(e) => setFilters(prev => ({ ...prev, maxTotal: e.target.value }))}
+            />
+          </div>
+        </FilterModal>
 
         <OrderDetailModal
           isOpen={!!viewOrder}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PageLayout from "../../../components/PageLayout";
 import useEmployees from "./useEmployees";
 import { useCreateEmployee } from "./useCreateEployee";
@@ -9,11 +9,17 @@ import EmployeeTable from "./EmployeeTable";
 import Pagination from "../Contacts/Pagination";
 import { useRoles } from "./useRoles";
 import EmployeeFormModal from "./EmployeeFormModal";
+import UnauthorizedModal from "../../../components/ui/UnauthorizedModal";
+import useAuthStore from "../../../store/authStore";
+import { FilterModal } from "../../../components";
 
 export default function Emplotee() {
   //main hooks
   const [modalOpen, setModalOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [showUnauthorized, setShowUnauthorized] = useState(false);
+  const [filters, setFilters] = useState({ role: "" });
   const [form, setForm] = useState({
     fullName: "",
     phone: "",
@@ -24,10 +30,25 @@ export default function Emplotee() {
 
   const [formError, setFormError] = useState("");
   const [selected, setSelected] = useState([]);
+  const { permissions } = useAuthStore();
   //customs hooks
-  const { isLoading, employees, total, currentPage, currentLimit, setPage } =
+  const { isLoading, employees, total, currentPage, currentLimit, setPage, error } =
     useEmployees();
   const { roles, isLoadingRoles } = useRoles(); // Create
+
+  // Check for permission errors
+  useEffect(() => {
+    if (error?.response?.status === 401) {
+      setShowUnauthorized(true);
+    }
+  }, [error]);
+
+  // Check permissions on mount
+  useEffect(() => {
+    if (!permissions?.Employee?.read) {
+      setShowUnauthorized(true);
+    }
+  }, [permissions]);
 
   const createEmployeeMutation = useCreateEmployee(
     () => {
@@ -70,6 +91,7 @@ export default function Emplotee() {
   //delete
   const deleteEmployeeMutation = useDeleteEmployee(
     () => {
+      setSelected([]); // Clear selection after successful deletion
       toast.success("Employee deleted successfully!");
     },
     (error) => {
@@ -197,23 +219,30 @@ export default function Emplotee() {
     });
     setModalOpen(true);
   };
+  // Form handlers
+  const handleFormChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Apply filters to employees
+  const filteredEmployees = employees.filter((employee) => {
+    if (filters.role && employee.role?._id !== filters.role && employee.role !== filters.role) return false;
+    if (filters.email && !employee.email?.toLowerCase().includes(filters.email.toLowerCase())) return false;
+    if (filters.phone && !employee.phone?.includes(filters.phone)) return false;
+    return true;
+  });
+
   //handel all selectors type
-  const allSelected =
-    employees?.length > 0 && selected.length === employees.length;
+  const allSelected = filteredEmployees?.length > 0 && selected.length === filteredEmployees.length;
 
   const handleSelectAll = () => {
-    setSelected(allSelected ? [] : employees?.map((c) => c._id) || []);
+    setSelected(allSelected ? [] : filteredEmployees?.map((c) => c._id) || []);
   };
 
   const handleSelectOne = (id) => {
     setSelected((sel) =>
       sel.includes(id) ? sel.filter((sid) => sid !== id) : [...sel, id]
     );
-  };
-
-  // Form handlers
-  const handleFormChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const formatDate = (dateString) => {
@@ -226,16 +255,34 @@ export default function Emplotee() {
     });
   };
 
+  const handleApplyFilters = () => {
+    setFilterModalOpen(false);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ 
+      role: "",
+      email: "",
+      phone: ""
+    });
+  };
+
   return (
-    <PageLayout
-      title="Employees"
-      createText="Create Employee"
-      onCreate={handleCreateClick}
-      createPermission="Employee.write"
-    >
+    <>
+      <UnauthorizedModal 
+        isOpen={showUnauthorized} 
+        onClose={() => setShowUnauthorized(false)} 
+      />
+      <PageLayout
+        title="Employees"
+        createText="Create Employee"
+        onCreate={handleCreateClick}
+        createPermission="Employee.write"
+        onFilter={() => setFilterModalOpen(true)}
+      >
       <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <EmployeeTable
-          employees={employees}
+          employees={filteredEmployees}
           isLoading={isLoading}
           roles={roles}
           selected={selected}
@@ -268,7 +315,51 @@ export default function Emplotee() {
           isEditing={!!editingEmployee}
           isLoadingRoles={isLoadingRoles}
         />
+        <FilterModal
+          open={filterModalOpen}
+          onClose={() => setFilterModalOpen(false)}
+          onApply={handleApplyFilters}
+          onClear={handleClearFilters}
+          title="Filter Employees"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.role}
+              onChange={(e) => setFilters(prev => ({ ...prev, role: e.target.value }))}
+            >
+              <option value="">All Roles</option>
+              {roles?.map((role) => (
+                <option key={role._id} value={role._id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <input
+              type="text"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="Search by email..."
+              value={filters.email}
+              onChange={(e) => setFilters(prev => ({ ...prev, email: e.target.value }))}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <input
+              type="text"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="Search by phone..."
+              value={filters.phone}
+              onChange={(e) => setFilters(prev => ({ ...prev, phone: e.target.value }))}
+            />
+          </div>
+        </FilterModal>
       </div>
     </PageLayout>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import {
     hrEmployee,
     salesDeals,
     smartContact,
+    right_blur,
 } from "../../assets/icons/landingPage";
 
 export default function LandingPageFeatures() {
@@ -14,7 +15,7 @@ export default function LandingPageFeatures() {
         },
         {
             img: salesDeals,
-            h1: "Sales & Deals ",
+            h1: "Sales & Deals",
             p: "Track pipeline with boards & workflows",
         },
         {
@@ -24,42 +25,40 @@ export default function LandingPageFeatures() {
         },
         {
             img: hrEmployee,
-            h1: "HR & Employee ",
-            p: "Employee profiles, leave & performance.",
+            h1: "HR & Employee",
+            p: "Employee profiles, leave & performance",
         },
     ];
     return (
         <div
             id="features"
-            className="
-    px-4 sm:px-8 md:px-16 lg:px-24 xl:px-[100px] relative
-
-    before:content-[''] before:absolute before:top-[25%] before:left-0 
-    before:h-full before:w-[60px] before:bg-[#0194FE] before:blur-[120px] 
-    before:opacity-30 before:hidden
-
-    lg:before:block
-  "
+            className="px-4 sm:px-6 md:px-10 lg:px-20 xl:px-[100px] mt-12 sm:mt-16 md:mt-20 lg:mt-24 relative max-w-[1440px] mx-auto overflow-hidden"
         >
+            {/* Right Blur */}
+            <img 
+                src={right_blur} 
+                alt="" 
+                className="absolute right-0 top-[15%] w-32 sm:w-40 md:w-48 lg:w-64 xl:w-80 -z-10 opacity-60 pointer-events-none"
+            />
             <div className="flex justify-center">
-                <h1 className="max-w-[796px] m-auto text-center max-md:text-[28px] max-sm:text-[24px] font-medium text-[40px] mt-31">
+                <h1 className="max-w-[796px] mx-auto text-center text-2xl sm:text-3xl md:text-4xl lg:text-[40px] font-medium leading-tight">
                     Discover the Powerful
                     <span className="text-[#4A90E2]"> Features </span>
                     that Simplify Your Business Operation
                 </h1>
             </div>
-            <div className="mt-16 md:mt-24 lg:mt-32 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="mt-8 sm:mt-12 md:mt-16 lg:mt-20 xl:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {featureCards.map((card, index) => (
                     <div
                         key={index}
-                        className="flex flex-col items-center p-5 bg-[#f8fafc] rounded-[10px]"
+                        className="flex flex-col items-center p-5    hover:shadow-md transition-shadow"
                     >
-                        <img src={card.img} alt={card.h1} className="mb-7" />
-                        <h1 className="font-medium text-[24px] text-center mb-2 whitespace-nowrap">
+                        <img src={card.img} alt={card.h1} className="mb-5 w-16 h-16" />
+                        <h1 className="font-medium text-xl sm:text-2xl text-center mb-2">
                             {card.h1}
                         </h1>
 
-                        <p className="font-medium text-[#8A8A8A] text-[20px] text-center">
+                        <p className="font-medium text-[#8A8A8A] text-base sm:text-lg text-center">
                             {card.p}
                         </p>
                     </div>

@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import useAuthStore from '../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { login } from '../api/auth';
+import { login, initiateGoogleAuth } from '../api/auth';
 import { toast } from 'react-hot-toast';
 
 const Login = () => {
@@ -18,14 +18,40 @@ const Login = () => {
     // React Query mutation for login
     const loginMutation = useMutation({
         mutationFn: login,
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
+            console.log('✅ Login response:', data);
+            console.log('🍪 Cookies after login:', document.cookie);
+            console.log('👤 User from response:', data?.data?.user);
+            console.log('🎭 Role from user:', data?.data?.user?.role);
+            console.log('🔍 Role type:', typeof data?.data?.user?.role);
+            
+            // Backend returns: { message, data: { token, refreshToken, user } }
+            // But role might just be an ID string, not populated
             setCredentials(data);
+
+            // If role is just an ID, fetch full profile with populated role
+            const userId = data?.data?.user?._id;
+            const userRole = data?.data?.user?.role;
+            
+            if (userId && typeof userRole === 'string') {
+                console.log('⚠️ Role is not populated, fetching profile...');
+                try {
+                    const API = (await import('../api/client')).default;
+                    const profileResponse = await API.get(`/profile/${userId}`);
+                    console.log('📥 Profile response:', profileResponse.data);
+                    
+                    // Update credentials with populated role
+                    setCredentials(profileResponse.data);
+                } catch (error) {
+                    console.error('❌ Failed to fetch profile:', error);
+                }
+            }
 
             toast.success("Login successful!");
             navigate('/dashboard');
         },
         onError: (error) => {
-            console.error('Login error:', error);
+            console.error('❌ Login error:', error);
             toast.error(error?.response?.data?.message || error?.message || 'Login failed');
         },
     });
@@ -107,13 +133,17 @@ const Login = () => {
                             <hr className="flex-grow border-t border-gray-200" />
                         </div>
                         <div className="flex justify-center items-center gap-4 mt-4">
-                            <button className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-50 transition-colors">
+                            <button 
+                                type="button"
+                                onClick={initiateGoogleAuth}
+                                className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+                            >
                                 <img src={google} alt="Google" className="h-6 w-6" />
                             </button>
-                            <button className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-800 hover:bg-gray-50 transition-colors">
+                            <button type="button" className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-800 hover:bg-gray-50 transition-colors">
                                 <img src={facebook} alt="Facebook" className="h-9 w-9" />
                             </button>
-                            <button className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-500 hover:bg-gray-50 transition-colors">
+                            <button type="button" className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-500 hover:bg-gray-50 transition-colors">
                                 <img src={twitter} alt="Twitter" className="h-6 w-6" />
                             </button>
                         </div>

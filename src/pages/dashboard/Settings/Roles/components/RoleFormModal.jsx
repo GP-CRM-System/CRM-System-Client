@@ -25,7 +25,7 @@ const RoleFormModal = ({
                     </button>
                 </div>
 
-                <div className="p-6">
+                <div className="pl-6 pr-3 pb-6 pt-6">
                     <p className="text-sm text-gray-500 mb-6">Define role name and set permissions for each resource</p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -71,7 +71,7 @@ const RoleFormModal = ({
                                             type="checkbox"
                                             checked={roleData.permissions[res].all}
                                             onChange={() => togglePermission(res, 'all')}
-                                            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            className="w-5 h-5 rounded border-gray-300 text-[var(--color-secondary-500)] focus:ring-blue-500"
                                         />
                                     </div>
                                     <div className="text-center flex justify-center">
@@ -79,7 +79,7 @@ const RoleFormModal = ({
                                             type="checkbox"
                                             checked={roleData.permissions[res].read}
                                             onChange={() => togglePermission(res, 'read')}
-                                            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            className="w-5 h-5 rounded border-gray-300 text-[var(--color-secondary-500)] focus:ring-blue-500"
                                         />
                                     </div>
                                     <div className="text-center flex justify-center">
@@ -87,7 +87,7 @@ const RoleFormModal = ({
                                             type="checkbox"
                                             checked={roleData.permissions[res].write}
                                             onChange={() => togglePermission(res, 'write')}
-                                            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            className="w-5 h-5 rounded border-gray-300 text-[var(--color-secondary-500)] focus:ring-blue-500"
                                         />
                                     </div>
                                     <div className="text-center flex justify-center">
@@ -95,7 +95,7 @@ const RoleFormModal = ({
                                             type="checkbox"
                                             checked={roleData.permissions[res].delete}
                                             onChange={() => togglePermission(res, 'delete')}
-                                            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                            className="w-5 h-5 rounded border-gray-300 text-[var(--color-secondary-500)] focus:ring-blue-500"
                                         />
                                     </div>
                                 </div>
@@ -103,11 +103,11 @@ const RoleFormModal = ({
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    <div className="sticky bottom-0 left-0 w-full bg-white border-t border-gray-100 z-20 flex justify-end gap-3 pt-4 pb-4 pl-6 pr-3">
                         <button
                             onClick={onSave}
                             disabled={isPending}
-                            className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm transition-colors disabled:opacity-50"
+                            className="px-22 py-2.5 bg-[var(--color-secondary-500)] hover:bg-[var(--color-primary-600)] text-white rounded-lg font-medium shadow-sm transition-colors disabled:opacity-50 "
                         >
                             {isEditMode ? (isPending ? 'Saving...' : 'Save Changes') : 'Create'}
                         </button>

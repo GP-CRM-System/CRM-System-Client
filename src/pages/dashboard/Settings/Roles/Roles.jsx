@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CiSearch } from "react-icons/ci";
 import { HiPlus } from "react-icons/hi";
 import { IoMdClose } from "react-icons/io";
@@ -10,7 +10,10 @@ import RoleFormModal from './components/RoleFormModal';
 import DeleteRoleModal from './components/DeleteRoleModal';
 import ViewRoleModal from './components/ViewRoleModal';
 import Loader from '../../../../components/ui/Loader';
-import { trash, edit, user } from '../../../../assets'
+import { trash, edit, user } from '../../../../assets';
+import PermissionGuard from '../../../../components/guard/PermissionGuard';
+import UnauthorizedModal from '../../../../components/ui/UnauthorizedModal';
+import useAuthStore from '../../../../store/authStore';
 
 const Roles = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,7 +21,9 @@ const Roles = () => {
     const [deletingRole, setDeletingRole] = useState(null);
     const [viewingRole, setViewingRole] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [showUnauthorized, setShowUnauthorized] = useState(false);
     const queryClient = useQueryClient();
+    const { permissions } = useAuthStore();
 
     const initialRoleState = {
         name: '',
@@ -41,8 +46,22 @@ const Roles = () => {
 
     const { data: rolesData, isLoading } = useQuery({
         queryKey: ['roles'],
-        queryFn: () => API.Role.getRoles()
+        queryFn: () => API.Role.getRoles(),
+        retry: false,
+        onError: (err) => {
+            if (err.response?.status === 401) {
+                setShowUnauthorized(true);
+                toast.error('You don\'t have permission to view roles');
+            }
+        }
     });
+
+    // Check permissions on mount
+    useEffect(() => {
+        if (!permissions?.Role?.read) {
+            setShowUnauthorized(true);
+        }
+    }, [permissions]);
     
     const createRoleMutation = useMutation({
         mutationFn: (data) => API.Role.createRole(data),
@@ -169,7 +188,8 @@ const Roles = () => {
             _id: role._id,
             name: role.name,
             description: role.description || '',
-            permissions
+            permissions,
+            originalRole: role // Store original role to prevent data loss
         };
 
         if (viewOnly) {
@@ -219,121 +239,142 @@ const Roles = () => {
         setNewRole(initialRoleState);
     };
 
-    if (isLoading) return <Loader text="Loading Roles..." />;
+    if (isLoading) {
+        return (
+            <PermissionGuard permission="Role.read">
+                <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex-1">
+                    <div className="flex items-center justify-center h-96">
+                        <Loader fullScreen={false} size="lg" text="Loading Roles..." />
+                    </div>
+                </div>
+            </PermissionGuard>
+        );
+    }
+
+    // Show unauthorized modal if no permission
+    if (showUnauthorized || !permissions?.Role?.read) {
+        return <UnauthorizedModal isOpen={true} onClose={() => setShowUnauthorized(false)} />;
+    }
 
     const displayRoles = roles.map(processRoleData);
 
     return (
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex-1">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <h2 className="text-xl font-bold text-gray-900">Role</h2>
-                <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-                        <input
-                            type="text"
-                            placeholder="Search"
-                            className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-sm w-64"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
+        <PermissionGuard permission="Role.read">
+            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex-1">
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                    <h2 className="text-xl font-bold text-gray-900">Role</h2>
+                    <div className="flex items-center gap-3">
+                        <div className="relative">
+                            <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+                            <input
+                                type="text"
+                                placeholder="Search"
+                                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 text-sm w-64"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="bg-[var(--color-primary-500)] text-white px-4 py-2 rounded-lg hover:bg-[var(--color-primary-600)] flex items-center gap-2 text-sm font-medium transition-colors"
+                        >
+                            <HiPlus className="w-4 h-4" /> Create Role
+                        </button>
                     </div>
-                    <button
-                        onClick={() => setIsModalOpen(true)}
-                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm font-medium transition-colors"
-                    >
-                        <HiPlus className="w-4 h-4" /> Create Role
-                    </button>
                 </div>
-            </div>
 
-            {/* Roles Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-                {displayRoles.map((role) => (
-                    <div
-                        key={role._id}
-                        onClick={() => handleEditRole(role, true)}
-                        className="w-[237px] h-[246px] border border-gray-100 rounded-xl p-5 hover:shadow-md transition-all flex flex-col justify-between cursor-pointer group hover:border-blue-200"
-                    >
-                        <div>
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="flex gap-3">
-                                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 font-bold text-base flex-shrink-0 group-hover:bg-blue-100 transition-colors">
-                                        <img src={user} alt="" />
+                {/* Roles Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
+                    {displayRoles.map((role) => (
+                        <div
+                            key={role._id}
+                            onClick={() => handleEditRole(role, true)}
+                            className="w-[237px] h-[206px] border border-gray-100 
+                            rounded-xl p-5 hover:shadow-md transition-all flex flex-col justify-between 
+                            cursor-pointer group hover:border-blue-200"
+                        >
+                            <div>
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex gap-3">
+                                        <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-600 font-bold text-base flex-shrink-0 group-hover:bg-blue-100 transition-colors">
+                                            <img src={user} alt="" />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <h3 className="font-medium text-sm leading-tight mb-0.5 transition-colors truncate" style={{ color: 'var(--color-text-title)' }} title={role.name}>
+                                                {role.name.length > 11 ? role.name.slice(0, 11) + '…' : role.name}
+                                            </h3>
+                                            <p className="text-xs" style={{ color: 'var(--color-text-body)' }}>{role.users} Users</p>
+                                        </div>
                                     </div>
-                                    <div className="min-w-0">
-                                        <h3 className="font-medium text-gray-900 line-clamp-2 text-sm leading-tight mb-0.5 group-hover:text-blue-600 transition-colors" title={role.name}>{role.name}</h3>
-                                        <p className="text-xs text-gray-500">{role.users} Users</p>
+                                    <div className="flex gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
+                                        <button
+                                            onClick={() => handleEditRole(role)}
+                                            className="p-1 hover:bg-blue-50 rounded-lg text-gray-400 hover:text-blue-600 transition-colors"
+                                        >
+                                            <img src={edit} alt="" />
+                                        </button>
+                                        <button
+                                            onClick={() => setDeletingRole(role)}
+                                            className="p-1 hover:bg-red-50 rounded-lg text-gray-400 hover:text-red-500 transition-colors"
+                                        >
+                                            <img src={trash} alt="" />
+                                        </button>
                                     </div>
                                 </div>
-                                <div className="flex gap-1 flex-shrink-0" onClick={(e) => e.stopPropagation()}>
-                                    <button
-                                        onClick={() => handleEditRole(role)}
-                                        className="p-1 hover:bg-blue-50 rounded-lg text-gray-400 hover:text-blue-600 transition-colors"
-                                    >
-                                        <img src={edit} alt="" />
-                                    </button>
-                                    <button
-                                        onClick={() => setDeletingRole(role)}
-                                        className="p-1 hover:bg-red-50 rounded-lg text-gray-400 hover:text-red-500 transition-colors"
-                                    >
-                                        <img src={trash} alt="" />
-                                    </button>
+
+                                <div className="mb-4">
+                                    <p className="text-xs mb-2 truncate" style={{ color: 'var(--color-text-body)' }} title={role.access}>{role.access}</p>
+                                    <div className="w-full rounded-full h-1.5" style={{ backgroundColor: 'var(--color-primary-100)' }}>
+                                        <div className="h-1.5 rounded-full" style={{ width: `${role.progress}%`, backgroundColor: 'var(--color-primary-500)' }}></div>
+                                    </div>
+                                    <p className="text-[10px] text-right mt-1" style={{ color: 'var(--color-text-input)' }}>{role.grantedPerms}/{role.totalPerms}</p>
                                 </div>
                             </div>
 
-                            <div className="mb-4">
-                                <p className="text-xs text-gray-500 mb-2 truncate" title={role.access}>{role.access}</p>
-                                <div className="w-full bg-blue-100 rounded-full h-1.5">
-                                    <div className="bg-blue-600 h-1.5 rounded-full" style={{ width: `${role.progress}% ` }}></div>
-                                </div>
-                                <p className="text-[10px] text-right text-gray-400 mt-1">{role.grantedPerms}/{role.totalPerms}</p>
+                            <div className="flex flex-wrap gap-1.5 mt-auto">
+                                {role.tags.map((tag, idx) => (
+                                    <span key={idx} className={`text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 whitespace-nowrap ${tag.includes('+') ? 'bg-gray-100 text-gray-900 font-bold' : ''} `}>
+                                        {tag}
+                                    </span>
+                                ))}
                             </div>
                         </div>
+                    ))}
+                </div>
 
-                        <div className="flex flex-wrap gap-1.5 mt-auto">
-                            {role.tags.map((tag, idx) => (
-                                <span key={idx} className={`text-[10px] px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 whitespace-nowrap ${tag.includes('+') ? 'bg-gray-100 text-gray-900 font-bold' : ''} `}>
-                                    {tag}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+                {/* Create/Edit Role Modal */}
+                <RoleFormModal
+                    isOpen={isModalOpen || !!editingRole}
+                    onClose={handleCloseModal}
+                    onSave={handleSaveRole}
+                    roleData={editingRole || newRole}
+                    setRoleData={editingRole ? setEditingRole : setNewRole}
+                    resources={resources}
+                    togglePermission={togglePermission}
+                    isPending={updateRoleMutation.isPending || createRoleMutation.isPending}
+                />
+
+                {/* Delete Confirmation Modal */}
+                <DeleteRoleModal
+                    isOpen={!!deletingRole}
+                    onClose={() => setDeletingRole(null)}
+                    onConfirm={handleDeleteRole}
+                    roleName={deletingRole?.name}
+                    userCount={deletingRole?.userCount}
+                    isPending={deleteRoleMutation.isPending}
+                />
+
+                {/* View Role Modal */}
+                <ViewRoleModal
+                    isOpen={!!viewingRole}
+                    onClose={() => setViewingRole(null)}
+                    roleData={viewingRole}
+                    resources={resources}
+                    onEdit={(role) => handleEditRole(role)}
+                />
             </div>
-
-            {/* Create/Edit Role Modal */}
-            <RoleFormModal
-                isOpen={isModalOpen || !!editingRole}
-                onClose={handleCloseModal}
-                onSave={handleSaveRole}
-                roleData={editingRole || newRole}
-                setRoleData={editingRole ? setEditingRole : setNewRole}
-                resources={resources}
-                togglePermission={togglePermission}
-                isPending={updateRoleMutation.isPending || createRoleMutation.isPending}
-            />
-
-            {/* Delete Confirmation Modal */}
-            <DeleteRoleModal
-                isOpen={!!deletingRole}
-                onClose={() => setDeletingRole(null)}
-                onConfirm={handleDeleteRole}
-                roleName={deletingRole?.name}
-                userCount={deletingRole?.userCount}
-                isPending={deleteRoleMutation.isPending}
-            />
-
-            {/* View Role Modal */}
-            <ViewRoleModal
-                isOpen={!!viewingRole}
-                onClose={() => setViewingRole(null)}
-                roleData={viewingRole}
-                resources={resources}
-                onEdit={() => handleEditRole(viewingRole)}
-            />
-        </div>
+        </PermissionGuard>
     );
 };
 

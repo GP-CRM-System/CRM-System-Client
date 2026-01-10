@@ -91,7 +91,7 @@ const ViewRoleModal = ({
                                 Close
                             </button>
                             <button
-                                onClick={onEdit}
+                                onClick={() => onEdit(roleData.originalRole || roleData)}
                                 className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm transition-colors flex items-center gap-2"
                             >
                                 <img src={edit} className="w-4 h-4 brightness-0 invert" alt="" />

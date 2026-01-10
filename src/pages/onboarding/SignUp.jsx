@@ -1,59 +1,62 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { FaEye, FaEyeSlash, FaUser } from 'react-icons/fa';
-import { register, email, password, person, phone, google, facebook, twitter } from '../../assets';
+import { register, email, person, phone, google, facebook, twitter } from '../../assets';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useMutation } from '@tanstack/react-query';
 import useAuthStore from '../../store/authStore';
 import { useNavigate } from 'react-router-dom';
-import { REGISTER } from '../../api/auth';
+import { REGISTER, initiateGoogleAuth } from '../../api/auth';
 import { toast } from 'react-hot-toast';
-import { formatApiErrors } from '../../utils/formatApiErrors';
 
 export default function SignUp() {
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
     const setCredentials = useAuthStore((state) => state.setCredentials);
     const navigate = useNavigate();
-    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-    const user = useAuthStore((state) => state.user);
-
-    useEffect(() => {
-        if (isAuthenticated && user?.company) {
-            navigate('/dashboard');
-        }
-    }, [isAuthenticated, user, navigate]);
 
     const registerMutation = useMutation({
         mutationFn: REGISTER,
-        onSuccess: (data) => {
-            console.log('Registration success data:', data);
+        onSuccess: async (data) => {
+            console.log('✅ Registration success data:', data);
+            console.log('👤 User from response:', data?.data?.user);
+            console.log('🎭 Role from user:', data?.data?.user?.role);
+            console.log('🔍 Role type:', typeof data?.data?.user?.role);
 
+            // Backend returns: { message, data: { token, refreshToken, user } }
             setCredentials(data);
+
+            // If role is just an ID, fetch full profile with populated role
+            const userId = data?.data?.user?._id;
+            const userRole = data?.data?.user?.role;
+            
+            if (userId && typeof userRole === 'string') {
+                console.log('⚠️ Role is not populated, fetching profile...');
+                try {
+                    const API = (await import('../../api/client')).default;
+                    const profileResponse = await API.get(`/profile/${userId}`);
+                    console.log('📥 Profile response:', profileResponse.data);
+                    
+                    // Update credentials with populated role
+                    setCredentials(profileResponse.data);
+                } catch (error) {
+                    console.error('❌ Failed to fetch profile:', error);
+                }
+            }
 
             toast.success('Registration successful! Please create your company.');
             navigate('/onboarding/create-company');
         },
         onError: (error) => {
-            const errors = formatApiErrors(error);
-            const fieldErrors = {};
-            errors.forEach(e => {
-                if (e.field) fieldErrors[e.field] = e.message;
-                toast.error(e.message);
-            });
-            registerMutation.setError({
-                response: {
-                    data: {
-                        message: 'Registration failed',
-                        errors: fieldErrors
-                    }
-                }
-            });
-            toast.error(error?.response?.data?.message || error?.message || 'Registration failed');
+            console.error('❌ Registration error:', error);
+            const errorMessage = error?.response?.data?.error 
+                || error?.response?.data?.message 
+                || error?.message 
+                || 'Registration failed';
+            
+            toast.error(errorMessage);
         },
     });
-
-    console.log('isAuthenticated:', isAuthenticated)
 
     const initialValues = {
         fullName: '',
@@ -194,13 +197,17 @@ export default function SignUp() {
                             <hr className="flex-grow border-t border-gray-200" />
                         </div>
                         <div className="flex justify-center items-center gap-4 mt-4">
-                            <button className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-50 transition-colors">
+                            <button 
+                                type="button"
+                                onClick={initiateGoogleAuth}
+                                className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
+                            >
                                 <img src={google} alt="Google" className="h-6 w-6" />
                             </button>
-                            <button className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-800 hover:bg-gray-50 transition-colors">
+                            <button type="button" className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-800 hover:bg-gray-50 transition-colors">
                                 <img src={facebook} alt="Facebook" className="h-9 w-9" />
                             </button>
-                            <button className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-500 hover:bg-gray-50 transition-colors">
+                            <button type="button" className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full text-blue-500 hover:bg-gray-50 transition-colors">
                                 <img src={twitter} alt="Twitter" className="h-6 w-6" />
                             </button>
                         </div>

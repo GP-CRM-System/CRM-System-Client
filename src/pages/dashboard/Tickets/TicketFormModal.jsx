@@ -293,23 +293,16 @@ export default function TicketFormModal({
             </div>
           </div>
         </div>
-
-        {/* Create/Update Button */}
-        <div className="pt-4">
-          <button
-            onClick={onSubmit}
-            disabled={isSubmitting}
-            className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed font-medium text-sm"
-          >
-            {isSubmitting
-              ? isEditing
-                ? "Updating..."
-                : "Creating..."
-              : isEditing
-              ? "Update"
-              : "Create"}
-          </button>
-        </div>
+      </div>
+      
+      <div className="sticky bottom-0 left-0 w-full px-6 py-4 bg-white border-t border-gray-100 z-20 mt-auto">
+        <button
+          onClick={onSubmit}
+          disabled={isSubmitting}
+          className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? (isEditing ? 'Updating...' : 'Creating...') : (isEditing ? 'Update Ticket' : 'Create Ticket')}
+        </button>
       </div>
     </SideModal>
   );

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { getAllContacts, createContact, updateContact, deleteContact } from "../../../api/contacts";
 import { getAllEmployees } from "../../../api/employees";
 import PageLayout from "../../../components/PageLayout";
-import { PermissionGuard } from "../../../components";
+import { PermissionGuard, FilterModal } from "../../../components";
 import ContactTabs from "./ContactTabs";
 import ContactTable from "./ContactTable";
 import ContactFormModal from "./ContactFormModal";
@@ -11,8 +11,10 @@ import Pagination from "./Pagination";
 
 const Contact = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("All");
   const [editingContact, setEditingContact] = useState(null);
+  const [filters, setFilters] = useState({ stage: "", owner: "" });
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -126,20 +128,29 @@ const Contact = () => {
     mutationFn: (id) => deleteContact(id),
     onSuccess: () => {
       queryClient.invalidateQueries(["contacts"]);
+      setSelected([]); // Clear selection after successful deletion
     },
     onError: (error) => {
       setFormError(error?.response?.data?.error || "Failed to delete contact");
     },
   });
 
-  // Filter contacts by tab
+  // Filter contacts by tab and filters
   const filteredContacts = contacts.filter((contact) => {
-    if (activeTab === "All") return true;
-    const lastStage = Array.isArray(contact.stage) && contact.stage.length > 0
-      ? contact.stage[contact.stage.length - 1].name
-      : "";
-    if (activeTab === "Customers") return lastStage === "Customer";
-    if (activeTab === "Leads") return lastStage === "Leads" || lastStage === "Lead";
+    // Tab filter
+    if (activeTab !== "All") {
+      const lastStage = Array.isArray(contact.stage) && contact.stage.length > 0
+        ? contact.stage[contact.stage.length - 1].name
+        : "";
+      if (activeTab === "Customers" && lastStage !== "Customer") return false;
+      if (activeTab === "Leads" && lastStage !== "Leads" && lastStage !== "Lead") return false;
+    }
+    // Additional filters
+    if (filters.stage && Array.isArray(contact.stage)) {
+      const lastStage = contact.stage[contact.stage.length - 1]?.name;
+      if (lastStage !== filters.stage) return false;
+    }
+    if (filters.owner && contact.owner !== filters.owner) return false;
     return true;
   });
 
@@ -201,12 +212,21 @@ const Contact = () => {
     });
   };
 
+  const handleApplyFilters = () => {
+    setFilterModalOpen(false);
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ stage: "", owner: "" });
+  };
+
   return (
     <PageLayout
       title="Contacts"
       createText="Create Contact"
       onCreate={handleCreateClick}
       createPermission="Contact.write"
+      onFilter={() => setFilterModalOpen(true)}
     >
       <div className="bg-white rounded-3xl shadow-2xl p-2 sm:p-4">
         <ContactTabs activeTab={activeTab} onTabChange={setActiveTab} />
@@ -220,6 +240,7 @@ const Contact = () => {
           onEdit={handleEditClick}
           onDelete={(ids) => ids.forEach(id => deleteContactMutation.mutate(id))}
           formatDate={formatDate}
+          onClearSelection={() => setSelected([])}
         />
         <Pagination
           page={currentPage}
@@ -241,6 +262,39 @@ const Contact = () => {
           isLoadingEmployees={isLoadingEmployees}
           isSubmitting={createContactMutation.isLoading || updateContactMutation.isLoading}
         />
+        <FilterModal
+          open={filterModalOpen}
+          onClose={() => setFilterModalOpen(false)}
+          onApply={handleApplyFilters}
+          onClear={handleClearFilters}
+          title="Filter Contacts"
+        >
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.stage}
+              onChange={(e) => setFilters(prev => ({ ...prev, stage: e.target.value }))}
+            >
+              <option value="">All Stages</option>
+              <option value="Lead">Lead</option>
+              <option value="Customer">Customer</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Owner</label>
+            <select
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              value={filters.owner}
+              onChange={(e) => setFilters(prev => ({ ...prev, owner: e.target.value }))}
+            >
+              <option value="">All Owners</option>
+              {employees.map(emp => (
+                <option key={emp._id} value={emp._id}>{emp.fullName}</option>
+              ))}
+            </select>
+          </div>
+        </FilterModal>
       </div>
     </PageLayout>
   );
