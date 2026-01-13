@@ -24,4 +24,4 @@ export { default as maki_arrow_ri } from "./landing/maki_arrow_white.svg";
 export { default as maki_arrow_le } from "./landing/maki_arrow_blue.svg";
 
 
-export { default as arrow1 } from "./landing/arrow1.svg";
+export { default as arrow1 } from "./landing/Arrow1.svg";
