@@ -14,8 +14,8 @@ export { default as how } from "./landing/how.svg";
 export { default as left_blur } from "./landing/left_blur.svg";
 export { default as right_blur } from "./landing/right_blur.svg";
 
-export { default as arrow_left } from "./landing/arrow_left.svg";
-export { default as arrow_right } from "./landing/arrow_right.svg";
+export { default as arrow_left } from "./landing/Arrow_left.svg";
+export { default as arrow_right } from "./landing/Arrow_right.svg";
 
 export { default as play } from "./landing/play.svg";
 export { default as play_blue } from "./landing/play_blue.svg";
