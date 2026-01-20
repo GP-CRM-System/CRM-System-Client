@@ -31,7 +31,7 @@ const Navbar = ({ isOpen, setIsOpen }) => {
 
     return (
         <nav className="bg-white px-6 py-4 flex items-center justify-between gap-4 border-b border-gray-100">
-            {/* Left section: Hamburger, Logo & Search */}
+            {/* Left section: Hamburger & Search */}
             <div className="flex items-center gap-4 lg:gap-8 flex-1">
                 {/* Mobile Hamburger */}
                 <button
@@ -42,11 +42,6 @@ const Navbar = ({ isOpen, setIsOpen }) => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-
-                <Link to="/dashboard" className="flex-shrink-0">
-                    <img src={logoSvg} className="hidden lg:block h-7 w-auto" alt="Logo" />
-                    <img src={symbolSvg} className="lg:hidden h-8 w-auto" alt="Logo Symbol" />
-                </Link>
 
                 <div className="flex items-center gap-4 flex-1 max-w-xl">
                     <div className="relative group flex-1">

@@ -1,5 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import {
     home,
     contact,
@@ -9,7 +9,9 @@ import {
     order,
     employee,
     logout,
-    analytics
+    analytics,
+    logoSvg,
+    symbolSvg
 } from "../assets";
 import PermissionGuard from './guard/PermissionGuard';
 
@@ -34,14 +36,6 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                     onClick={() => setIsOpen(false)}
                 />
             )}
-            {/* LOGO 1 */}
-
-            {/* position: absolute;
-            width: 124px;
-            height: 34px;
-            left: 16px;
-            top: 0px;    */}
-
 
             {/* Sidebar */}
             <aside className={`
@@ -52,11 +46,18 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 custom-scrollbar
             `}>
+                {/* Logo Section */}
+                <div className={`flex items-center justify-center pt-6 ${isOpen ? 'px-4' : 'px-2'}`}>
+                    <Link to="/dashboard">
+                        <img src={isOpen ? logoSvg : symbolSvg} className={`${isOpen ? 'h-7' : 'h-8'} w-auto`} alt="Logo" />
+                    </Link>
+                </div>
+
                 {/* Arrow Toggle Button - Sidebar Edge */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className={`
-                        absolute -right-3 top-20 z-40
+                        absolute -right-3 top-16 z-40
                         w-6 h-6 bg-white border border-gray-100 rounded-full shadow-md
                         flex items-center justify-center
                         text-gray-400 hover:text-blue-500 hover:border-blue-100
