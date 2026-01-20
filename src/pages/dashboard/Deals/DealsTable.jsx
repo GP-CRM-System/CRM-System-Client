@@ -68,33 +68,33 @@ export default function DealsTable({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50/50">
           <tr className="border-y border-gray-100">
-            <th className="py-4 px-4 text-center w-12">
+            <th className="py-2.5 px-3 text-center w-10">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
+                className="w-3.5 h-3.5 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
                 checked={allSelected}
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">
               Deal Name
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Company
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">
               Contact
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Owner
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden sm:table-cell">
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center font-bold text-gray-400 uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
+            <th className="py-2.5 px-3 text-center font-bold text-gray-400 uppercase text-[10px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Stage
             </th>
-            <th className="py-4 px-4 text-center w-12"></th>
+            <th className="py-2.5 px-3 text-center w-10"></th>
           </tr>
         </thead>
 
@@ -123,23 +123,23 @@ export default function DealsTable({
                   key={deal._id || itemIndex}
                   className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
                 >
-                  <td className="py-4 px-4 text-center">
+                  <td className="py-2.5 px-3 text-center w-10">
                     <input
                       type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
+                      className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
                       checked={selected.includes(deal._id)}
                       onChange={() => onSelectOne(deal._id)}
                     />
                   </td>
 
-                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {deal.name}
                   </td>
 
-                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap hidden lg:table-cell align-middle">
                     {company ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                           <img
                             src={
                               company.logo ||
@@ -153,23 +153,23 @@ export default function DealsTable({
                               e.target.nextSibling.style.display = "flex";
                             }}
                           />
-                          <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
+                          <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-[10px] font-medium">
                             {company.name?.charAt(0) || "C"}
                           </div>
                         </div>
-                        <span className="font-medium text-[var(--color-text-title)]">
+                        <span className="font-medium text-[var(--color-text-title)] text-xs">
                           {company.name}
                         </span>
                       </div>
                     ) : (
-                      <span className="font-medium text-gray-400">-</span>
+                      <span className="font-medium text-gray-400 text-xs">-</span>
                     )}
                   </td>
 
-                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap align-middle">
                     {contact ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                           <img
                             src={contact.avatar || `https://i.pravatar.cc/150?u=${contact._id}`}
                             alt={contact.name || "-"}
@@ -179,44 +179,44 @@ export default function DealsTable({
                               e.target.nextSibling.style.display = "flex";
                             }}
                           />
-                          <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
+                          <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-[10px] font-medium">
                             {contact.name?.charAt(0) || "U"}
                           </div>
                         </div>
-                        <span className="font-medium text-[var(--color-text-title)]">
+                        <span className="font-medium text-[var(--color-text-title)] text-xs">
                           {contact.name}
                         </span>
                       </div>
                     ) : (
-                      <span className="font-medium text-gray-400">-</span>
+                      <span className="font-medium text-gray-400 text-xs">-</span>
                     )}
                   </td>
 
-                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {owner?.fullName || owner?.name || "-"}
                   </td>
 
-                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {formatDate(deal.createdAt)}
                   </td>
 
-                  <td className="py-4 px-4 text-center hidden sm:table-cell align-middle">
-                    <span className="font-semibold px-3 py-1 bg-blue-50 text-blue-500 rounded-full text-xs uppercase tracking-wider whitespace-nowrap">
+                  <td className="py-2.5 px-3 text-center hidden sm:table-cell align-middle">
+                    <span className="font-semibold px-2 py-0.5 bg-blue-50 text-blue-500 rounded-full text-[10px] uppercase tracking-wider whitespace-nowrap">
                       {Array.isArray(deal.stage) && deal.stage.length > 0
                         ? (deal.stage[deal.stage.length - 1].name || "New")
                         : (typeof deal.stage === 'object' ? (deal.stage?.name || deal.stage?.stageType || "New") : (deal.stage || "New"))}
                     </span>
                   </td>
 
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center relative font-medium text-[var(--color-text-title)] align-middle">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === deal._id ? null : deal._id);
                       }}
-                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                     >
-                      <MoreVertical className="w-5 h-5" />
+                      <MoreVertical className="w-4 h-4" />
                     </button>
 
                     {openMenuId === deal._id && (

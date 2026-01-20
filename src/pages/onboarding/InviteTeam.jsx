@@ -68,18 +68,18 @@ const InviteTeam = () => {
 
                     <form onSubmit={handleInvite} className="space-y-6">
                         {/* Generated Link Display */}
-                        <div className="relative flex items-center border border-[#D1D5DB] rounded-lg bg-[#F3F4F6] overflow-hidden">
+                        <div className="relative flex items-center border border-[#4A90E2] rounded-lg bg-[var(--color-primary-100)/50] overflow-hidden">
                             <input
                                 type="text"
                                 value={inviteData?.loginUrl || ""}
                                 placeholder="Generated link will appear here"
                                 readOnly
-                                className="w-full py-3.5 px-4 bg-transparent text-[#9CA3AF] outline-none text-[15px]"
+                                className="w-full py-3.5 px-4 bg-transparent text-[#9CA3AF] outline-none text-[15px] bg-[#4A90E2] border-[#4A90E2]"
                             />
                             <button
                                 type="button"
                                 onClick={handleCopyLink}
-                                className="flex items-center gap-2 bg-white border border-[#E5E7EB] rounded-lg px-3 py-1.5 mr-2 hover:bg-gray-50 transition-colors"
+                                className="flex items-center gap-2 bg-white border border-[#8A8A8A] rounded-lg px-3 py-1.5 mr-2 hover:bg-gray-50 transition-colors w-[150px]"
                             >
                                 <img src={copy} alt="copy" className="w-4 h-4" />
                                 <span className="text-[13px] font-medium text-[#374151]">Copy Link</span>

@@ -112,33 +112,33 @@ export default function OrderTable({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50/50">
           <tr className="border-y border-gray-100">
-            <th className="py-4 px-4 text-center w-12">
+            <th className="py-2.5 px-3 text-center w-10">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
+                className="w-3.5 h-3.5 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
                 checked={allSelected}
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">
               Order ID
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Employee
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">
               Contact
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Total Price
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden sm:table-cell">
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden sm:table-cell">
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Stage
             </th>
-            <th className="py-4 px-4 text-center w-12"></th>
+            <th className="py-2.5 px-3 text-center w-10"></th>
           </tr>
         </thead>
 
@@ -175,10 +175,10 @@ export default function OrderTable({
                   onClick={() => onView && onView(order)}
                 >
                   {/* Checkbox */}
-                  <td className="py-4 px-4 text-center align-middle">
+                  <td className="py-2.5 px-3 text-center align-middle">
                     <input
                       type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       checked={selected.includes(order._id)}
                       onChange={(e) => {
                         e.stopPropagation();
@@ -188,15 +188,15 @@ export default function OrderTable({
                   </td>
 
                   {/* Order ID */}
-                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {displayId}
                   </td>
 
                   {/* Employee */}
-                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap hidden lg:table-cell align-middle">
                     {employee ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                           <img
                             src={
                               employee.avatar ||
@@ -209,24 +209,24 @@ export default function OrderTable({
                               e.target.nextSibling.style.display = "flex";
                             }}
                           />
-                          <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
+                          <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-[10px] font-medium">
                             {employee.fullName?.charAt(0) || "E"}
                           </div>
                         </div>
-                        <span className="font-medium text-[var(--color-text-title)]">
+                        <span className="font-medium text-[var(--color-text-title)] text-xs">
                           {employee.fullName || employee.name}
                         </span>
                       </div>
                     ) : (
-                      <span className="font-medium text-gray-400">-</span>
+                      <span className="font-medium text-gray-400 text-xs">-</span>
                     )}
                   </td>
 
                   {/* Contact */}
-                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap align-middle">
                     {contactName !== "-" ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                           <img
                             src={
                               contactAvatar ||
@@ -239,33 +239,33 @@ export default function OrderTable({
                               e.target.nextSibling.style.display = "flex";
                             }}
                           />
-                          <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-xs font-medium">
+                          <div className="w-full h-full hidden items-center justify-center bg-green-100 text-green-600 text-[10px] font-medium">
                             {contactName.charAt(0)}
                           </div>
                         </div>
-                        <span className="font-medium text-[var(--color-text-title)]">
+                        <span className="font-medium text-[var(--color-text-title)] text-xs">
                           {contactName}
                         </span>
                       </div>
                     ) : (
-                      <span className="font-medium text-gray-400">-</span>
+                      <span className="font-medium text-gray-400 text-xs">-</span>
                     )}
                   </td>
 
                   {/* Total Price */}
-                  <td className="py-4 px-4 text-center whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     ${totalPrice.toLocaleString()}
                   </td>
 
                   {/* Date */}
-                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {formatDate(order.createdAt)}
                   </td>
 
                   {/* Stage */}
-                  <td className="py-4 px-4 text-center hidden sm:table-cell align-middle">
+                  <td className="py-2.5 px-3 text-center hidden sm:table-cell align-middle">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold capitalize whitespace-nowrap ${getStageStyle(
+                      className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold capitalize whitespace-nowrap ${getStageStyle(
                         stageName
                       )}`}
                     >
@@ -274,15 +274,15 @@ export default function OrderTable({
                   </td>
 
                   {/* Options */}
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center relative font-medium text-[var(--color-text-title)] align-middle">
                     <button
-                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === order._id ? null : order._id);
                       }}
                     >
-                      <MoreVertical className="w-5 h-5" />
+                      <MoreVertical className="w-4 h-4" />
                     </button>
 
                     {openMenuId === order._id && (

@@ -34,13 +34,21 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                     onClick={() => setIsOpen(false)}
                 />
             )}
+            {/* LOGO 1 */}
+
+            {/* position: absolute;
+            width: 124px;
+            height: 34px;
+            left: 16px;
+            top: 0px;    */}
+
 
             {/* Sidebar */}
             <aside className={`
                 fixed lg:static inset-y-0 left-0 z-30
                 flex h-screen flex-col bg-white
                 transition-all duration-300 ease-in-out
-                ${isOpen ? 'w-[240px]' : 'w-20'}
+                ${isOpen ? 'w-[220px]' : 'w-16'}
                 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                 custom-scrollbar
             `}>
@@ -72,7 +80,7 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                             end={item.end}
                                             onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
                                             className={({ isActive }) =>
-                                                `flex items-center transition-all group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
+                                                `flex items-center transition-all group ${isOpen ? 'px-4 h-[44px]' : 'p-2 justify-center'
                                                 } ${isActive
                                                     ? 'bg-[#4A90E2] text-white rounded-lg shadow-sm'
                                                     : 'text-gray-500 hover:bg-gray-50 rounded-lg'
@@ -84,11 +92,11 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                                     <img
                                                         src={item.icon}
                                                         alt={`${item.label} icon`}
-                                                        className={`h-6 w-6 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
+                                                        className={`h-5 w-5 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
                                                             }`}
                                                     />
                                                     {isOpen && (
-                                                        <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
+                                                        <span className="text-[15px] font-medium transition-opacity duration-300 whitespace-nowrap">
                                                             {item.label}
                                                         </span>
                                                     )}
@@ -126,7 +134,7 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                     to='/dashboard/settings'
                                     onClick={() => window.innerWidth < 1024 && setIsOpen(false)}
                                     className={({ isActive }) =>
-                                        `flex items-center transition-all group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
+                                        `flex items-center transition-all group ${isOpen ? 'px-4 h-[44px]' : 'p-2 justify-center'
                                         } ${isActive
                                             ? 'bg-[#4A90E2] text-white rounded-lg'
                                             : 'text-gray-500 hover:bg-gray-50 rounded-lg'
@@ -138,11 +146,11 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                                             <img
                                                 src={contact}
                                                 alt="Settings icon"
-                                                className={`h-6 w-6 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
+                                                className={`h-5 w-5 transition-all flex-shrink-0 ${isActive ? 'brightness-0 invert' : 'opacity-50 group-hover:opacity-100'
                                                     }`}
                                             />
                                             {isOpen && (
-                                                <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
+                                                <span className="text-[15px] font-medium transition-opacity duration-300 whitespace-nowrap">
                                                     Settings
                                                 </span>
                                             )}
@@ -159,13 +167,13 @@ const Sidebar = ({ onLogout, isOpen, setIsOpen }) => {
                             <li className="relative group/sidebar-item">
                                 <button
                                     onClick={onLogout}
-                                    className={`w-full flex items-center text-gray-500 transition-all hover:bg-red-50 hover:text-red-600 rounded-lg group ${isOpen ? 'px-4 h-[54px]' : 'p-3 justify-center'
+                                    className={`w-full flex items-center text-gray-500 transition-all hover:bg-red-50 hover:text-red-600 rounded-lg group ${isOpen ? 'px-4 h-[44px]' : 'p-2 justify-center'
                                         }`}
                                 >
                                     <div className="flex items-center gap-3">
                                         <img src={logout} alt="Logout icon" className="h-6 w-6 flex-shrink-0 opacity-50 group-hover:opacity-100 group-hover:filter-red" />
                                         {isOpen && (
-                                            <span className="text-[17px] font-medium transition-opacity duration-300 whitespace-nowrap">
+                                            <span className="text-[15px] font-medium transition-opacity duration-300 whitespace-nowrap">
                                                 Logout
                                             </span>
                                         )}

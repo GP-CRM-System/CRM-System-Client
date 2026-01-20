@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import Sidebar from "../../components/Sidebar.jsx";
-import { Home, Contact, Companies, Deals, Tickets, Order, Employee, Analytics, Settings } from "./";
+import { Home, Contact, Companies, Deals, Tickets, Order, Employee, EmployeeProfile, Analytics, Settings } from "./";
 import useAuthStore from "../../store/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { logout as logoutAPI } from "../../api/auth";
@@ -37,68 +37,76 @@ const Dashboard = () => {
         setIsOpen={setSidebarOpen}
       />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#F8FAFC]">
-        <Navbar />
+        <Navbar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-4 md:p-5 lg:p-6">
           <Routes>
             {/* Default route for /dashboard redirects to home */}
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
-            <Route 
-              path="contact" 
+            <Route
+              path="contact"
               element={
                 <RoutePermissionGuard permission="Contact.read">
                   <Contact />
                 </RoutePermissionGuard>
-              } 
+              }
             />
-            <Route 
-              path="companies" 
+            <Route
+              path="companies"
               element={
                 <RoutePermissionGuard permission="Company.read">
                   <Companies />
                 </RoutePermissionGuard>
-              } 
+              }
             />
-            <Route 
-              path="deals" 
+            <Route
+              path="deals"
               element={
                 <RoutePermissionGuard permission="Deal.read">
                   <Deals />
                 </RoutePermissionGuard>
-              } 
+              }
             />
-            <Route 
-              path="tickets" 
+            <Route
+              path="tickets"
               element={
                 <RoutePermissionGuard permission="Ticket.read">
                   <Tickets />
                 </RoutePermissionGuard>
-              } 
+              }
             />
-            <Route 
-              path="order" 
+            <Route
+              path="order"
               element={
                 <RoutePermissionGuard permission="Order.read">
                   <Order />
                 </RoutePermissionGuard>
-              } 
+              }
             />
-            <Route 
-              path="employee" 
+            <Route
+              path="employee"
               element={
                 <RoutePermissionGuard permission="Employee.read">
                   <Employee />
                 </RoutePermissionGuard>
-              } 
+              }
             />
-            <Route 
-              path="analytics" 
+            <Route
+              path="employee/:id"
+              element={
+                <RoutePermissionGuard permission="Employee.read">
+                  <EmployeeProfile />
+                </RoutePermissionGuard>
+              }
+            />
+            <Route
+              path="analytics"
               element={
                 <RoutePermissionGuard permission="Analytics.read">
                   <Analytics />
                 </RoutePermissionGuard>
-              } 
+              }
             />
             <Route path="settings/*" element={<div className="lg:-m-6"><Settings /></div>} />
           </Routes>

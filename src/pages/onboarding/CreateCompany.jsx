@@ -4,8 +4,10 @@ import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import {
   businessIcon,
+  createCompany as companyIcon2,
   companies as companyIcon,
-  employee as employeesIcon
+  employee as employeesIcon,
+  email
 } from "../../assets";
 import { createCompany } from "../../api/company";
 import { type as companyTypes } from "../../constant/company";
@@ -167,7 +169,7 @@ const CreateCompany = () => {
                 <div className="flex flex-col">
                   <div className="relative w-full">
                     <img
-                      src={businessIcon || ""}
+                      src={email || ""}
                       alt="Email icon"
                       className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
                     />
@@ -208,7 +210,7 @@ const CreateCompany = () => {
       {/* Right Side */}
       <div className="hidden lg:flex w-1/2 items-center justify-center p-12" style={{ backgroundColor: 'var(--color-primary-500)' }}>
         <img
-          src={companyIcon}
+          src={companyIcon2}
           alt="Create Company Illustration"
           className="w-full max-w-lg h-[366px]"
         />
