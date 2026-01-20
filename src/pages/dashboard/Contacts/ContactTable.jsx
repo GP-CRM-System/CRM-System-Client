@@ -49,21 +49,21 @@ const ContactTable = ({
       <table className="w-full text-sm text-[var(--color-text-body)] border-collapse">
         <thead className="bg-gray-50/50">
           <tr className="border-y border-gray-100">
-            <th className="py-4 px-4 text-center w-12">
+            <th className="py-2.5 px-3 text-center w-10">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium cursor-pointer"
+                className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium cursor-pointer"
                 checked={allSelected}
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">Name</th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">Stage</th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden md:table-cell">E-mail</th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">Phone</th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden xl:table-cell">Job Title</th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden sm:table-cell">Date</th>
-            <th className="py-4 px-4 text-center w-12"></th>
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">Name</th>
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">Stage</th>
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden md:table-cell">E-mail</th>
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">Phone</th>
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden xl:table-cell">Job Title</th>
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">Date</th>
+            <th className="py-2.5 px-3 text-center w-10"></th>
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-50">
@@ -95,17 +95,17 @@ const ContactTable = ({
                   className={`hover:bg-blue-50/30 transition-colors ${selected.includes(contact._id) ? "bg-blue-50/50" : ""
                     }`}
                 >
-                  <td className="py-4 px-4 text-center w-12 align-middle">
+                  <td className="py-2.5 px-3 text-center w-10 align-middle">
                     <input
                       type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
+                      className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
                       checked={selected.includes(contact._id)}
                       onChange={() => onSelectOne(contact._id)}
                     />
                   </td>
-                  <td className="py-4 px-4 text-left whitespace-nowrap align-middle">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap align-middle">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                         <img
                           src={
                             contact.avatar ||
@@ -118,19 +118,19 @@ const ContactTable = ({
                             e.target.nextSibling.style.display = "flex";
                           }}
                         />
-                        <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
+                        <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-[10px] font-medium">
                           {contact.name?.charAt(0) || "U"}
                         </div>
                       </div>
-                      <span className="font-medium text-[var(--color-text-title)]">
+                      <span className="font-medium text-[var(--color-text-title)] text-xs">
                         {contact.name}
                       </span>
                     </div>
                   </td>
-                  <td className="py-4 px-4 text-center align-middle">
+                  <td className="py-2.5 px-3 text-center align-middle">
                     {stageName !== "-" && (
                       <span
-                        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${stageName === "Customer"
+                        className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap ${stageName === "Customer"
                           ? "bg-blue-50 text-blue-500"
                           : "bg-orange-50 text-orange-400"
                           }`}
@@ -139,27 +139,27 @@ const ContactTable = ({
                       </span>
                     )}
                   </td>
-                  <td className="py-4 px-4 text-center whitespace-nowrap hidden md:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap hidden md:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {contact.email}
                   </td>
-                  <td className="py-4 px-4 text-center whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {contact.phone || "-"}
                   </td>
-                  <td className="py-4 px-4 text-center whitespace-nowrap hidden xl:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap hidden xl:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {contact.jobTitle || "-"}
                   </td>
-                  <td className="py-4 px-4 font-medium text-sm text-center whitespace-nowrap hidden sm:table-cell text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 font-medium text-[11px] text-center whitespace-nowrap hidden sm:table-cell text-[var(--color-text-title)] align-middle">
                     {formatDate(stageDate || contact.createdAt)}
                   </td>
-                  <td className="py-4 px-4 text-center relative align-middle">
+                  <td className="py-2.5 px-3 text-center relative align-middle">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === contact._id ? null : contact._id);
                       }}
-                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                     >
-                      <MoreVertical className="w-5 h-5" />
+                      <MoreVertical className="w-4 h-4" />
                     </button>
 
                     {openMenuId === contact._id && (

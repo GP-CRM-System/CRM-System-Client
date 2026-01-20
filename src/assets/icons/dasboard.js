@@ -7,3 +7,4 @@ export { default as plus } from './dashboard/plus.svg';
 export { default as filter } from './dashboard/filter.svg';
 // export { default as close } from './dashboard/close.svg';
 export { default as search } from './dashboard/search.svg';
+export { default as crumb } from './dashboard/crumb.svg';

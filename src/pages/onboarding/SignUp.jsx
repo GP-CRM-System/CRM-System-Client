@@ -29,14 +29,14 @@ export default function SignUp() {
             // If role is just an ID, fetch full profile with populated role
             const userId = data?.data?.user?._id;
             const userRole = data?.data?.user?.role;
-            
+
             if (userId && typeof userRole === 'string') {
                 console.log('⚠️ Role is not populated, fetching profile...');
                 try {
                     const API = (await import('../../api/client')).default;
                     const profileResponse = await API.get(`/profile/${userId}`);
                     console.log('📥 Profile response:', profileResponse.data);
-                    
+
                     // Update credentials with populated role
                     setCredentials(profileResponse.data);
                 } catch (error) {
@@ -49,11 +49,20 @@ export default function SignUp() {
         },
         onError: (error) => {
             console.error('❌ Registration error:', error);
-            const errorMessage = error?.response?.data?.error 
-                || error?.response?.data?.message 
-                || error?.message 
-                || 'Registration failed';
-            
+            let errorMessage = 'Registration failed';
+
+            if (error?.response?.data?.error) {
+                errorMessage = typeof error.response.data.error === 'string'
+                    ? error.response.data.error
+                    : JSON.stringify(error.response.data.error);
+            } else if (error?.response?.data?.message) {
+                errorMessage = typeof error.response.data.message === 'string'
+                    ? error.response.data.message
+                    : JSON.stringify(error.response.data.message);
+            } else if (error?.message) {
+                errorMessage = error.message;
+            }
+
             toast.error(errorMessage);
         },
     });
@@ -125,8 +134,8 @@ export default function SignUp() {
                                         placeholder="Full Name"
                                         className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
-                                    <ErrorMessage name="fullName" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
+                                <ErrorMessage name="fullName" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 <div className="relative">
                                     <img src={phone} alt="Phone icon" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <Field
@@ -135,8 +144,8 @@ export default function SignUp() {
                                         placeholder="Phone Number"
                                         className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
-                                    <ErrorMessage name="phone" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
+                                <ErrorMessage name="phone" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 <div className="relative">
                                     <img src={email} alt="Email icon" className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                                     <Field
@@ -145,8 +154,8 @@ export default function SignUp() {
                                         placeholder="E-mail"
                                         className="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition duration-300"
                                     />
-                                    <ErrorMessage name="email" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
+                                <ErrorMessage name="email" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 <div className="relative">
                                     <Field
                                         type={passwordVisible ? "text" : "password"}
@@ -157,8 +166,8 @@ export default function SignUp() {
                                     <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                         {passwordVisible ? <FaEyeSlash /> : <FaEye />}
                                     </button>
-                                    <ErrorMessage name="password" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
+                                <ErrorMessage name="password" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 <div className="relative">
                                     <Field
                                         type={confirmPasswordVisible ? "text" : "password"}
@@ -169,8 +178,8 @@ export default function SignUp() {
                                     <button type="button" onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                                         {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
                                     </button>
-                                    <ErrorMessage name="confirmPassword" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 </div>
+                                <ErrorMessage name="confirmPassword" component="div" className="text-xs mt-1" style={{ color: 'var(--color-error)' }} />
                                 {/* Terms & Conditions Checkbox */}
                                 <div className="flex items-center">
                                     <Field type="checkbox" name="terms" id="terms" className="h-4 w-4 border-gray-300 rounded bg-white focus:ring-blue-500" style={{ accentColor: 'var(--color-primary-500)' }} />
@@ -183,7 +192,15 @@ export default function SignUp() {
                                 </button>
                                 {registerMutation.isError && (
                                     <div className="text-xs mt-2" style={{ color: 'var(--color-error)' }}>
-                                        {registerMutation.error?.response?.data?.message || registerMutation.error?.message || 'Registration failed'}
+                                        {(() => {
+                                            const error = registerMutation.error;
+                                            if (error?.response?.data?.message) {
+                                                return typeof error.response.data.message === 'string'
+                                                    ? error.response.data.message
+                                                    : JSON.stringify(error.response.data.message);
+                                            }
+                                            return error?.message || 'Registration failed';
+                                        })()}
                                     </div>
                                 )}
                             </Form>
@@ -197,7 +214,7 @@ export default function SignUp() {
                             <hr className="flex-grow border-t border-gray-200" />
                         </div>
                         <div className="flex justify-center items-center gap-4 mt-4">
-                            <button 
+                            <button
                                 type="button"
                                 onClick={initiateGoogleAuth}
                                 className="h-12 w-12 flex items-center justify-center border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"

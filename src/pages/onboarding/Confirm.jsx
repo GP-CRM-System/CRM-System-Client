@@ -12,8 +12,7 @@ const ConfirmRegister = () => {
         <img src={confirm} alt="Success" className="w-full h-auto mb-10" />
 
         <h1
-          className="text-[24px] font-semibold text-center mb-8 w-full"
-          style={{ color: "var(--color-text-title)" }}
+          className="text-[24px] font-semibold text-center mb-8 w-full text-[var(--color-text-title)]"
         >
           You are successfully registered!
         </h1>
@@ -23,7 +22,7 @@ const ConfirmRegister = () => {
             toast.success('Onboarding complete! Welcome to your dashboard.');
             navigate("/dashboard");
           }}
-          className="bg-[#4A90E2] text-white font-semibold py-3 rounded-xl hover:bg-blue-700 transition duration-300 w-full"
+          className="bg-[var(--color-primary-500)] text-white font-semibold py-3 rounded-xl hover:bg-[var(--color-primary-600)] transition duration-300 w-full"
         >
           Let’s Start
         </button>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MoreVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Loader from "../../../components/ui/Loader";
 
 export default function EmployeeTable({
@@ -14,6 +15,7 @@ export default function EmployeeTable({
   onDelete,
   roles,
 }) {
+  const navigate = useNavigate();
   const [openMenuId, setOpenMenuId] = useState(null);
 
   // Close menu on click outside
@@ -61,30 +63,30 @@ export default function EmployeeTable({
       <table className="w-full text-sm border-collapse">
         <thead className="bg-gray-50/50">
           <tr className="border-y border-gray-100">
-            <th className="py-4 px-4 text-center w-12">
+            <th className="py-2.5 px-3 text-center w-10">
               <input
                 type="checkbox"
-                className="w-4 h-4 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
+                className="w-3.5 h-3.5 rounded border-gray-300 text-[var(--color-primary-500)] focus:ring-[var(--color-primary-500)]"
                 checked={allSelected}
                 onChange={onSelectAll}
               />
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">
               Employee Name
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Email
             </th>
-            <th className="py-4 px-4 text-left font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap">
+            <th className="py-2.5 px-3 text-left font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap">
               Phone
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden lg:table-cell">
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden lg:table-cell">
               Job Title
             </th>
-            <th className="py-4 px-4 text-center font-semibold text-[var(--color-text-body)] uppercase text-md tracking-wider whitespace-nowrap hidden sm:table-cell">
+            <th className="py-2.5 px-3 text-center font-semibold text-[var(--color-text-body)] uppercase text-[11px] tracking-wider whitespace-nowrap hidden sm:table-cell">
               Date
             </th>
-            <th className="py-4 px-4 text-center w-12"></th>
+            <th className="py-2.5 px-3 text-center w-10"></th>
           </tr>
         </thead>
 
@@ -108,20 +110,21 @@ export default function EmployeeTable({
               return (
                 <tr
                   key={employee._id || itemIndex}
-                  className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)]"
+                  className="hover:bg-gray-50 group transition-colors border-b border-[var(--color-border)] cursor-pointer"
+                  onClick={() => navigate(`/dashboard/employee/${employee._id}`)}
                 >
-                  <td className="py-4 px-4 text-center align-middle">
+                  <td className="py-2.5 px-3 text-center align-middle" onClick={(e) => e.stopPropagation()}>
                     <input
                       type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
+                      className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 font-medium"
                       checked={selected.includes(employee._id)}
                       onChange={() => onSelectOne(employee._id)}
                     />
                   </td>
 
-                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium align-middle">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap font-medium align-middle">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full overflow-hidden flex-shrink-0 bg-gray-200">
                         <img
                           src={
                             employee.avatar ||
@@ -134,47 +137,56 @@ export default function EmployeeTable({
                             e.target.nextSibling.style.display = "flex";
                           }}
                         />
-                        <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-xs font-medium">
+                        <div className="w-full h-full hidden items-center justify-center bg-blue-100 text-blue-600 text-[10px] font-medium">
                           {employee.fullName?.charAt(0) || "E"}
                         </div>
                       </div>
-                      <span className="font-medium text-[var(--color-text-title)]">
+                      <span className="font-medium text-[var(--color-text-title)] text-xs">
                         {employee.fullName || "-"}
                       </span>
                     </div>
                   </td>
 
-                  <td className="py-4 px-4 text-left whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap hidden lg:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {employee.email || "-"}
                   </td>
 
-                  <td className="py-4 px-4 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-left whitespace-nowrap font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {employee.phone || "-"}
                   </td>
 
-                  <td className="py-4 px-4 text-center whitespace-nowrap font-medium text-[var(--color-text-title)] hidden lg:table-cell align-middle">
-                    <span className="font-semibold px-3 py-1 bg-blue-50 text-blue-500 rounded-full text-[10px] uppercase tracking-wider whitespace-nowrap">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap font-medium text-[var(--color-text-title)] hidden lg:table-cell align-middle">
+                    <span className="font-semibold px-2 py-0.5 bg-blue-50 text-blue-500 rounded-full text-[9px] uppercase tracking-wider whitespace-nowrap">
                       {role?.name || employee.role?.name || "N/A"}
                     </span>
                   </td>
 
-                  <td className="py-4 px-4 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center whitespace-nowrap hidden sm:table-cell font-medium text-[var(--color-text-title)] align-middle text-xs">
                     {formatDate(employee.createdAt)}
                   </td>
 
-                  <td className="py-4 px-4 text-center relative font-medium text-[var(--color-text-title)] align-middle">
+                  <td className="py-2.5 px-3 text-center relative font-medium text-[var(--color-text-title)] align-middle" onClick={(e) => e.stopPropagation()}>
                     <button
-                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1.5 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
+                      className="text-[var(--color-primary-600)] hover:text-[var(--color-primary-700)] p-1 rounded-full hover:bg-blue-50 transition-colors flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation();
                         setOpenMenuId(openMenuId === employee._id ? null : employee._id);
                       }}
                     >
-                      <MoreVertical className="w-5 h-5" />
+                      <MoreVertical className="w-4 h-4" />
                     </button>
 
                     {openMenuId === employee._id && (
                       <div className={`absolute right-full mr-3 ${itemIndex >= employees.length - 2 ? 'bottom-0' : 'top-1/2 -translate-y-1/2'} bg-white shadow-xl rounded-xl border border-gray-100 py-2 w-36 z-50`}>
+                        <button
+                          onClick={() => {
+                            navigate(`/dashboard/employee/${employee._id}`);
+                            setOpenMenuId(null);
+                          }}
+                          className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-gray-700 font-medium"
+                        >
+                          View Profile
+                        </button>
                         <button
                           onClick={() => {
                             onEdit(employee);
